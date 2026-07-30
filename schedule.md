@@ -417,59 +417,170 @@
 
 ## 五、技术实现要点（服务 7 天可做完）
 
+### 5.1 技术栈选择
+
+**已确定方案：Web (DOM + CSS)**
+
 | 方案 | 选择 |
 | --- | --- |
-| 引擎建议 | Unity / Godot / Web（任意团队熟的）；本质是 UI + 立绘状态机 + **VideoPlayer** |
+| **引擎** | **Web (HTML5 + CSS + JavaScript)** - 跨平台、零安装、易分发 |
 | 文本 | 不跑 NLP；JSON/表格驱动预设遮挡（`script/chapters.json`） |
-| 交互 | 拖拽矩形 → 吸附最近合法 zone → 播放吞噬动画 → 刷新剩余文本 |
-| **关末** | 结算 flag → 选 `outro_video` id → 播 mp4 → 加载下一章 BG |
-| 视频资产 | `video/V*.mp4`；预加载下一章首片，避免卡顿 |
-| 存档 | 关卡进度 + 结局 flag + 已看过视频可跳过标记 |
+| 交互 | **DOM span 包裹 zone → getBoundingClientRect() 精确定位** → 拖拽黑条吸附 |
+| **关末** | 结算 flag → 选 `outro_video` id → HTML5 `<video>` 播放 → 加载下一章 BG |
+| 视频资产 | `video/V*.mp4`；关键视频预加载（preload="auto"）避免卡顿 |
+| 存档 | **localStorage** 存储关卡进度 + 结局 flag + 已看视频标记 |
+| 部署 | 静态托管（Vercel / Netlify / GitHub Pages）一键发布 |
 | 本地化 | 首发中文；英文需重做 zone（按短语而非按字）；视频旁白用 UI 本地化更省 |
 
-伪数据示例：
+### 5.2 Web技术栈优势
+
+✅ **字符级热区问题已解决**：
+```html
+<!-- 每个zone用span包裹，浏览器自动计算精确位置 -->
+<div class="dialogue-text">
+  我<span class="zone" data-zone-id="0">其实没什么经验，而且我经常会说错话，</span>但我真的很需要这份工作。
+</div>
+```
+
+```javascript
+// 获取zone的精确屏幕位置（无需手动计算）
+const zoneElement = document.querySelector('[data-zone-id="0"]');
+const rect = zoneElement.getBoundingClientRect();
+// rect.x, rect.y, rect.width, rect.height 全部由浏览器计算
+```
+
+✅ **其他优势**：
+- 零构建时间（F5刷新即可测试）
+- 跨平台原生支持（PC/Mac/移动端）
+- 中文排版由浏览器处理（无需字体渲染引擎）
+- 拖拽用原生 Pointer Events API
+- 视频播放用原生 `<video>` 标签
+
+### 5.3 数据结构（简化版）
 
 ```json
 {
   "id": "L1_S02",
   "raw": "我当然很高兴你还能回来。",
   "zones": [
-    {"id": "z1", "text": "当然", "start": 1, "end": 3},
-    {"id": "z2", "text": "很高兴", "start": 3, "end": 6},
-    {"id": "z3", "text": "你还能回来", "start": 6, "end": 11},
-    {"id": "z4", "text": "我", "start": 0, "end": 1}
+    {
+      "id": "z1",
+      "text": "当然",
+      "remain": "我很高兴你还能回来。",
+      "npc": "变成勉强的欢迎",
+      "flags": ["pass+"],
+      "eat": "当然"
+    },
+    {
+      "id": "z2",
+      "text": "很高兴",
+      "remain": "我当然你还能回来。",
+      "npc": "变成冷淡回应",
+      "flags": ["truth+"],
+      "eat": "很高兴"
+    }
   ]
 }
 ```
 
----
-
-## 六、七天制作排期（建议）
-
-| 天 | 目标 |
-| --- | --- |
-| D1 | 锁定台本 v1.2（~35 句）；拖拽吸附原型；列出视频首帧清单 |
-| D2 | 第一关全流程 + 失败重来；立绘/表情；出 `V0`/`V1` 图生视频 |
-| D3 | 第二、三关内容；消音体 1—2；`V2`/`V3` 视频 |
-| D4 | 第四、五关；反噬；`V4` 双线 + `V5` 三结局底 |
-| D5 | `V_RV` 反转片；引擎接入全部 VideoPlayer；UI 抛光 |
-| D6 | 试玩节奏（含视频可否跳过）；语义与音效 |
-| D7 | 打包、十秒预告（可剪关末视频）、商店页文案 |
+**注意**：Web方案**不需要**手动填写 `start/end` 索引，由DOM自动计算
 
 ---
 
-## 七、风险与对策
+## 六、七天制作排期（Web技术栈）
 
-| 风险 | 对策 |
-| --- | --- |
-| 玩家以为是普通“选词解谜” | 开场 30 秒内用吞噬动画+消音体说话建立关系 |
-| 预设区感觉不自由 | 吸附手感做软；视觉上像自由拖，松手再吸附 |
-| 语义改写变生硬 | 每句人工写剩余句，不自动删字拼接 |
-| 范围膨胀 | 严格遵守“唯一操作 + 五关 + 2—3 结局”；视频只做关末不每句 |
-| 主题过重引争议 | 表达控制与陪伴的双面，避免说教；结尾留给玩家解释 |
-| AI 视频人物崩/闪 | 首帧锁 Demo；运镜慢；崩坏镜剪掉改静帧推镜 |
-| 视频风格不统一 | 统一提示词块（doomer/无 BGM/消音体材质）；同一批生成 |
-| 体积过大 | 720p–1080p、短时长、H.264；总视频预算建议 < 80MB |
+| 天 | 目标 | 程序任务 | 美术任务 |
+| --- | --- | --- | --- |
+| **D0** | **技术验证** | HTML结构+1句zone渲染+黑条拖拽demo | 测试AI生成V0_out视频 |
+| **D1** | 核心循环 | JSON加载+拖拽吸附+flag累加 | 公寓BG + UI对话框/黑条 |
+| **D2** | 第一关全流程 | L0+L1完整+失败重来+视频播放 | 会议室BG + 少女1姿势 + 3表情 |
+| **D3** | 第二、三关 | L2+L3内容+消音体CSS切换 | 门厅BG + Stage1/2素材 + 剩余表情 |
+| **D4** | 第四、五关 | L4+L5+结局分支 | Stage3 + 终局空房BG + 视频V1/V2 |
+| **D5** | 视频+反转 | 所有视频接入+反转`V_RV`+UI抛光 | 视频V3/V4/V5批量生成 |
+| **D6** | 音频+存档 | localStorage存档+音频接入+移动端测试 | 收集免费SFX/BGM |
+| **D7** | 打包发布 | 测试+修bug+部署到Vercel/Netlify | 预告截图+宣传素材 |
+
+### Day 0 技术验证清单（必做）
+
+✅ **验证1：字符热区吸附**（2小时）
+```bash
+# 创建test.html，用1句话测试zone包裹+getBoundingClientRect
+# 验证：中文、英文、标点符号的包围盒都正确
+```
+
+✅ **验证2：AI视频质量**（3小时）
+```bash
+# 用D0首帧生成V0_out测试片
+# 检查清单：
+# - 脸是否崩坏
+# - 消音体是否长出五官
+# - doomer风格是否保持
+# - 文件大小是否合理（<10MB/条）
+```
+
+✅ **验证3：移动端兼容**（1小时）
+```bash
+# 在手机浏览器测试：
+# - 触摸拖拽是否流畅
+# - 视频能否自动播放
+# - localStorage是否可用
+```
+
+**若验证失败**：
+- 验证1失败 → Web方案不可行，需换引擎
+- 验证2失败率>50% → 切换静帧推镜方案
+- 验证3失败 → 添加兼容性fallback
+
+---
+
+## 七、风险与对策（Web技术栈更新）
+
+| 风险 | 对策 | Web特有补充 |
+| --- | --- | --- |
+| 玩家以为是普通”选词解谜” | 开场 30 秒内用吞噬动画+消音体说话建立关系 | CSS动画足够 |
+| 预设区感觉不自由 | 吸附手感做软；视觉上像自由拖，松手再吸附 | Pointer Events统一处理鼠标/触摸 |
+| 语义改写变生硬 | 每句人工写剩余句，不自动删字拼接 | — |
+| 范围膨胀 | 严格遵守”唯一操作 + 五关 + 2—3 结局”；视频只做关末不每句 | — |
+| 主题过重引争议 | 表达控制与陪伴的双面，避免说教；结尾留给玩家解释 | — |
+| AI 视频人物崩/闪 | 首帧锁 Demo；运镜慢；崩坏镜剪掉改静帧推镜 | 备用方案：CSS Ken Burns效果 |
+| 视频风格不统一 | 统一提示词块（doomer/无 BGM/消音体材质）；同一批生成 | — |
+| 体积过大 | 720p–1080p、短时长、H.264；总视频预算建议 < 80MB | Web部署可用CDN加速 |
+| **移动端自动播放限制** | **在用户首次交互后初始化音频上下文** | **显示”点击开始”按钮** |
+| **字体加载闪烁(FOUT)** | **使用font-display: block等待字体** | **或预加载字体后再显示游戏** |
+| **跨浏览器兼容性** | **测试Chrome/Safari/Firefox** | **使用标准Web API，避免实验性特性** |
+| **localStorage被禁用** | **检测可用性，降级到sessionStorage** | **提示用户”存档需要启用存储”** |
+
+### Web技术栈新增风险
+
+#### 1. 移动端视频自动播放
+**问题**：iOS Safari/Chrome默认禁止自动播放  
+**解决方案**：
+```javascript
+// 首次交互时初始化
+document.getElementById('start-button').addEventListener('click', async () => {
+  // 尝试播放静音视频解锁
+  const dummyVideo = document.createElement('video');
+  dummyVideo.muted = true;
+  await dummyVideo.play().catch(() => {});
+  
+  startGame();
+});
+```
+
+#### 2. 性能优化
+**问题**：低端设备可能拖拽卡顿  
+**解决方案**：
+- 使用 `transform` 代替 `left/top`
+- `requestAnimationFrame` 节流
+- `will-change` 提示浏览器优化
+- 移动端减少粒子特效
+
+#### 3. 存档丢失
+**问题**：用户清除浏览器数据会丢失存档  
+**解决方案**：
+- UI明确提示”存档保存在浏览器本地”
+- 提供”导出/导入存档”功能（JSON下载）
+- 可选：接入云存档（需后端）
 
 ---
 
@@ -518,14 +629,15 @@
 
 | 你是谁 | 先读 | 再读 | 动手用 |
 | --- | --- | --- | --- |
-| **程序（菜鸟）** | 本文 §3.1、§3.3、§十一 | `script/chapters.json` | §十一逐步清单 |
+| **程序（Web前端）** | 本文 §3.1、§5、§十一 | `script/chapters.json` | §11.11 Day 1 demo |
+| **程序（菜鸟）** | 本文 §十六 快速启动 | §11.5 单句状态机 | 复制Day 1 HTML |
 | **美术（菜鸟）** | `art-style.md` + 本文 §十二 | Demo 图 D0–D6 | §十二资产表 |
 | **策划/文案** | `台本.md` | 本文 §4 | JSON 字段表 |
 | **全员** | 本文 §九 | `selling-points.md` | 验收 §十四 |
 
 ```text
 KeepSilentForMe/
-├── schedule.md              ← 本策划案（含组装）
+├── schedule.md              ← 本策划案（含Web组装手册）
 ├── 台本.md                   ← 分章台词 + 关末视频分镜
 ├── script/chapters.json     ← 程序唯一内容源（读这个驱动游戏）
 ├── art-style.md             ← 画风锁
@@ -534,14 +646,20 @@ KeepSilentForMe/
 │   ├── demo-effects/frames/ ← D0–D6 玩法效果参考（最重要）
 │   ├── v4-prop-lock/        ← 公寓道具锁 R0
 │   └── ...
-└── video/                   ← 关末 mp4（制作后放入，命名见台本）
+└── [Web项目目录结构见 §11.3]
 ```
 
 **原则**：对白与分支以 **JSON 为准**；画风以 **art-style + Demo 图** 为准；关末电影感以 **台本视频节** 为准。不要在三个地方各写一套互相矛盾的句子。
 
+**Web技术栈特别提示**：
+- 不需要Unity/Godot等引擎，纯浏览器即可运行
+- 程序菜鸟可直接用 §11.11 的HTML demo开始
+- 无需构建工具，F5刷新即测试
+- 部署到Vercel/Netlify一键完成
+
 ---
 
-## 十一、程序组装手册（从 0 到可玩）
+## 十一、程序组装手册（Web技术栈）
 
 ### 11.1 你要做的游戏其实只有这些屏
 
@@ -557,81 +675,296 @@ KeepSilentForMe/
 
 竖切最低：`LinePlay` + 读 JSON 一句三 zone 即可。
 
-### 11.2 推荐画面层级（从下到上）
+### 11.2 Web画面层级（CSS z-index）
 
-```text
-[0] 场景 BG（整屏 16:9 图）
-[1] 少女立绘 / 姿势（可与 BG 合成一张，竖切允许）
-[2] 消音体层（Stage 贴图或简单粒子，锚点在肩/袖）
-[3] 对话框底板（下 20%–28% 屏高）
-[4] 台词文字（raw，可被遮）
-[5] 黑条（唯一可拖控件）
-[6] 顶栏可选：章名（极淡，可无）
-[7] 全屏视频层（仅 Outro/Ending/Reveal 时打开）
+```css
+/* 从下到上的层级 */
+#bg-layer          { z-index: 0; }   /* 场景BG（整屏16:9图） */
+#character-layer   { z-index: 10; }  /* 少女立绘/姿势 */
+#creature-layer    { z-index: 20; }  /* 消音体Stage（CSS opacity渐变） */
+#dialogue-box      { z-index: 30; }  /* 对话框底板（下20%-28%屏高） */
+#dialogue-text     { z-index: 40; }  /* 台词文字（raw + span.zone包裹） */
+#black-bar         { z-index: 50; }  /* 黑条（position: absolute拖拽） */
+#chapter-title     { z-index: 5; }   /* 顶栏章名（极淡，可无） */
+#video-layer       { z-index: 100; } /* 全屏视频（仅Outro/Ending/Reveal） */
+```
+
+**HTML结构示例**：
+```html
+<div id="game-container">
+  <img id="bg-layer" src="assets/bg/BG_L1.jpg" />
+  <img id="character-layer" src="assets/char/pose_desk.png" />
+  <div id="creature-layer" class="stage-1"></div>
+  
+  <div id="dialogue-box">
+    <div id="dialogue-text">
+      <!-- 动态渲染，zone用span包裹 -->
+    </div>
+  </div>
+  
+  <div id="black-bar"></div>
+  <video id="video-layer" style="display: none;"></video>
+</div>
 ```
 
 **禁止**：把黑条画进 BG；在 BG 上烤大段可读正文。
 
-### 11.3 文件夹建议（引擎内）
+### 11.3 文件夹结构（Web项目）
 
 ```text
-Assets/ 或 project/
-  data/chapters.json          # 从仓库 script/ 拷贝
-  bg/BG_L0.png … BG_L5.png
-  char/face_紧张.png …
-  creature/stage1.png stage2.png stage3.png
-  ui/dialog_panel.png bar_black.png
-  video/V0_out.mp4 …
-  audio/sfx_eat.wav sfx_snap.wav …
-  audio/bgm_room.ogg bgm_live.ogg bgm_end.ogg
+KeepSilentForMe/
+├── index.html              # 游戏主页面
+├── css/
+│   ├── style.css           # 主样式
+│   ├── dialogue.css        # 对话框样式
+│   └── animations.css      # 吃字特效
+├── js/
+│   ├── game.js             # 核心游戏逻辑
+│   ├── drag-handler.js     # 黑条拖拽+吸附
+│   ├── video-player.js     # 视频播放器
+│   ├── save-manager.js     # localStorage存档
+│   └── data-loader.js      # JSON加载
+├── assets/
+│   ├── data/
+│   │   └── chapters.json   # 从script/拷贝
+│   ├── bg/
+│   │   ├── BG_L0.jpg
+│   │   └── BG_L1.jpg …
+│   ├── char/
+│   │   ├── pose_desk.png
+│   │   └── face_紧张.png …
+│   ├── creature/
+│   │   ├── stage1.png
+│   │   └── stage2.png stage3.png
+│   ├── ui/
+│   │   ├── dialog_panel.png
+│   │   └── bar_black.png
+│   ├── video/
+│   │   ├── V0_out.mp4
+│   │   └── V1_pass.mp4 …
+│   ├── audio/
+│   │   ├── sfx/
+│   │   │   ├── eat.mp3
+│   │   │   └── snap.mp3 …
+│   │   └── bgm/
+│   │       ├── room.mp3
+│   │       └── live.mp3 end.mp3
+│   └── fonts/
+│       └── SourceHanSansCN-Regular.woff2
+└── README.md
 ```
 
-### 11.4 运行时状态（只要这些变量）
+### 11.4 运行时状态（JavaScript对象）
 
-```text
-chapterIndex: 0..5          # L0–L5
-lineIndex: int
-flags: Map<string, int>     # pass, fail, mask, truth, bond, crack, ...
-eatLog: string[]            # 本周目吃掉的原文，供反转低语
-creatureStage: 1|2|3
-seenVideos: Set<string>     # 用于可跳过
-endingId: null|"A"|"B"|"C"
-phase: enum Boot|Intro|Line|Npc|Outro|Ending|Reveal
+```javascript
+// 游戏状态（全局对象）
+const gameState = {
+  chapterIndex: 0,           // 当前章节 0-5 (L0-L5)
+  lineIndex: 0,              // 当前句子索引
+  phase: 'boot',             // boot|intro|line|npc|outro|ending|reveal
+  
+  // Flag系统（关键结算用）
+  flags: {
+    pass: 0,                 // L1结算
+    fail: 0,                 // L1结算
+    hate_leak: 0,            // L2结算
+    apology_perform: 0,      // L4路线
+    apology_refuse: 0,       // L4路线
+    // 以下为可选（供彩蛋/反转字幕筛选）
+    mask: 0, truth: 0, bond: 0, crack: 0, control: 0
+  },
+  
+  eatLog: [],                // 本周目吃掉的文字数组，供反转低语
+  creatureStage: 1,          // 消音体阶段 1|2|3
+  seenVideos: new Set(),     // 已看过的视频ID（用于跳过）
+  endingId: null             // 最终结局 "A"|"B"|"C"
+};
+
+// 存档到localStorage
+function saveGame() {
+  localStorage.setItem('keepsilent_save', JSON.stringify(gameState));
+}
+
+// 读档
+function loadGame() {
+  const saved = localStorage.getItem('keepsilent_save');
+  if (saved) {
+    Object.assign(gameState, JSON.parse(saved));
+    // 注意：Set需要特殊处理
+    gameState.seenVideos = new Set(gameState.seenVideos);
+  }
+}
 ```
 
 **不要做**：HP、好感条、粉丝数、物品栏、多角色好感。
 
-### 11.5 单句状态机（必须按此顺序）
+### 11.5 单句状态机（Web实现）
 
-```text
-EnterLine(line):
-  1. 显示 BG + face + creatureStage
-  2. 对话框显示 line.raw（完整）
-  3. 根据 line.zones[] 在文字上算 3–4 个热区矩形
-     （用「子串在 raw 中的 startIndex/length」，见 11.6）
-  4. 生成黑条；玩家拖动
-  5. 拖动中：黑条中心吸附到最近 zone（松手或拖时吸附二选一，推荐松手吸附）
-  6. 确认（松手 + 短延迟 或 点「确定」）：
-       selected = nearest zone
-       播放吃字：zone 文字碎裂 → 飞向 creature 锚点
-       对话框文字换成 selected.remain
-       flags 应用 selected.flags（如 "pass+" → flags.pass += 1）
-       eatLog.push(selected.eat)
-       显示 selected.npc（气泡/弹幕/字幕）
-  7. 等点击或 1.2s → NextLine 或 SettleChapter
+```javascript
+async function playLine(lineData) {
+  // 1. 更新BG/立绘/消音体
+  updateBackground(currentChapter.scene);
+  updateCharacter(lineData.face);
+  updateCreature(gameState.creatureStage);
+  
+  // 2. 渲染对话框（用span包裹zone）
+  const dialogueHTML = renderDialogueWithZones(lineData);
+  document.getElementById('dialogue-text').innerHTML = dialogueHTML;
+  
+  // 3. 获取所有zone的屏幕位置
+  const zones = document.querySelectorAll('.zone');
+  const zoneRects = Array.from(zones).map(el => ({
+    element: el,
+    rect: el.getBoundingClientRect(),
+    data: lineData.zones[el.dataset.zoneId]
+  }));
+  
+  // 4. 启用黑条拖拽
+  const selectedZone = await dragBlackBar(zoneRects);
+  
+  // 5. 吃字动画
+  await playEatAnimation(selectedZone.element);
+  
+  // 6. 应用flags
+  applyFlags(selectedZone.data.flags);
+  gameState.eatLog.push(selectedZone.data.eat);
+  
+  // 7. 显示剩余句子 + NPC反馈
+  document.getElementById('dialogue-text').textContent = selectedZone.data.remain;
+  showNpcReaction(selectedZone.data.npc);
+  
+  // 8. 等待继续
+  await waitForClick();
+}
+
+// 渲染函数：将zones包裹成span
+function renderDialogueWithZones(lineData) {
+  let html = lineData.raw;
+  // 倒序替换（避免索引错位）
+  lineData.zones.reverse().forEach((zone, index) => {
+    const startIndex = html.indexOf(zone.text);
+    if (startIndex === -1) {
+      console.error(`Zone text "${zone.text}" not found in raw!`);
+      return;
+    }
+    const before = html.substring(0, startIndex);
+    const after = html.substring(startIndex + zone.text.length);
+    html = before + 
+           `<span class="zone" data-zone-id="${index}">${zone.text}</span>` + 
+           after;
+  });
+  return html;
+}
 ```
 
-### 11.6 热区怎么算（菜鸟版，勿上 NLP）
+### 11.6 黑条拖拽与吸附（Web核心实现）
 
-JSON 里 zone 有 `"text": "经常会说错话，"`。  
-程序：
+```javascript
+// 黑条拖拽+吸附逻辑
+function dragBlackBar(zoneRects) {
+  return new Promise(resolve => {
+    const bar = document.getElementById('black-bar');
+    let isDragging = false;
+    let currentZone = null;
+    
+    // 指针按下（支持鼠标+触摸）
+    bar.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      bar.style.cursor = 'grabbing';
+      bar.setPointerCapture(e.pointerId);
+    });
+    
+    // 拖动中（使用requestAnimationFrame优化性能）
+    let rafId = null;
+    bar.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        // 移动黑条到指针位置
+        bar.style.transform = `translate(${e.clientX - bar.offsetWidth/2}px, 
+                                         ${e.clientY - bar.offsetHeight/2}px)`;
+        
+        // 计算最近的zone（视觉提示）
+        currentZone = findNearestZone(e.clientX, e.clientY, zoneRects);
+        highlightZone(currentZone);
+        
+        rafId = null;
+      });
+    });
+    
+    // 松手吸附
+    bar.addEventListener('pointerup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      bar.style.cursor = 'grab';
+      
+      // 吸附到最近zone
+      const targetZone = findNearestZone(e.clientX, e.clientY, zoneRects);
+      if (targetZone) {
+        snapToZone(bar, targetZone.rect, () => {
+          resolve(targetZone);
+        });
+      }
+    });
+  });
+}
 
-1. `start = raw.indexOf(zone.text)`（若 -1，打日志，策划修表）  
-2. 用 TextMesh/Label 的「第 N 个字符的屏幕矩形」API 取 `start .. start+len` 的包围盒  
-3. 热区 = 该包围盒（可加 4px 垂直 padding 方便点）  
-4. 黑条宽度 ≈ 热区宽，高度固定约 1.1–1.3 行高，颜色 `#0A0A0A` 不透明  
+// 查找最近zone（欧氏距离）
+function findNearestZone(x, y, zoneRects) {
+  let nearest = null;
+  let minDistance = Infinity;
+  
+  zoneRects.forEach(zone => {
+    const centerX = zone.rect.left + zone.rect.width / 2;
+    const centerY = zone.rect.top + zone.rect.height / 2;
+    const distance = Math.sqrt(
+      Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2)
+    );
+    
+    if (distance < minDistance) {
+      minDistance = distance;
+      nearest = zone;
+    }
+  });
+  
+  return nearest;
+}
 
-若引擎做「按字符取矩形」困难：竖切允许 **预填 zone 的归一化坐标** `x,y,w,h`（0–1 相对对话框），由工具生成；正式再换字符精确版。
+// 吸附动画（CSS transition）
+function snapToZone(bar, targetRect, callback) {
+  bar.style.transition = 'transform 0.12s ease-out';
+  bar.style.transform = `translate(${targetRect.left}px, ${targetRect.top}px)`;
+  bar.style.width = `${targetRect.width}px`;
+  
+  setTimeout(() => {
+    bar.style.transition = '';
+    callback();
+  }, 120);
+}
+```
+
+**CSS配合**：
+```css
+#black-bar {
+  position: absolute;
+  background: #0A0A0A;
+  height: 40px;
+  cursor: grab;
+  will-change: transform;
+  touch-action: none; /* 防止触摸滚动 */
+  user-select: none;
+}
+
+.zone {
+  display: inline;
+  transition: background-color 0.15s;
+}
+
+.zone.highlight {
+  background-color: rgba(255, 0, 0, 0.1); /* 拖拽时预览 */
+}
+```
 
 ### 11.7 flag 字符串解析
 
@@ -672,70 +1005,284 @@ L5 zone 的 `ending` 示例：`A_separate` → 播 `V5_A`。
 | 未确认透明度 | 1.0（不要半透明「玻璃条」） |
 | 确认后 | 条可留 0.3s 再吸入 |
 
-### 11.10 关末视频播放伪代码
+### 11.10 关末视频播放（Web实现）
 
-```text
-function PlayOutro(videoId):
-  pause gameplay input
-  show VideoLayer
-  path = "video/" + videoId + ".mp4"
-  if not exists(path): show 黑场 1.5s + 旁白占位; goto next  # 防止卡死
-  play(path)
-  if videoId in seenVideos: enable SkipButton
-  onFinished:
-    seenVideos.add(videoId)
-    hide VideoLayer
-    loadNextChapter()
+```javascript
+// 视频播放器
+async function playOutroVideo(videoId) {
+  const videoLayer = document.getElementById('video-layer');
+  const video = document.createElement('video');
+  video.src = `assets/video/${videoId}.mp4`;
+  video.style.width = '100%';
+  video.style.height = '100%';
+  video.style.objectFit = 'cover';
+  
+  // 显示视频层
+  videoLayer.innerHTML = '';
+  videoLayer.appendChild(video);
+  videoLayer.style.display = 'block';
+  
+  // 如果已看过，显示跳过按钮
+  if (gameState.seenVideos.has(videoId)) {
+    const skipBtn = createSkipButton();
+    videoLayer.appendChild(skipBtn);
+    skipBtn.onclick = () => {
+      video.pause();
+      videoLayer.style.display = 'none';
+    };
+  }
+  
+  // 播放视频
+  return new Promise((resolve, reject) => {
+    video.play().catch(err => {
+      // 移动端自动播放失败，显示"点击继续"
+      if (err.name === 'NotAllowedError') {
+        showPlayButton(() => {
+          video.play();
+        });
+      } else {
+        console.error('Video load error:', err);
+        // 视频缺失时用黑场占位
+        showBlackScreen(videoId, 1.5);
+        resolve();
+      }
+    });
+    
+    video.onended = () => {
+      gameState.seenVideos.add(videoId);
+      videoLayer.style.display = 'none';
+      saveGame(); // 自动存档
+      resolve();
+    };
+  });
+}
+
+// 视频预加载策略
+function preloadVideos() {
+  const criticalVideos = ['V0_out', 'V1_pass', 'V_RV'];
+  
+  criticalVideos.forEach(id => {
+    const video = document.createElement('video');
+    video.src = `assets/video/${id}.mp4`;
+    video.preload = 'auto';
+    video.style.display = 'none';
+    document.body.appendChild(video);
+  });
+}
+
+// 根据章节预加载下一条视频
+function preloadNextVideo(chapterId) {
+  const nextVideoMap = {
+    'L0': 'V1_pass',
+    'L1': 'V2_out',
+    'L2': 'V3_out',
+    'L3': 'V4_perform', // 预加载主路线
+    'L4': 'V5_A'
+  };
+  
+  const nextId = nextVideoMap[chapterId];
+  if (nextId) {
+    const video = document.createElement('video');
+    video.src = `assets/video/${nextId}.mp4`;
+    video.preload = 'auto';
+  }
+}
 ```
 
-音频：视频自带环境声时，**压低或静音 BGM**。
+**音频处理**：
+```javascript
+// 视频播放时降低BGM音量
+function playVideoWithAudio(videoId) {
+  const bgm = document.getElementById('bgm-player');
+  const originalVolume = bgm.volume;
+  
+  bgm.volume = 0.2; // 降低到20%
+  
+  playOutroVideo(videoId).then(() => {
+    bgm.volume = originalVolume; // 恢复
+  });
+}
+```
 
 ### 11.11 竖切（第 1 天）最小目标
 
-- [ ] 读入 JSON 一句  
-- [ ] 显示 raw  
-- [ ] 3 个 zone 可点选（可先用三个按钮代替拖拽）  
-- [ ] 切换 remain + 打印 npc  
-- [ ] 累加 pass/fail  
-- [ ] 第二天再换拖拽黑条  
+**Web技术栈Day 1清单**：
 
-### 11.12 完整版模块清单（程序任务拆分）
+- [ ] **HTML基础结构**（index.html + 基础CSS）
+- [ ] 读入 JSON 一句（fetch + JSON.parse）
+- [ ] 显示 raw，用 `<span class="zone">` 包裹3个zone
+- [ ] 获取zone的 `getBoundingClientRect()`（验证位置正确）
+- [ ] 黑条可拖动（`pointerdown/move/up`）
+- [ ] 松手吸附到最近zone（简单距离计算）
+- [ ] 切换 remain + 打印 npc 文本
+- [ ] 累加 flags.pass/fail
+- [ ] **第二天再加吃字动画和视频播放**
 
-| 模块 | 优先级 | 说明 |
-| --- | --- | --- |
-| DataLoader | P0 | 读 chapters.json |
-| DialogueView | P0 | 对话框 + 字 |
-| BarDrag | P0 | 拖条 + 吸附 |
-| FlagService | P0 | ± 计数 |
-| ChapterFlow | P0 | 句/章/结算 |
-| CreatureView | P1 | 换 stage 图 |
-| FaceView | P1 | 换表情 |
-| EatFX | P1 | 字屑飞到肩（可用 tween） |
-| VideoPlayer | P1 | 关末 |
-| Save | P2 | chapter+flags+seenVideos |
-| Audio | P2 | sfx + 3 首 bgm |
-| RevealUI | P2 | 叠 eat 低语字幕 |
+**Day 1 最小可运行demo**：
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Keep Silent For Me - Prototype</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      width: 100vw; 
+      height: 100vh; 
+      background: #0A0A0A;
+      overflow: hidden;
+    }
+    #game-container { 
+      position: relative; 
+      width: 100%; 
+      height: 100%; 
+    }
+    #dialogue-box {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 25%;
+      background: rgba(18, 18, 18, 0.9);
+      padding: 2vw;
+      color: #E8E4DC;
+      font-size: clamp(16px, 1.8vw, 32px);
+      font-family: sans-serif;
+    }
+    .zone {
+      background: rgba(255, 0, 0, 0.1);
+      transition: background 0.15s;
+    }
+    .zone:hover { background: rgba(255, 0, 0, 0.3); }
+    #black-bar {
+      position: absolute;
+      background: #0A0A0A;
+      height: 44px;
+      width: 100px;
+      cursor: grab;
+      touch-action: none;
+      will-change: transform;
+      top: 50%;
+      left: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <div id="dialogue-box">
+      <div id="dialogue-text">加载中...</div>
+    </div>
+    <div id="black-bar"></div>
+  </div>
+  
+  <script>
+    // Day 1 最小实现
+    fetch('assets/data/chapters.json')
+      .then(r => r.json())
+      .then(data => {
+        const line = data.chapters[0].lines[0]; // L0_S01
+        renderLine(line);
+      });
+    
+    function renderLine(line) {
+      let html = line.raw;
+      line.zones.forEach((zone, i) => {
+        html = html.replace(zone.text, 
+          `<span class="zone" data-id="${i}">${zone.text}</span>`);
+      });
+      document.getElementById('dialogue-text').innerHTML = html;
+      console.log('Zones rendered:', line.zones.length);
+    }
+  </script>
+</body>
+</html>
+```  
 
-### 11.13 JSON 字段（程序契约）
+### 11.12 完整版模块清单（Web程序任务拆分）
 
-```text
-chapters[]:
-  id, title, scene, creature, goal?, lines[], outro_video, outro?, narration?
+| 模块 | 优先级 | 说明 | 文件 |
+| --- | --- | --- | --- |
+| DataLoader | P0 | fetch读取chapters.json | js/data-loader.js |
+| DialogueView | P0 | 对话框渲染 + span.zone包裹 | js/dialogue-view.js |
+| DragHandler | P0 | 黑条拖拽 + 吸附（Pointer Events） | js/drag-handler.js |
+| FlagService | P0 | flags对象 ± 计数 | js/flag-service.js |
+| ChapterFlow | P0 | 句/章/结算状态机 | js/chapter-flow.js |
+| CreatureView | P1 | CSS切换stage类名 | css/creature.css |
+| CharacterView | P1 | 切换立绘src + 表情 | js/character-view.js |
+| EatAnimation | P1 | CSS @keyframes字屑飞向肩 | css/animations.css |
+| VideoPlayer | P1 | HTML5 `<video>` + 预加载 | js/video-player.js |
+| SaveManager | P2 | localStorage存/读档 | js/save-manager.js |
+| AudioManager | P2 | Web Audio API播放SFX/BGM | js/audio-manager.js |
+| RevealUI | P2 | 反转视频 + eatLog字幕叠层 | js/reveal-ui.js |
 
-lines[]:
-  id, raw, face, zones[], demo?, is_ending?, special?
+**技术细节**：
+- **不需要构建工具**：直接用ES6 modules（`<script type="module">`）
+- **不需要框架**：纯Vanilla JS，总代码量约1500-2000行
+- **移动端兼容**：使用Pointer Events（统一鼠标+触摸）
+- **性能优化**：requestAnimationFrame + CSS transform + will-change
 
-zones[]:
-  text          # 必须是 raw 的连续子串
-  remain        # 对外句（已人工写好，禁止程序自动删字拼接）
-  npc           # 反馈文案
-  flags[]       # "pass+" 等
-  eat           # 低语
-  ending?       # 仅终句
-  ending_seed?  # 可选微调
+### 11.13 JSON 字段（程序契约 - Web版）
+
+```javascript
+// chapters.json 结构
+{
+  "chapters": [
+    {
+      "id": "L1",
+      "title": "面试",
+      "scene": "meeting_room",  // 对应 assets/bg/BG_meeting_room.jpg
+      "creature": "stage1",     // CSS类名: .creature.stage-1
+      "goal": "pass>=4 && fail<2",
+      "lines": [/* 见下 */],
+      "outro_video": "V1_pass",
+      "narration": ["旁白1", "旁白2"]
+    }
+  ]
+}
+
+// lines[] 结构
+{
+  "id": "L1_S01",
+  "raw": "我叫——算了，名字不重要，我只是一个很普通、很容易把事情搞砸的人。",
+  "face": "紧张",           // 对应 assets/char/face_紧张.png
+  "zones": [
+    {
+      "text": "很容易把事情搞砸",  // ⚠️ 必须是raw的连续子串
+      "remain": "我叫——算了，名字不重要，我只是一个很普通的人。",
+      "npc": "普通也没关系。",
+      "flags": ["pass+"],
+      "eat": "很容易把事情搞砸"
+    }
+  ],
+  "demo": "D1",            // 可选：参考图编号
+  "is_ending": false,      // 仅L5_S06为true
+  "special": null          // 可选：如"预锁1.5s"
+}
 ```
 
-**坏数据**：`text` 不是 `raw` 子串 → 启动时校验并报错，不要静默。
+**Web实现注意**：
+- `text` 字段用于 `raw.indexOf(zone.text)` 查找位置
+- **不需要** `start/end` 数值索引（DOM自动计算）
+- `scene/face/creature` 字段直接映射到文件路径或CSS类名
+- `flags[]` 数组：遍历执行 `gameState.flags[flag.replace('+', '')] += 1`
+
+**坏数据检测**（启动时校验）：
+```javascript
+function validateChaptersData(data) {
+  data.chapters.forEach(chapter => {
+    chapter.lines.forEach(line => {
+      line.zones.forEach(zone => {
+        if (line.raw.indexOf(zone.text) === -1) {
+          throw new Error(
+            `Zone text "${zone.text}" not found in raw: "${line.raw}" (${line.id})`
+          );
+        }
+      });
+    });
+  });
+}
+```
 
 ---
 
@@ -838,20 +1385,138 @@ zones[]:
 
 ---
 
-## 十三、音效与音乐（最小表）
+## 十三、音频资产清单（使用免费资源）
 
-| ID | 何时 | 备注 |
-| --- | --- | --- |
-| `sfx_drag` | 拖条 | 极轻布/摩擦 |
-| `sfx_snap` | 吸附 | 短促 |
-| `sfx_eat` | 吃字 | 纸屑+墨吸 |
-| `sfx_say` | remain 出现 | 轻定音 |
-| `sfx_chat` | 弹幕 | 稀疏 |
-| `sfx_grow` | stage 升级 | 低沉 |
-| `bgm_room` | L0/L3/L5 | 安静 |
-| `bgm_live` | L2/L4 | 可更闷 |
-| `bgm_end` | 结局前 | 极简 |
-| 视频中 | 关末 | **BGM 让路** |
+### 13.1 音效(SFX)来源
+
+**推荐网站**：
+- [Freesound.org](https://freesound.org) - CC0/CC-BY授权
+- [Zapsplat.com](https://zapsplat.com) - 免费下载
+- [Mixkit.co](https://mixkit.co/free-sound-effects/) - 商用免费
+
+| SFX ID | 用途 | 搜索关键词 | 备注 |
+| --- | --- | --- | --- |
+| `sfx_drag` | 黑条拖动 | "cloth drag" "fabric slide" | 极轻，循环 |
+| `sfx_snap` | 吸附到zone | "snap" "click soft" | 短促0.1s |
+| `sfx_eat` | 吃字动画 | "paper crumble" "ink drip" | 纸屑+墨吸 |
+| `sfx_say` | remain文字出现 | "text appear" "soft pop" | 轻定音 |
+| `sfx_chat` | 弹幕反馈 | "notification" "chat beep" | 稀疏，可选 |
+| `sfx_grow` | 消音体升级 | "dark whoosh" "entity grow" | 低沉 |
+| `sfx_video_end` | 视频结束转场 | "whoosh" "transition" | 可选 |
+
+**格式要求**：MP3（128kbps）或 OGG  
+**总预算**：<2MB
+
+### 13.2 背景音乐(BGM)来源
+
+**推荐网站**：
+- [Incompetech.com](https://incompetech.com/music/royalty-free/) - Kevin MacLeod CC-BY
+- [Purple Planet](https://www.purple-planet.com) - 免费商用
+- [Bensound.com](https://bensound.com) - 部分免费
+
+| BGM ID | 场景 | 推荐曲目/关键词 | 时长 | 循环 |
+| --- | --- | --- | --- | --- |
+| `bgm_room` | L0/L3/L5 安静场景 | "Ambient Dark" "Drone" | 2-3min | ✅ |
+| `bgm_live` | L2/L4 直播 | "Tension" "Anxiety" | 2-3min | ✅ |
+| `bgm_end` | 结局前 | "Minimalist Piano" | 2min | ❌ |
+
+**Incompetech推荐曲目**：
+- `Dark Fog` - 低沉氛围
+- `Oppressive Gloom` - 压抑感
+- `Echoes of Time` - 极简钢琴
+
+**格式要求**：MP3（128-192kbps）  
+**总预算**：<3MB
+
+### 13.3 视频环境声
+
+**关末视频音频处理**：
+- **优先**：AI视频生成时自带环境声（雨、脚步、门）
+- **备选**：单独录制/下载Foley音效叠加
+- **规则**：视频播放时BGM降低到20%音量
+
+**环境声搜索关键词**：
+| 场景 | 关键词 |
+| --- | --- |
+| 雨夜 | "rain window" "rain ambience" |
+| 门/走廊 | "door close" "footsteps hallway" |
+| CRT开关 | "TV static" "CRT power" |
+| 纸屑/墨 | "paper rustle" "ink drip" |
+
+### 13.4 Web Audio实现
+
+```javascript
+// 简单音频管理器
+class AudioManager {
+  constructor() {
+    this.sfx = {};
+    this.bgm = null;
+    this.volume = {
+      sfx: 0.7,
+      bgm: 0.4
+    };
+  }
+  
+  // 预加载SFX
+  async loadSFX() {
+    const sfxList = ['drag', 'snap', 'eat', 'say', 'grow'];
+    for (const name of sfxList) {
+      const audio = new Audio(`assets/audio/sfx/${name}.mp3`);
+      audio.volume = this.volume.sfx;
+      this.sfx[name] = audio;
+    }
+  }
+  
+  // 播放SFX
+  playSFX(name) {
+    if (this.sfx[name]) {
+      this.sfx[name].currentTime = 0;
+      this.sfx[name].play().catch(e => console.log('SFX play error:', e));
+    }
+  }
+  
+  // 播放BGM（循环）
+  playBGM(name) {
+    if (this.bgm) this.bgm.pause();
+    this.bgm = new Audio(`assets/audio/bgm/${name}.mp3`);
+    this.bgm.volume = this.volume.bgm;
+    this.bgm.loop = true;
+    this.bgm.play().catch(e => console.log('BGM play error:', e));
+  }
+  
+  // 视频播放时降低BGM
+  lowerBGM() {
+    if (this.bgm) this.bgm.volume = this.volume.bgm * 0.2;
+  }
+  
+  // 恢复BGM
+  restoreBGM() {
+    if (this.bgm) this.bgm.volume = this.volume.bgm;
+  }
+}
+```
+
+### 13.5 音频授权注意事项
+
+**CC-BY授权使用规范**：
+- ✅ 游戏内Credits页面署名作者
+- ✅ 保留原始授权信息
+- ❌ 不要声称音频是自己创作
+
+**示例Credits文本**：
+```
+音频资产
+========
+
+SFX来源：
+- Freesound.org (CC0 License)
+- Zapsplat.com (Standard License)
+
+BGM来源：
+- "Dark Fog" by Kevin MacLeod (incompetech.com)
+  Licensed under Creative Commons: By Attribution 4.0 License
+  http://creativecommons.org/licenses/by/4.0/
+```
 
 ---
 
@@ -886,52 +1551,133 @@ zones[]:
 
 ---
 
-## 十五、一页「今天做什么」（打印贴显示器）
+## 十五、一页「今天做什么」（Web技术栈版）
 
-**程序今天：**  
-① 拷贝 `script/chapters.json` → ② 做 LinePlay 显示 raw → ③ zone 三按钮切换 remain → ④ 累加 flags → ⑤ 换成拖条 → ⑥ 接章结算与视频槽。
+**程序今天（Day 1）：**  
+① 创建 `index.html` + 基础CSS → ② fetch读取 `chapters.json` → ③ 渲染1句话，用 `<span class="zone">` 包裹 → ④ 黑条可拖动（pointerdown/move/up） → ⑤ 松手吸附到最近zone → ⑥ 切换remain文本 → ⑦ flags累加
 
-**美术今天：**  
-① 打开 `D0` `D1` `D6` → ② 画/生成 BG_apartment + UI_bar → ③ 少女侧影一版 → ④ Stage1 墨团 → ⑤ 勿画数值条与萌脸。
+**美术今天（Day 1）：**  
+① 打开 `D0` `D1` `D6` 参考 → ② 生成/绘制 BG_apartment.jpg → ③ 设计对话框UI（半透明深灰） → ④ 黑条素材（纯黑矩形） → ⑤ Stage1墨团素材
+
+**音频今天（Day 6）：**  
+① 访问 freesound.org 搜索 "paper rustle" "ink drip" "snap" → ② 下载5-8个SFX → ③ 访问 incompetech.com 选择3首BGM（ambient/dark） → ④ 转换为MP3格式
 
 **共同禁止：**  
 好感条、自由输入、探索地图、每句都做视频、消音体长脸。
 
 ---
 
-## 十六、伪代码总览（复制到引擎注释里）
+## 十六、Web技术栈快速启动指南
 
-```text
-main:
-  load chapters.json
-  validate all zones are substrings of raw
-  state = new GameState()
-  goto Boot
+### 16.1 零基础5分钟启动
 
-onStartGame:
-  state.chapter = 0
-  playChapter()
+```bash
+# 1. 创建项目目录
+mkdir KeepSilentForMe-web
+cd KeepSilentForMe-web
 
-playChapter():
-  ch = chapters[state.chapter]
-  showIntro(ch)
-  for line in ch.lines:
-    result = playLine(line)   # 11.5
-    applyFlags(result.flags)
-    state.eatLog.add(result.eat)
-  settle = evaluate(ch, state.flags)   # 11.8
-  if settle.restart: resetChapter(); return playChapter()
-  updateCreatureStage(state)
-  playVideo(settle.videoId)            # 11.10
-  if ch.id == "L5":
-    playVideo(endingVideo(state.endingId))
-    playVideo("V_RV") with subtitles from eatLog
-    goto credits
-  else:
-    state.chapter += 1
-    playChapter()
+# 2. 创建基础结构
+mkdir -p assets/{data,bg,char,creature,ui,video,audio/sfx,audio/bgm,fonts}
+mkdir -p css js
+
+# 3. 拷贝JSON数据
+cp ../script/chapters.json assets/data/
+
+# 4. 创建index.html（使用上面的Day 1 demo）
+# 5. 用浏览器打开index.html（无需服务器）
+
+# 6. 若需要本地服务器（解决CORS问题）
+python3 -m http.server 8000
+# 访问 http://localhost:8000
 ```
+
+### 16.2 部署到生产环境（免费）
+
+#### 方案A：Vercel（推荐）
+```bash
+# 1. 安装Vercel CLI
+npm install -g vercel
+
+# 2. 在项目目录运行
+vercel
+
+# 3. 按提示操作，自动部署
+# 得到URL：https://keep-silent-for-me.vercel.app
+```
+
+#### 方案B：Netlify
+```bash
+# 拖拽整个文件夹到 https://app.netlify.com/drop
+# 立即获得URL
+```
+
+#### 方案C：GitHub Pages
+```bash
+# 1. 推送到GitHub仓库
+git init
+git add .
+git commit -m "feat: Web版游戏完成"
+git push origin main
+
+# 2. 在仓库设置中启用GitHub Pages
+# Settings → Pages → Source: main branch
+# URL: https://username.github.io/KeepSilentForMe
+```
+
+### 16.3 性能优化清单
+
+- [ ] **图片优化**：BG使用WebP格式（70-80%质量）
+- [ ] **视频压缩**：H.264编码，720p，CRF 23-28
+- [ ] **字体子集化**：只包含使用的汉字（减少90%体积）
+- [ ] **懒加载**：首屏只加载L0资产
+- [ ] **CDN加速**：大文件走CDN（Vercel/Netlify自带）
+- [ ] **压缩代码**：生产环境压缩JS/CSS（可选）
+
+### 16.4 移动端适配清单
+
+- [ ] **响应式布局**：使用vw/vh单位
+- [ ] **触摸优化**：黑条最小44x44px点击区域
+- [ ] **横屏提示**：检测竖屏时显示旋转提示
+- [ ] **性能降级**：低端设备减少粒子特效
+- [ ] **自动播放fallback**：视频播放失败显示播放按钮
 
 ---
 
-*文档版本：v2.0 · 可执行深化：§十文档地图 · §十一程序组装 · §十二美术组装 · §十三音频 · §十四验收 · §十五当日清单 · §十六伪代码。台本见 `台本.md`，数据见 `script/chapters.json`。*
+## 十七、Web技术栈总结
+
+### 优势
+✅ 零安装：浏览器直接打开  
+✅ 跨平台：PC/Mac/iOS/Android统一  
+✅ 快速迭代：F5刷新即测试  
+✅ 易分发：一个URL即可分享  
+✅ 字符热区问题已解决：DOM自动计算  
+
+### 挑战
+⚠️ 移动端视频自动播放限制（已有解决方案）  
+⚠️ 存档依赖localStorage（可导出/导入）  
+⚠️ 性能优化需手动调整  
+
+### 最终交付物
+```
+production/
+├── index.html              # 单页应用入口
+├── css/                    # 3-5个CSS文件
+├── js/                     # 8-10个JS模块
+├── assets/                 # 所有资产
+│   ├── data/chapters.json  # 35句完整数据
+│   ├── bg/                 # 5张场景（WebP，每张<500KB）
+│   ├── char/               # 3姿势+8表情（PNG）
+│   ├── creature/           # 3个Stage（PNG透明底）
+│   ├── video/              # 9-11条视频（MP4，共<80MB）
+│   └── audio/              # SFX+BGM（MP3，共<5MB）
+└── README.md
+
+总体积估算：<100MB
+首屏加载：<5MB（渐进加载）
+```
+
+### 关键指标
+- 首屏加载时间：<3秒（4G网络）
+- 拖拽延迟：<16ms（60fps）
+- 内存占用：<200MB
+- 支持浏览器：Chrome 90+, Safari 14+, Firefox 88+
