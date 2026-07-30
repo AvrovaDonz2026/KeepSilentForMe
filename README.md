@@ -1,10 +1,20 @@
+<div align="center">
+
 # 请替我沉默 / Keep Silent For Me
 
-> 你是她没有说出口的那个人。
+### *你是她没有说出口的那个人。*
 
-[![Game Jam](https://img.shields.io/badge/NetEase-Leihuo%20Game%20Jam-orange)](https://github.com)
-[![Development Status](https://img.shields.io/badge/status-pre--production-yellow)](https://github.com)
-[![License](https://img.shields.io/badge/license-TBD-blue)](https://github.com)
+[![Game Jam](https://img.shields.io/badge/NetEase-Leihuo%20Game%20Jam-orange?style=for-the-badge)](https://leihuo.163.com/)
+[![Development Status](https://img.shields.io/badge/status-Pre--Production-yellow?style=for-the-badge)](https://github.com/AvrovaDonz2026/KeepSilentForMe)
+[![Platform](https://img.shields.io/badge/platform-PC%20%7C%20Web%20%7C%20Mobile-blue?style=for-the-badge)](https://github.com/AvrovaDonz2026/KeepSilentForMe)
+
+**一款20-30分钟的语言寄生解谜游戏**
+
+[📖 查看策划案](./schedule.md) • [🎨 美术规范](./art-style.md) • [💡 卖点分析](./selling-points.md) • [🎬 分镜资产](./storyboard/)
+
+</div>
+
+---
 
 ## 📖 项目简介
 
@@ -54,15 +64,28 @@
 
 ## 📚 项目文档
 
-### 策划与设计
-- 📄 [完整策划案](./请替我沉默-游戏策划案.docx) - 游戏设计文档（Word格式）
-- 📋 [开发排期](./schedule.md) - 详细的7天/3周开发计划
-- 💡 [卖点分析](./selling-points.md) - 市场定位与传播策略
-- 🎨 [美术规范](./art-style.md) - Doomer风格视觉指南
+<table>
+<tr>
+<td width="50%">
 
-### 视觉资产
-- 🎬 [分镜设计](./storyboard/) - 关键帧与场景参考
-- 🖼️ [场景Demo](./请替我沉默-场景Demo与效果.docx) - 视觉效果展示
+### 📋 策划与设计
+- **[完整策划案](./schedule.md)** - 游戏循环、5关设计、系统清单
+- **[卖点分析](./selling-points.md)** - 市场定位、传播策略、slogan库
+- **[美术规范](./art-style.md)** - Doomer风格、色彩光照、资产规范
+- **[台词脚本](./台本.md)** - 对话文案与分支设计
+
+</td>
+<td width="50%">
+
+### 🎨 视觉资产
+- **[分镜关键帧](./storyboard/frames/)** - 9张关键帧（K1-K9）
+- **[场景母版](./storyboard/masters/)** - 房间/街景/道具
+- **[迭代版本](./storyboard/)** - v1-dark → v4-prop-lock
+- **[效果演示](./请替我沉默-场景Demo与效果.docx)** - 视觉效果展示
+
+</td>
+</tr>
+</table>
 
 ## 🗺️ 游戏结构
 
@@ -169,29 +192,36 @@
 
 ```bash
 # 克隆仓库
-git clone <repository-url>
+git clone https://github.com/AvrovaDonz2026/KeepSilentForMe.git
 cd KeepSilentForMe
 
 # 查看项目文档
-cat schedule.md
-cat art-style.md
-cat selling-points.md
+cat schedule.md      # 完整策划案
+cat art-style.md     # 美术风格规范
+cat selling-points.md # 卖点与传播策略
 ```
 
 ### 项目结构
 
 ```
 KeepSilentForMe/
-├── README.md                        # 本文件
-├── schedule.md                      # 详细策划案
-├── art-style.md                     # 美术规范
-├── selling-points.md                # 卖点分析
-├── storyboard/                      # 分镜与视觉参考
-│   ├── frames/                      # 关键帧图片
-│   ├── visual/                      # 视觉母版
-│   └── demo-effects/                # 效果演示
-├── 请替我沉默-游戏策划案.docx        # 完整策划文档
-└── 请替我沉默-场景Demo与效果.docx    # 场景效果展示
+├── README.md                           # 项目总览（本文件）
+├── schedule.md                         # 📋 完整策划案（游戏设计文档）
+├── art-style.md                        # 🎨 美术风格规范（Doomer视觉指南）
+├── selling-points.md                   # 💡 卖点分析（市场定位）
+├── 台本.md                             # 📝 台词脚本
+├── script/
+│   └── chapters.json                   # 章节数据结构
+├── storyboard/                         # 🎬 分镜与视觉资产
+│   ├── frames/                         # 9个关键帧（K1-K9）
+│   ├── frames-2k/                      # 2K高清版本
+│   ├── masters/                        # 场景母版（房间/街景/道具）
+│   ├── visual/                         # 3x3分镜板
+│   ├── prompts/                        # AI生成提示词
+│   ├── v1-dark/ ~ v4-prop-lock/        # 迭代版本
+│   └── demo-effects/                   # 效果演示
+├── 请替我沉默-游戏策划案.docx           # Word版完整文档
+└── 请替我沉默-场景Demo与效果.docx       # 场景效果展示
 ```
 
 ## 🤝 团队协作
@@ -220,22 +250,61 @@ KeepSilentForMe/
 | 范围膨胀 | 严格遵守"唯一操作+五关+2-3结局" |
 | 主题引争议 | 表达双面性，避免说教 |
 
+## 📊 项目进度
+
+```mermaid
+graph LR
+    A[策划设计 ✅] --> B[分镜资产 ✅]
+    B --> C[技术原型 🔄]
+    C --> D[美术制作 ⏳]
+    D --> E[内容填充 ⏳]
+    E --> F[测试打磨 ⏳]
+    F --> G[发布 ⏳]
+```
+
+| 阶段 | 状态 | 完成度 |
+|------|------|--------|
+| 📝 策划文档 | ✅ 完成 | 100% |
+| 🎨 视觉设计 | ✅ 完成 | 100% |
+| 💻 技术选型 | 🔄 进行中 | 0% |
+| 🎮 核心原型 | ⏳ 待开始 | 0% |
+| 📦 资产制作 | ⏳ 待开始 | 0% |
+| 🎵 音频制作 | ⏳ 待开始 | 0% |
+
+## 🎯 下一步行动
+
+- [ ] **选择开发引擎**（Unity / Godot / Web）
+- [ ] **实现拖拽原型**（一句话 + 黑条吸附）
+- [ ] **完成第一关文案**（面试场景 4-6 句台词）
+- [ ] **制作主角立绘**（3个姿势 + 6个表情）
+- [ ] **绘制首个场景BG**（面试隔间 doomer风格）
+- [ ] **验证核心乐趣**（内部试玩测试）
+
 ## 📜 许可证
 
 TBD - 待网易雷火比赛规则确认
 
-## 🔗 相关链接
+## 🔗 快速链接
 
-- 🎮 [网易雷火游戏](https://leihuo.163.com/)
-- 📖 完整策划案：见 `schedule.md`
-- 🎨 美术指南：见 `art-style.md`
-- 💡 卖点分析：见 `selling-points.md`
+<div align="center">
+
+[![网易雷火](https://img.shields.io/badge/🎮_网易雷火游戏-leihuo.163.com-orange?style=flat-square)](https://leihuo.163.com/)
+[![策划案](https://img.shields.io/badge/📋_完整策划案-schedule.md-blue?style=flat-square)](./schedule.md)
+[![美术规范](https://img.shields.io/badge/🎨_美术规范-art--style.md-purple?style=flat-square)](./art-style.md)
+[![卖点分析](https://img.shields.io/badge/💡_卖点分析-selling--points.md-green?style=flat-square)](./selling-points.md)
+
+</div>
 
 ---
 
-**制作团队**：TBD  
+<div align="center">
+
 **参赛项目**：网易雷火游戏比赛  
 **版本**：v0.1 Pre-production  
 **最后更新**：2026-07-30
 
-> *"你是她没有说出口的那个人。"*
+### *"她负责说谎，你负责活下来。"*
+
+Made with ❤️ for NetEase Leihuo Game Jam
+
+</div>
