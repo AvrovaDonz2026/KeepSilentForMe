@@ -1,0 +1,13 @@
+Use case: illustration-story.
+Asset type: 16:9 cinematic storyboard keyframe K1, "She needs silence" — Keep Silent For Me v3 room-lock scheme A.
+Input images: image 1 = S09 character/indoor linework master; image 2 = S11 wet city material master; image 3 = R0 master room plate (SOLE floorplan lock); image 4 = R0b street+curtain plate (SOLE curtain fabric and street silhouette lock). Do not invent a different apartment.
+ROOM+STREET+CURTAIN LOCK (scheme A, mandatory):
+Architecture must match image 3 master R0 exactly: west old wooden desk with beige/gray CRT, black articulated desk lamp (warm cone), wooden chair; north THREE equal vertical window panes with dark metal muntins; door is the dark wooden entry door to the RIGHT of the window; further right kitchenette, tall glass cabinet, hanging light tote bag; cracked gray plaster walls; continuous old wooden floorboards.
+Curtains must match image 4 R0b: heavy dull taupe-gray / dirty khaki blackout drapes, matte worn, vertical folds, GATHERED OPEN on both sides of the three-pane window (not sheer lace, not venetian blinds, not white voile). Left drape stack especially clear when window is visible.
+Street through the glass must match R0/R0b: rainy blue-black night, central vanishing-point wet asphalt with long sodium lamp reflections, mid-rise residential blocks left and right with sparse warm windows, a few distant dark cars, continuous rain streaks on glass. Never swap to another city, neon canyon, dry ground, or daylight.
+Lighting: warm lamp key + cool street fill through wet glass; readable midtones; layered depth; still doomer, not bright anime.
+Character when present: same S09 young East Asian woman, long black hair, gray-olive/blue-gray hoodie, restrained tired face; no glamour, no bright anime eyes.
+Clean plate: no baked readable UI paragraphs, no subtitles, no watermark, no arrows, no coordinates, no storyboard borders.
+Style: dense controlled hand-drawn 2D realistic animation linework, matte surfaces, subtle cross-hatching, fine 35mm grain.
+Color: near black, blue-black, dirty gray-green, sodium brown; signal red under 2% only if door gap or tiny pressure accent.
+Primary request: Girl in hoodie stands mid-room three-quarter back, facing the dark wooden door (right of the three-pane window). Hands in pockets or tense at sides. Show enough of west desk+lamp edge on the left to prove same room. Door gap may have tiny red leak. Curtains and rainy street visible in the three-pane window behind/ beside her path of gaze. Same wood floor.

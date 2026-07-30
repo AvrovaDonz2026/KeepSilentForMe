@@ -1,0 +1,29 @@
+Use case: illustration-story.
+Asset type: 16:9 cinematic establishing keyframe R0, "Master room plate v4 prop-lock" for Keep Silent For Me — empty clean plate that LOCKS architecture, curtains, desk inventory, street furniture for ALL later shots.
+Input images: image 1 (S09) indoor linework / deep-black hierarchy / matte finish master only; image 2 (S11) wet blue-black rain city, glass droplets, sodium reflections for OUTSIDE WINDOW only; image 3 (v3 R0) floorplan topology reference — keep same room layout; image 4 (v3 R0b) curtain fabric + street silhouette reference — match fabric and street family exactly.
+Style/medium: dense controlled hand-drawn 2D realistic animation linework, matte worn surfaces, subtle cross-hatching, fine 35mm grain.
+
+Primary request — FIXED FLOORPLAN + PROP LOCK (must obey exactly):
+- Small contemporary Beijing rental room, night. Camera SE looking NW (same as v3 R0).
+- NORTH wall: THREE equal vertical window panes, dark metal frame and muntins, rain streaks on glass.
+- CURTAINS (mandatory, both sides visible): heavy dull taupe-gray / dirty khaki blackout drapes (#3A342E–#4A433C), matte worn cloth with soft vertical folds, subtle old fabric wear (NOT sheer lace, NOT white voile, NOT venetian blinds, NOT bright beige hotel curtains). GATHERED OPEN stacked on LEFT and RIGHT of the three-pane window so the full street remains visible between the two drape stacks. Same fabric both sides.
+- THROUGH WINDOW — SAME street every shot: rainy blue-black night; wet asphalt road with CENTRAL vanishing point; long dirty-sodium streetlamp reflections running toward horizon; mid-rise old residential blocks LEFT and RIGHT with sparse warm window lights; LEFT curb one dark parked sedan mid-distance; a few distant dark cars on road; RIGHT side may show chain-link fence / sidewalk edge as in R0b; continuous rain; NO neon canyon, NO European spires, NO daylight, NO dry ground, NO giant foreign signage.
+- WEST wall: long old wooden desk with drawer row, north end near window left corner. LOCKED desk inventory left→right:
+  1) tall stack of ~8–10 worn paperbacks/hardcovers (dull gray-brown spines, NO readable titles) piled left of CRT
+  2) small flat white/gray cassette-or-box and a few blank unreadable papers / open notebook at front-left
+  3) dark matte mug left of keyboard
+  4) small shallow ashtray/dish
+  5) chunky beige/gray CRT monitor, SCREEN FULLY OFF / pure black glass
+  6) full-size dull gray keyboard centered in front of CRT
+  7) black articulated architect desk lamp LEFT-REAR of CRT, warm practical cone over monitor zone
+  8) small pen cup with pens; tiny black radio/clock brick to the RIGHT of CRT base
+- Wooden straight-back chair tucked at desk center.
+- Door: dark wooden entry door with vertical panels + silver lever handle, positioned to the RIGHT of the window (not south wall island). Tiny red light leak only in under-door gap (≤2% of frame).
+- Further RIGHT of door: kitchenette counter + black kettle, upper cabinets; then tall dark glass-door cabinet; light fabric tote bag hanging on a wall hook beside cabinet.
+- Walls: cracked peeling gray plaster; optional one blank unreadable paper pinned left of lamp.
+- Floor: continuous old wooden floorboards, longitudinal grain, slight wet sheen near window light.
+- NO person in frame. Readable midtones: warm lamp key + cool street fill so walls, curtains, desk props, door, street all read clearly. Layered depth, not crushed black void.
+
+Color: near black, blue-black, dirty gray-green, sodium brown; signal red only in door gap.
+Constraints: clean plate; no UI, subtitles, readable text/titles on books, watermark, arrows, coordinates, storyboard borders.
+Avoid: missing curtains, sheer white curtains, blinds, moving window to another wall, island desk, bright anime, glossy 3D, extra sofa/bed, second main window, dry pavement, cyberpunk neon, different city skyline.

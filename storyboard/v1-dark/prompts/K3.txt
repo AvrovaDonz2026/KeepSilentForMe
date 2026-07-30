@@ -1,0 +1,10 @@
+Use case: illustration-story.
+Asset type: 16:9 cinematic storyboard keyframe for K3, "Interview" — level 1 teaching scene.
+Input images: image 1 (S09) is the sole character, indoor linework, deep-black hierarchy and matte finish master; image 2 (S11) is the sole wet blue-black city, rain glass, sodium reflection and empty-space master. Neither is an exact frame to copy.
+Style/medium: dense but controlled hand-drawn 2D realistic animation linework, matte worn surfaces, subtle cross-hatching, fine 35mm grain; S09 deep-black interior hierarchy combined with S11 wet blue-black depth when exterior shows.
+Color palette: near black, blue-black, dirty gray-green, tiny sodium brown; signal red may occupy less than 2% of the frame.
+Character: same young East Asian woman from S09 — long black hair with bangs, gray-olive or blue-gray hoodie, restrained tired face, no glamour, no bright anime eyes, age-appropriate, no sexualization.
+Lighting/mood: quiet, exhausted, observational; one practical lamp and/or cold rain window.
+Constraints: contemporary urban China 2022-2026; clean plate; physically coherent furniture; screens mostly dark or abstract soft glow — no baked-in readable UI paragraphs, no subtitles, no watermark, no arrows, no coordinates, no storyboard borders.
+Avoid: cyberpunk neon, glossy 3D, bright anime rendering, idol livestream beauty lighting, pink cute aesthetic, tobacco clutter, weapons, blood, European landmarks, foreign signage spam.
+Primary request: cheap night office interview cubicle or small HR room in contemporary Beijing. The girl sits on the near side of a plain table in three-quarter view, hoodie under a thin dull outer layer, hands tight on her knees, forced calm. Across the table only a dark empty chair and a closed folder — interviewer presence implied by absence and a cold overhead tube light pooled into gray-blue. Desk lamp optional. Tiny matte black ink flecks already gather near her sleeve cuff (silence creature stage 1), almost easy to miss. No readable paper text. Quiet dread of saying the wrong thing.

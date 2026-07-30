@@ -1,0 +1,14 @@
+Use case: illustration-story.
+Asset type: 16:9 keyframe R0b v4, street + curtain continuity plate from inside through rain glass.
+Input images: image 1 S09 interior window-frame linework/black hierarchy; image 2 S11 wet street materials; image 3 v4 or v3 R0 master room — match the SAME street silhouette through the north three-pane window; image 4 v3 R0b — match curtain fabric and street furniture family (cars, lamps, fence).
+Primary request: camera inside the room close to the north THREE-pane window looking out.
+FOREGROUND LOCK:
+- Dark metal window frame and muntins dividing three equal vertical panes; wet glass with rain streaks/droplets.
+- LEFT edge: heavy dull taupe-gray / dirty khaki blackout curtain stack, matte worn, vertical folds, gathered open (same fabric as R0) — clearly visible.
+- RIGHT edge: matching open blackout curtain stack or frame edge with same fabric family.
+- Bottom-left interior may show a sliver of the wooden desk top only (no clutter change).
+OUTSIDE STREET LOCK (must match R0):
+- Rainy blue-black Beijing residential night; wet asphalt with CENTRAL vanishing point; long sodium lamp reflections; mid-rise old apartment blocks left and right with sparse warm windows; LEFT mid-ground one dark parked sedan; distant dark cars on road; RIGHT near sidewalk chain-link metal fence receding; continuous rain; dirty sodium + cool blue night.
+No person. Readable cool exterior light + faint warm interior bounce.
+Style: hand-drawn 2D realistic animation linework, matte, 35mm grain.
+Avoid: different city, neon, sheer lace curtains, blinds, readable signage, UI, watermark, daylight, dry ground.

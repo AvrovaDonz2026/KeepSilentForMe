@@ -1,0 +1,17 @@
+Use case: illustration-story.
+Asset type: 16:9 cinematic establishing keyframe R0, "Master room plate" for Keep Silent For Me — empty clean plate that LOCKS architecture for all later shots.
+Input images: image 1 (S09) indoor linework, deep-black hierarchy, matte finish master only (no need to copy its exact furniture layout); image 2 (S11) wet blue-black rain city, glass droplets, sodium street reflections master for the VIEW OUTSIDE THE WINDOW only.
+Style/medium: dense controlled hand-drawn 2D realistic animation linework, matte worn surfaces, subtle cross-hatching, fine 35mm grain.
+Primary request — FIXED FLOORPLAN (must obey exactly):
+- Small contemporary Beijing rental room, night.
+- NORTH wall: a wide dual-or-triple vertical-pane window with rain streaks; THROUGH IT always the SAME wet street: asphalt with long reflections, opposite mid-rise residential blocks with sparse warm windows, a few dirty streetlamps, 0-2 distant dark cars, blue-black rainy night. No neon cyberpunk, no European roofs.
+- WEST wall: long old wooden desk against the wall, north end near the window corner. On the desk from south to north: stack of books, keyboard, thick old CRT or chunky dark monitor (SCREEN FULLY OFF/black), black articulated desk lamp with warm practical cone over the monitor area, plain mug, blank unreadable papers.
+- Wooden chair tucked at the desk.
+- SOUTH wall: single dark wooden entry door with metal handle; tiny red light leak only under the door gap (under 2% of frame).
+- EAST wall: tall dark cabinet and a hanging cloth bag; no second window.
+- Floor: continuous old wooden floorboards throughout.
+- Optional weak kitchenette counter near the door corner (kettle silhouette only).
+- NO person in frame. Generous readable midtones: lamp key + cool window fill so walls, desk, door, and street all read clearly. Layered depth, not crushed black void.
+Color: near black, blue-black, dirty gray-green, sodium brown; signal red only in door gap.
+Constraints: clean plate; no UI, subtitles, readable text, watermark, arrows, coordinates, storyboard borders.
+Avoid: moving the window to another wall, centering an island desk with no wall, bright anime look, glossy 3D, extra sofa/coffee table, second main window, dry pavement, cyberpunk neon.

@@ -1,0 +1,18 @@
+Use case: illustration-story.
+Asset type: 16:9 keyframe R0c v4, desk prop continuity plate — locks book stack and desk objects for all desk shots.
+Input images: image 1 S09 indoor linework/black hierarchy; image 2 v4 or v3 R0 master room desk zone; image 3 S11 only for any window strip materials if visible.
+Primary request: medium-close three-quarter view of the WEST old wooden desk only (same desk as R0). NO person.
+LOCKED inventory (identical every desk shot):
+- Tall stack of ~8–10 worn dull gray-brown paperbacks/hardcovers LEFT of CRT — spines unreadable, slightly messy but same height family
+- Small flat white/gray cassette-or-box + open blank notebook/papers front-left on desktop
+- Dark matte mug left of keyboard
+- Small shallow ashtray/dish near mug
+- Chunky beige/gray CRT, screen FULLY OFF black
+- Dull gray full keyboard in front of CRT
+- Black articulated architect lamp LEFT-REAR of CRT with warm practical cone
+- Pen cup with pens; tiny black radio/clock brick RIGHT of CRT base
+- Wooden drawer desk surface worn matte; wooden chair back may peek at bottom edge
+Background optional thin strip: three-pane rain window with open heavy taupe-gray blackout curtains and wet street vanishing point IF space allows — must match R0.
+Lighting: warm lamp key, soft cool window fill; readable props; doomer not bright.
+Style: hand-drawn 2D realistic animation linework, matte, cross-hatch, 35mm grain.
+Avoid: readable book titles, UI on CRT, different monitor, missing book stack, neon, watermark, person.

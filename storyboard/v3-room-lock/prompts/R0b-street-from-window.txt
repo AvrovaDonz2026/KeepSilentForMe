@@ -1,0 +1,6 @@
+Use case: illustration-story.
+Asset type: 16:9 keyframe R0b, street continuity plate seen from inside through rain glass.
+Input images: image 1 S09 for interior window-frame linework/black hierarchy; image 2 S11 wet street materials; image 3 is R0 master room if provided — match the same street silhouette visible through R0's north window.
+Primary request: camera inside the room close to the north window looking out. Show window frame and wet glass in foreground; outside must be the SAME rainy Beijing residential street as R0: wet asphalt, opposite mid-rise blocks, streetlamps, long reflections, sparse cars, blue-black night. Interior edge may show a sliver of wooden desk or curtain only. No person. Readable cool exterior light + faint warm interior bounce.
+Style: hand-drawn 2D realistic animation linework, matte, 35mm grain.
+Avoid: different city, neon, readable signage, UI, watermark.

@@ -1,0 +1,18 @@
+Use case: illustration-story.
+Asset type: 16:9 cinematic storyboard keyframe for K3, "Interview" — Keep Silent For Me (v2 readable lighting).
+Input images: image 1 (S09) is character/indoor linework/deep-black hierarchy master; image 2 (S11) is wet blue-black city/rain glass/sodium master; image 3 is the previous approved composition frame for THIS shot — keep the same blocking, camera height, and subject placement, only improve lighting hierarchy and background depth readability. Do not copy image 3 exposure if it is too crushed; lift midtones carefully.
+Style/medium: dense controlled hand-drawn 2D realistic animation linework, matte worn surfaces, subtle cross-hatching, fine 35mm grain.
+Character: same young East Asian woman from S09 — long black hair, gray-olive/blue-gray hoodie, restrained tired face; no bright anime eyes, no sexualization.
+Constraints: contemporary urban China 2022-2026; clean plate; no baked readable UI paragraphs, no subtitles, no watermark, no arrows, no coordinates, no storyboard borders.
+Avoid: crushed pure-black silhouette loss, flat underexposed murk, cyberpunk neon, glossy 3D, idol livestream look, pink cute aesthetic, tobacco clutter, weapons, blood.
+CRITICAL READABILITY UPGRADE (keep doomer, not bright anime):
+- Keep overall night mood, but raise midtone separation so the SUBJECT is clearly readable at a glance.
+- Use layered depth: foreground desk props slightly darker, midground character clearly lit, background wall/window as a distinct receding plane — not a flat black void.
+- Primary: warm practical desk lamp key (soft cone, visible falloff on wall and hair edge).
+- Secondary: very weak cool fill from rain window / city sodium bounce so the shadow side of the face and hoodie still shows form (catchlight tiny, no glamour rim).
+- Optional tertiary: dim bounce from floor or CRT bezel glow to separate silhouette from wall.
+- Wall texture, posters as blank rectangles, furniture edges must remain visible in the dark midtones.
+- Black mute-bar / ink-creature must stay matte black but outlined by soft ambient so shape reads against both girl and room.
+- Still low saturation: blue-black, dirty gray-green, sodium brown; signal red under 2%.
+- No cyberpunk neon, no idol beauty lighting, no overexposed faces.
+Primary request: Same interview cubicle as image 3: girl at plain table, empty opposite chair, cold tube light plus a weak warm practical so her face/hands and table edge read. Cubicle walls and floor planes separated; stage-1 ink flecks at sleeve still subtle but visible.
