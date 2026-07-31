@@ -5,7 +5,7 @@
 ### *你是她没有说出口的那个人。*
 
 [![Game Jam](https://img.shields.io/badge/NetEase-Leihuo%20Game%20Jam-orange?style=for-the-badge)](https://leihuo.163.com/)
-[![Development Status](https://img.shields.io/badge/status-Pre--Production-yellow?style=for-the-badge)](https://github.com/AvrovaDonz2026/KeepSilentForMe)
+[![Development Status](https://img.shields.io/badge/status-Ready_for_Development-brightgreen?style=for-the-badge)](https://github.com/AvrovaDonz2026/KeepSilentForMe)
 [![Platform](https://img.shields.io/badge/platform-PC%20%7C%20Web%20%7C%20Mobile-blue?style=for-the-badge)](https://github.com/AvrovaDonz2026/KeepSilentForMe)
 
 **一款约30分钟的语言寄生解谜游戏**
@@ -22,11 +22,15 @@
 
 被遮掉的文字不会消失，而是被你"吃掉"，逐渐在她身边长成你的身体。她靠你的沉默活在社会里，你靠她没说出口的真实想法活下来。
 
-**最新进展**：
+**最新进展** (2026-07-31更新)：
+- ✅ **Pre-Production 100%完成** - 项目处于 Ready for Development 状态
 - ✅ 完整台词脚本已完成（6章 + 35句台词，台本.md为准）
-- 🟡 JSON数据框架就绪（含完整元数据+L0/L1示例，待补全）
-- ✅ 关末AI视频转场分镜完成（9-11段视频）
-- ✅ 程序/美术组装手册已更新
+- ✅ Web技术栈整合完成（DOM方案解决字符热区问题）
+- ✅ Day 1可运行demo模板就绪（160行HTML）
+- ✅ 美术资产方案完整（19张基础 + 11张V4叙事角色）
+- ✅ V4叙事角色扩展包配置完成（manifest.json已更新）
+- ✅ 已生成13张基础美术资产（背景5+角色3+消音体3+UI 2）
+- ✅ 项目开发指南完善（CLAUDE.md）
 - 📝 **数据源统一**：台本.md为唯一完整内容源
 
 ### 核心特色
@@ -272,27 +276,40 @@ git push origin main
 # 在仓库Settings → Pages启用
 ```
 
-### 项目结构（Web版）
+### 项目结构
 
 ```
 KeepSilentForMe/
-├── README.md                    # 项目总览
-├── schedule.md                  # 📋 完整策划案（含Web开发指南）
-├── 台本.md                      # 📝 35句完整台词
-├── script/chapters.json         # 💾 游戏数据
-├── art-style.md                 # 🎨 美术规范
-├── selling-points.md            # 💡 卖点分析
-├── storyboard/                  # 🎬 分镜资产
-└── web/                         # 🌐 Web游戏目录
-    ├── index.html               # 游戏入口
+├── README.md                           # 项目总览
+├── CLAUDE.md                           # 🔧 项目开发指南（新）
+├── schedule.md                         # 📋 完整策划案（含Web开发指南）
+├── 台本.md                             # 📝 35句完整台词（唯一权威源）
+├── WEB_TECH_STACK.md                   # 🌐 Web技术实现指南（新）
+├── ASSET_GENERATION_GUIDE.md           # 🎨 美术资产生成指南（新）
+├── PROMPTS_ALL.txt                     # 📝 完整提示词清单（新）
+├── PROJECT_STATUS.md                   # 📊 项目状态追踪（新）
+├── FINAL_PROJECT_DELIVERY.md           # 📦 最终交付报告（新）
+├── script/
+│   └── chapters.json                   # 💾 游戏数据
+├── art/                                # 🎨 美术资产（新）
+│   ├── bg/                             # 背景场景（5张）
+│   ├── char/                           # 角色姿势（3张）
+│   ├── creature/                       # 消音体（3张）
+│   ├── ui/                             # UI元素（2张）
+│   ├── prompts/                        # 提示词文件
+│   └── _json/                          # 资产配置
+├── art/v4/playable/                    # 🎮 V4可玩资产包（新）
+│   ├── manifest.json                   # 资产清单（已更新narrativeBindings）
+│   ├── generate_narrative_extension.py # V4生成器
+│   ├── validate_v4_extension.py        # V4验证器
+│   └── [char/npc/ending/faces/]        # 各类资产
+├── storyboard/                         # 🎬 分镜资产
+└── web/                                # 🌐 Web游戏目录（待创建）
+    ├── index.html
     ├── css/
-    │   ├── style.css
-    │   ├── dialogue.css
-    │   └── animations.css
     ├── js/
-    │   ├── game.js
-    │   ├── drag-handler.js
-    │   ├── video-player.js
+    └── assets/
+```
     │   └── save-manager.js
     └── assets/
         ├── data/chapters.json
