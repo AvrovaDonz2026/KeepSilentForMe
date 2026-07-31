@@ -286,7 +286,7 @@ def update_manifest(new_assets_data):
             "scene": "apartment_empty",
             "characterAction": "CHAR_final_speaking",
             "endingLayers": {
-                "A": null,
+                "A": None,
                 "B": "ENDING_echo_overlap",
                 "C": "ENDING_hollow_proxy"
             },
