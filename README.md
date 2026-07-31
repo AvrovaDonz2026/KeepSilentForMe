@@ -27,12 +27,12 @@
 - ✅ 完整台词脚本已完成（6章 + 35句台词，台本.md为准）
 - ✅ Web技术栈整合完成（DOM方案解决字符热区问题）
 - ✅ Day 1可运行demo模板就绪（160行HTML）
-- ✅ 美术资产方案完整（19张基础 + 11张V4叙事角色）
-- ✅ **已生成24张美术资产**（基础13张 + V4叙事角色11张）
-- ✅ V4叙事角色扩展包完成（manifest.json已更新）
+- ✅ 美术资产方案与可玩资产包已完成
+- ✅ **已生成43张可玩资产**（角色、NPC、消音体、UI、交互状态层）
+- ✅ V4可玩资产包已通过 manifest 与透明通道校验
 - ✅ 项目开发指南完善（CLAUDE.md）
 - 📝 **数据源统一**：台本.md为唯一完整内容源
-- 🎯 **资产完成度**：24/30 (80%) - 剩余8张表情差分待生成
+- 🎯 **资产状态**：可玩资产包已就绪，后续只需按开发需要补充视频与音频
 
 ### 核心特色
 
@@ -285,11 +285,7 @@ KeepSilentForMe/
 ├── CLAUDE.md                           # 🔧 项目开发指南（新）
 ├── schedule.md                         # 📋 完整策划案（含Web开发指南）
 ├── 台本.md                             # 📝 35句完整台词（唯一权威源）
-├── WEB_TECH_STACK.md                   # 🌐 Web技术实现指南（新）
-├── ASSET_GENERATION_GUIDE.md           # 🎨 美术资产生成指南（新）
-├── PROMPTS_ALL.txt                     # 📝 完整提示词清单（新）
-├── PROJECT_STATUS.md                   # 📊 项目状态追踪（新）
-├── FINAL_PROJECT_DELIVERY.md           # 📦 最终交付报告（新）
+├── WEB_TECH_STACK.md                   # 🌐 Web技术实现指南
 ├── script/
 │   └── chapters.json                   # 💾 游戏数据
 ├── art/                                # 🎨 美术资产（新）
@@ -299,11 +295,12 @@ KeepSilentForMe/
 │   ├── ui/                             # UI元素（2张）
 │   ├── prompts/                        # 提示词文件
 │   └── _json/                          # 资产配置
-├── art/v4/playable/                    # 🎮 V4可玩资产包（新）
-│   ├── manifest.json                   # 资产清单（已更新narrativeBindings）
-│   ├── generate_narrative_extension.py # V4生成器
-│   ├── validate_v4_extension.py        # V4验证器
-│   └── [char/npc/ending/faces/]        # 各类资产
+├── art/v4/playable/                    # 🎮 V4可玩资产包
+│   ├── README.md                       # 生成、绑定与校验说明
+│   ├── manifest.json                   # 资产清单与章节绑定
+│   ├── generate.sh                     # 统一生成入口
+│   ├── validate.py                     # 完整资产校验器
+│   └── [char/npc/ending/fx/ui/faces/]  # 各类资产
 ├── storyboard/                         # 🎬 分镜资产
 └── web/                                # 🌐 Web游戏目录（待创建）
     ├── index.html

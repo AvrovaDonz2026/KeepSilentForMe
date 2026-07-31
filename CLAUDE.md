@@ -113,7 +113,7 @@ web/
 # Create test-zone.html and verify getBoundingClientRect() works
 
 # 2. Generate 1 test video (V0_out)
-# Use prompts from PROMPTS_ALL.txt [1]
+# Use the current storyboard prompts under storyboard/demo-effects/prompts/
 # Verify doomer style consistency
 
 # 3. Test mobile browser
@@ -134,14 +134,11 @@ python3 -m http.server 8000
 ### Asset Generation
 
 ```bash
-# All prompts ready in PROMPTS_ALL.txt
-# Priority 1 (9 core assets): BG_apartment, BG_meeting_room, CHAR_desk_pose, 
-#   FACE_anxious, FACE_cold, FACE_dependent, FACE_detached,
-#   CREATURE_stage1, CREATURE_stage2
-
-# Use API or manual generation:
-# Model: gpt-image2
-# Sizes: Backgrounds 1792x1024, Characters/UI 1024x1024
+# Base prompts live under art/prompts/; the current playable pack uses
+# art/v4/playable/prompts/ and generate.sh. Use the edit endpoint with the
+# canonical reference image for identity-sensitive layers.
+# Model: gpt-image-2
+# Validate with: python3 art/v4/playable/validate.py
 ```
 
 ## Critical Constraints
@@ -176,8 +173,8 @@ Flags are counters tracked in `gameState.flags`:
 | Document | Purpose |
 |----------|---------|
 | **WEB_TECH_STACK.md** | Complete Web implementation guide + Day 1 demo code |
-| **ASSET_GENERATION_GUIDE.md** | 19 asset prompts (200-400 words each) |
-| **PROMPTS_ALL.txt** | Copy-paste ready prompts for image generation |
+| **art-style.md** | Canonical doomer art direction and visual constraints |
+| **art/v4/playable/README.md** | Current playable asset generation and runtime binding guide |
 | **schedule.md §11** | Program assembly manual (state machine, JSON contract) |
 | **schedule.md §12** | Art asset specs and file naming |
 | **schedule.md §13** | Audio resources (Freesound.org, Incompetech.com) |
