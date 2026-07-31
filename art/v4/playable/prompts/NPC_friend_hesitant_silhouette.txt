@@ -1,0 +1,7 @@
+Use case: illustration-story.
+Asset type: layered NPC full-body silhouette sprite.
+Input image role: K6-friend-at-door is a composition and continuity reference only; do not copy its room or door.
+Primary request: create the same adult male friend as a faceless silhouette stepping back from a threshold, one foot retreating and one shoulder turned away. He wears a dark rain jacket and plain trousers; face fully lost in shadow or turned away. The pose conveys hesitation and withdrawal without a readable expression.
+Composition: full body, both feet visible, bottom-centered, isolated sprite with a readable outer contour.
+Style: same matte hand-drawn doomer linework and subdued blue-black palette as the supplied reference.
+Avoid: actual door, hallway, apartment, rain background, visible facial features, eyes, mouth, portrait detail, props, text, UI, cast shadow, green subject pixels.

@@ -35,6 +35,7 @@ K7="$V4/frames-2k/K7-apology-stream.png"
 K8="$V4/frames-2k/K8-room-without-audience.png"
 K9="$V4/frames-2k/K9-you-are-the-unsaid.png"
 D0="$DEMO/D0-core-mechanic.png"
+D1="$DEMO/D1-interview.png"
 D4="$DEMO/D4-apology-stream.png"
 D6="$DEMO/D6-creature-stages.png"
 
@@ -161,6 +162,16 @@ fit_canvas() {
   magick "$input" -resize "$size" -background none -gravity center -extent "$size" "$out"
 }
 
+fit_bottom_canvas() {
+  local input="$1"
+  local out="$2"
+  local size="$3"
+  if file_ready "$out"; then
+    return 0
+  fi
+  magick "$input" -resize "$size" -background none -gravity south -extent "$size" "$out"
+}
+
 crop_face_canvas() {
   local input="$1"
   local out="$2"
@@ -234,6 +245,25 @@ render_character() {
   run_model "$id" 1024x1024 "$SOURCE/${id}.png" "$@"
   to_alpha "$SOURCE/${id}.png" "$alpha"
   fit_canvas "$alpha" "$ROOT/char/${id}.png" 1024x1024
+}
+
+render_narrative_layer() {
+  local id="$1"
+  local destination="$2"
+  local alpha="$TMP_ROOT/${id}-alpha.png"
+  shift 2
+  if [[ "$DRY_RUN" == "1" ]]; then
+    run_model "$id" 1024x1024 "$SOURCE/${id}.png" "$@"
+    return 0
+  fi
+  run_model "$id" 1024x1024 "$SOURCE/${id}.png" "$@"
+  to_alpha "$SOURCE/${id}.png" "$alpha"
+  fit_bottom_canvas "$alpha" "$ROOT/$destination/${id}.png" 1024x1024
+}
+
+render_narrative_character() {
+  local id="$1"
+  render_narrative_layer "$id" char "$SOURCE/CHAR_stand.png"
 }
 
 render_creature() {
@@ -324,6 +354,39 @@ render_characters() {
   render_character CHAR_desk "$K2" "$K4" "$R0C"
   render_character CHAR_stand "$K1" "$K8" "$R0"
   render_character CHAR_door "$K6" "$R0"
+  render_narrative_character CHAR_sleeve_press
+  render_narrative_character CHAR_interview_sit
+  render_narrative_character CHAR_livestream_speaking
+  render_narrative_character CHAR_apology_bow
+  render_narrative_character CHAR_final_speaking
+}
+
+render_npcs() {
+  render_narrative_layer NPC_friend_door_silhouette npc "$K6"
+  render_narrative_layer NPC_friend_hesitant_silhouette npc "$K6"
+  render_narrative_layer NPC_interviewer_a npc "$D1"
+  render_narrative_layer NPC_interviewer_b npc "$D1"
+}
+
+render_ending_echo() {
+  render_narrative_character CHAR_final_speaking
+  if [[ "$DRY_RUN" == "1" ]]; then
+    render_narrative_layer ENDING_echo_overlap ending "$SOURCE/CHAR_stand.png"
+  else
+    render_narrative_layer ENDING_echo_overlap ending "$SOURCE/CHAR_final_speaking.png"
+  fi
+}
+
+render_ending_hollow() {
+  if [[ ! -s "$SOURCE/CREEP_3.png" ]]; then
+    render_creature CREEP_3 "$D6" "$K8"
+  fi
+  render_narrative_layer ENDING_hollow_proxy ending "$SOURCE/CREEP_3.png"
+}
+
+render_endings() {
+  render_ending_echo
+  render_ending_hollow
 }
 
 render_creatures() {
@@ -334,7 +397,7 @@ render_creatures() {
 
 usage() {
   cat <<'EOF'
-Usage: generate.sh [all|faces|characters|creatures|fx|ui|ASSET_ID]
+Usage: generate.sh [all|faces|characters|creatures|npcs|endings|narrative|fx|ui|ASSET_ID]
 
 Environment:
   OPENAI_API_KEY      Required unless DRY_RUN=1.
@@ -355,13 +418,15 @@ main() {
       ;;
   esac
   ensure_tools
-  mkdir -p "$SOURCE" "$ROOT/faces" "$ROOT/char" "$ROOT/creature" "$ROOT/fx" "$ROOT/ui" "$TMP_ROOT"
+  mkdir -p "$SOURCE" "$ROOT/faces" "$ROOT/char" "$ROOT/creature" "$ROOT/npc" "$ROOT/ending" "$ROOT/fx" "$ROOT/ui" "$TMP_ROOT"
 
   case "$target" in
     all)
       render_faces
       render_characters
       render_creatures
+      render_npcs
+      render_endings
       render_motes
       render_growth_strip
       render_dialog
@@ -370,6 +435,13 @@ main() {
     faces) render_faces ;;
     characters) render_characters ;;
     creatures) render_creatures ;;
+    npcs) render_npcs ;;
+    endings) render_endings ;;
+    narrative)
+      render_characters
+      render_npcs
+      render_endings
+      ;;
     fx)
       render_motes
       render_growth_strip
@@ -391,6 +463,17 @@ main() {
     CHAR_door)
       render_character CHAR_door "$K6" "$R0"
       ;;
+    CHAR_sleeve_press) render_narrative_character CHAR_sleeve_press ;;
+    CHAR_interview_sit) render_narrative_character CHAR_interview_sit ;;
+    CHAR_livestream_speaking) render_narrative_character CHAR_livestream_speaking ;;
+    CHAR_apology_bow) render_narrative_character CHAR_apology_bow ;;
+    CHAR_final_speaking) render_narrative_character CHAR_final_speaking ;;
+    NPC_friend_door_silhouette) render_narrative_layer NPC_friend_door_silhouette npc "$K6" ;;
+    NPC_friend_hesitant_silhouette) render_narrative_layer NPC_friend_hesitant_silhouette npc "$K6" ;;
+    NPC_interviewer_a) render_narrative_layer NPC_interviewer_a npc "$D1" ;;
+    NPC_interviewer_b) render_narrative_layer NPC_interviewer_b npc "$D1" ;;
+    ENDING_echo_overlap) render_ending_echo ;;
+    ENDING_hollow_proxy) render_ending_hollow ;;
     CREEP_1) render_creature CREEP_1 "$D6" "$K2" ;;
     CREEP_2) render_creature CREEP_2 "$D6" "$K4" ;;
     CREEP_3) render_creature CREEP_3 "$D6" "$K8" ;;

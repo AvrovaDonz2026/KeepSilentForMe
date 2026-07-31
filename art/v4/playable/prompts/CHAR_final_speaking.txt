@@ -1,0 +1,7 @@
+Use case: identity-preserve illustration-story.
+Asset type: layered full-body game sprite.
+Input image role: the supplied canonical CHAR_stand sprite is the only identity and outfit reference.
+Primary request: edit the supplied canonical sprite into the same woman standing in a quiet three-quarter front pose. Her mouth is slightly open as she finishes one sentence, her right hand hangs relaxed, and her posture has exhausted resolve rather than heroism.
+Identity invariants: preserve the exact woman, long straight black hair, hair length and fringe, gray-olive blue-gray hoodie, dark trousers, understated dark shoes, matte worn linework, proportions, palette, and face structure. Change only the facing direction, small speaking mouth, and relaxed hand.
+Composition: full body, both feet visible, bottom-centered, clean separable silhouette.
+Avoid: window, room, floor, creature, props, dramatic light, heroic stance, smile, open-mouth teeth, background, cast shadow, text, UI, glamour, new hairstyle, different person, green subject pixels.

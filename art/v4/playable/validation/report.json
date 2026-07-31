@@ -385,6 +385,281 @@
       "greenPixels": 0
     },
     {
+      "id": "CHAR_sleeve_press",
+      "path": "char/CHAR_sleeve_press.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 924310,
+        "partial": 6510,
+        "opaque": 118822,
+        "opaqueFraction": 0.11331748962402344,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "CHAR_interview_sit",
+      "path": "char/CHAR_interview_sit.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 928690,
+        "partial": 4372,
+        "opaque": 116159,
+        "opaqueFraction": 0.1107778549194336,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "CHAR_livestream_speaking",
+      "path": "char/CHAR_livestream_speaking.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 927275,
+        "partial": 5821,
+        "opaque": 116315,
+        "opaqueFraction": 0.11092662811279297,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "CHAR_apology_bow",
+      "path": "char/CHAR_apology_bow.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 959082,
+        "partial": 4539,
+        "opaque": 85650,
+        "opaqueFraction": 0.08168220520019531,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "CHAR_final_speaking",
+      "path": "char/CHAR_final_speaking.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 914610,
+        "partial": 5958,
+        "opaque": 128894,
+        "opaqueFraction": 0.12292289733886719,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "NPC_friend_door_silhouette",
+      "path": "npc/NPC_friend_door_silhouette.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 891700,
+        "partial": 6111,
+        "opaque": 151501,
+        "opaqueFraction": 0.14448261260986328,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "NPC_friend_hesitant_silhouette",
+      "path": "npc/NPC_friend_hesitant_silhouette.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 917923,
+        "partial": 5778,
+        "opaque": 125616,
+        "opaqueFraction": 0.1197967529296875,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "NPC_interviewer_a",
+      "path": "npc/NPC_interviewer_a.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 703849,
+        "partial": 7183,
+        "opaque": 338541,
+        "opaqueFraction": 0.3228578567504883,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "NPC_interviewer_b",
+      "path": "npc/NPC_interviewer_b.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 794716,
+        "partial": 5902,
+        "opaque": 248751,
+        "opaqueFraction": 0.2372274398803711,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "ENDING_echo_overlap",
+      "path": "ending/ENDING_echo_overlap.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 874375,
+        "partial": 10178,
+        "opaque": 165224,
+        "opaqueFraction": 0.15756988525390625,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "ENDING_hollow_proxy",
+      "path": "ending/ENDING_hollow_proxy.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 872978,
+        "partial": 17461,
+        "opaque": 161647,
+        "opaqueFraction": 0.1541585922241211,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
       "id": "CREEP_1",
       "path": "creature/CREEP_1.png",
       "errors": [],
@@ -628,5 +903,5 @@
     }
   ],
   "ok": true,
-  "assetCount": 22
+  "assetCount": 33
 }

@@ -9,7 +9,9 @@ composition: full-body sprites remain separate from the dialogue portrait cards.
 ## Deliverables
 
 - `faces/`: 12 interchangeable dialogue portraits.
-- `char/`: desk, standing, and door-side full-body sprites.
+- `char/`: desk, standing, door-side, and five narrative full-body sprites.
+- `npc/`: friend silhouettes and interview-side observers.
+- `ending/`: the overlap echo and hollow replacement ending sprites.
 - `creature/`: the three silence-entity stages.
 - `fx/`: reusable ink/glyph effects.
 - `ui/`: the dialogue panel and draggable censor bar.
@@ -22,8 +24,8 @@ composition: full-body sprites remain separate from the dialogue portrait cards.
 `OPENAI_API_KEY` and `OPENAI_BASE_URL`. It never reads or stores a credential.
 All final PNGs are generated on a solid green key, then converted to alpha.
 The provider may return a different aspect ratio from the requested canvas;
-the script crops dialogue portraits and fits full-body layers into the exact
-manifest canvas after keying.
+the script crops dialogue portraits, center-fits legacy sprites, and bottom-fits
+the new pivoted narrative layers into the exact manifest canvas after keying.
 
 The selected Python interpreter needs the dependencies in `requirements.txt`.
 For example:
@@ -42,8 +44,20 @@ PYTHON=.venv/bin/python \
 ./art/v4/playable/generate.sh faces
 ```
 
-Supported targets are `all`, `faces`, `characters`, `creatures`, `fx`, `ui`,
-or an individual asset ID from `manifest.json`.
+Supported targets are `all`, `faces`, `characters`, `creatures`, `npcs`,
+`endings`, `narrative`, `fx`, `ui`, or an individual asset ID from
+`manifest.json`. The `narrative` group covers the five new main-character
+poses, four NPC layers, and both ending layers.
+
+`generate_narrative_extension.py` is retained as a dry-run reference only; its
+live path is disabled to prevent duplicate manifest entries. Use `generate.sh`
+for all API calls.
+
+Every new main-character pose uses `/images/edits` with one canonical
+`source/CHAR_stand.png` reference. This keeps hair, hoodie, proportions, and
+face identity stable across the playable poses. The ending echo is edited from
+the generated `CHAR_final_speaking` source, while the hollow proxy is edited
+from `source/CREEP_3.png`.
 
 Face edits use `/images/edits` with one canonical portrait plus a local oval
 expression mask. To regenerate the face set without changing that canonical

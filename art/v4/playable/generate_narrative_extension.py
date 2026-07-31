@@ -13,7 +13,7 @@ import io
 
 # API配置
 API_BASE = "https://api.qingyuntop.top/v1"
-API_KEY = "sk-oQ0L8sg62Ny0Od2ZJlcPpcgOBTaZHDhY1l4I2WFZNO9Q5jAU"
+API_KEY = os.environ.get("OPENAI_API_KEY", "")
 
 # 项目路径
 PROJECT_ROOT = "/home/donz/KeepSilentForMe/art/v4/playable"
@@ -328,6 +328,11 @@ def main(dry_run=False):
 
     if dry_run:
         print("\n🔍 DRY RUN 模式 - 仅验证配置，不实际生成\n")
+    else:
+        raise SystemExit(
+            "This legacy extension script is disabled; use generate.sh narrative "
+            "so the manifest and edit references stay canonical."
+        )
 
     # 创建输出目录
     for dir_name in ["char", "npc", "ending"]:

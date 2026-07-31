@@ -1,0 +1,7 @@
+Use case: illustration-story.
+Asset type: layered NPC upper-body sprite.
+Input image role: D1-interview is a visual continuity reference only; do not copy its room, desk, papers, or dialogue panel.
+Primary request: create one adult East Asian woman interviewer with dark hair tied back or a neat short bob, wearing a muted business blazer, shown seated in side and rear three-quarter view. Her face remains low-detail and partially turned away; posture formal, patient, and unreadable.
+Composition: isolated upper-body to mid-thigh sprite, facing toward the candidate side, no furniture drawn around her.
+Style: same matte hand-drawn doomer linework, subdued charcoal and blue-black palette.
+Avoid: interview room, desk, papers, pen, microphone, glass, other people, readable face, portrait glamour, background, cast shadow, text, UI, green subject pixels.

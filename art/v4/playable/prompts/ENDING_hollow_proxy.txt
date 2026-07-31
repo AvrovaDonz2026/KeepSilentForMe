@@ -1,0 +1,6 @@
+Use case: illustration-story.
+Asset type: layered ending replacement sprite.
+Input image role: the supplied CREEP_3 sprite is the only material and silhouette reference.
+Primary request: create a tall faceless body-like proxy assembled from overlapping matte-black censor strips, torn paper, and ash-dark planes. It stands upright with a slight human stance but has no biological anatomy. The silhouette should read as an empty substitute waiting at the window, with irregular paper edges and sparse blue-gray wear.
+Composition: full body, bottom-centered, isolated production sprite.
+Avoid: eyes, mouth, face, hair, skin, hands, fingers, bones, recognizable person, readable glyphs, letters, numbers, room, window, background, cast shadow, text, UI, green subject pixels.

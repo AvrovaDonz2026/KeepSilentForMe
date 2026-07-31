@@ -1,0 +1,7 @@
+Use case: identity-preserve illustration-story.
+Asset type: layered full-body game sprite.
+Input image role: the supplied canonical CHAR_stand sprite is the only identity and outfit reference.
+Primary request: edit the supplied canonical sprite into the same woman seated in a guarded half-crouch, pressing or checking the cuff of her left long sleeve with one hand. Keep her head slightly down and her shoulders tense; the action is small and private, not theatrical.
+Identity invariants: preserve the exact woman, long straight black hair, hair length and fringe, gray-olive blue-gray hoodie, dark trousers, understated dark shoes, matte worn linework, proportions, palette, and face structure. Change only the pose and hand action.
+Composition: full body, both feet visible, bottom-centered, clean separable silhouette.
+Avoid: desk, chair, computer, room, floor, door, window, creature, props, cast shadow, text, UI, scenery, glamour, new hairstyle, different person, exposed midriff, green subject pixels.

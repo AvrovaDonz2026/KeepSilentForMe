@@ -81,6 +81,79 @@ def add_warning(result: dict[str, Any], message: str) -> None:
     result["warnings"].append(message)
 
 
+def validate_narrative_bindings(
+    manifest: dict[str, Any],
+    asset_ids: set[Any],
+    report: dict[str, Any],
+) -> None:
+    bindings = manifest.get("narrativeBindings")
+    if not isinstance(bindings, dict):
+        add_error(report, "narrativeBindings must be an object")
+        return
+
+    scene_bindings = manifest.get("sceneBindings", {})
+    if not isinstance(scene_bindings, dict):
+        scene_bindings = {}
+
+    for level in ("L0", "L1", "L2", "L3", "L4", "L5"):
+        binding = bindings.get(level)
+        if not isinstance(binding, dict):
+            add_error(report, f"narrativeBindings.{level} must be an object")
+            continue
+        scene = binding.get("scene")
+        if not isinstance(scene, str) or scene not in scene_bindings:
+            add_error(report, f"narrativeBindings.{level}.scene references missing scene {scene}")
+        layers = binding.get("layers")
+        if not isinstance(layers, list):
+            add_error(report, f"narrativeBindings.{level}.layers must be an array")
+        else:
+            for index, layer in enumerate(layers):
+                if not isinstance(layer, dict):
+                    add_error(report, f"narrativeBindings.{level}.layers[{index}] must be an object")
+                    continue
+                asset = layer.get("asset")
+                if asset not in asset_ids:
+                    add_error(report, f"narrativeBindings.{level}.layers[{index}] references missing asset {asset}")
+                anchor = layer.get("anchor")
+                if not isinstance(anchor, str) or not anchor.strip():
+                    add_error(report, f"narrativeBindings.{level}.layers[{index}] needs a non-empty anchor")
+
+    l3_binding = bindings.get("L3")
+    l3_variants = l3_binding.get("variants") if isinstance(l3_binding, dict) else None
+    friend = l3_variants.get("friend") if isinstance(l3_variants, dict) else None
+    if not isinstance(friend, dict):
+        add_error(report, "narrativeBindings.L3.variants.friend must be an object")
+    else:
+        default = friend.get("default")
+        if default not in asset_ids:
+            add_error(report, f"narrativeBindings.L3 friend default references missing asset {default}")
+        after = friend.get("after")
+        if not isinstance(after, dict):
+            add_error(report, "narrativeBindings.L3.variants.friend.after must be an object")
+        else:
+            for state, asset in after.items():
+                if asset not in asset_ids:
+                    add_error(report, f"narrativeBindings.L3 friend after {state} references missing asset {asset}")
+
+    l5_binding = bindings.get("L5")
+    ending_overrides = l5_binding.get("endingOverrides") if isinstance(l5_binding, dict) else None
+    if not isinstance(ending_overrides, dict):
+        add_error(report, "narrativeBindings.L5.endingOverrides must be an object")
+    else:
+        for ending, override in ending_overrides.items():
+            if not isinstance(override, dict):
+                add_error(report, f"narrativeBindings.L5.endingOverrides.{ending} must be an object")
+                continue
+            for list_key in ("layers", "hide"):
+                values = override.get(list_key)
+                if not isinstance(values, list):
+                    add_error(report, f"narrativeBindings.L5.endingOverrides.{ending}.{list_key} must be an array")
+                    continue
+                for asset in values:
+                    if asset not in asset_ids:
+                        add_error(report, f"narrativeBindings.L5.endingOverrides.{ending}.{list_key} references missing asset {asset}")
+
+
 def check_asset(
     asset: dict[str, Any],
     pack_root: Path,
@@ -146,6 +219,8 @@ def validate_references(manifest: dict[str, Any], report: dict[str, Any]) -> Non
     if len(paths) != len(set(paths)):
         add_error(report, "asset paths are not unique")
     asset_ids = set(ids)
+
+    validate_narrative_bindings(manifest, asset_ids, report)
 
     for label, binding in manifest.get("faceMap", {}).items():
         if not isinstance(binding, dict):

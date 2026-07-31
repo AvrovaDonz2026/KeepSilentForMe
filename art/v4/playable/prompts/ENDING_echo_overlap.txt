@@ -1,0 +1,7 @@
+Use case: identity-preserve illustration-story.
+Asset type: layered ending overlay sprite.
+Input image role: the supplied CHAR_final_speaking sprite is the only body and identity reference.
+Primary request: create a ghostlike duplicate of the same woman in a matching standing three-quarter speaking pose, designed to overlap the original body. Keep a slightly displaced double contour, a quiet blue-gray and black echo, and restrained translucency-like edge separation without drawing a background. The duplicate should feel like a second voice occupying the same body.
+Identity invariants: preserve the same hair silhouette, hoodie shape, trousers, shoes, body proportions, and linework as the supplied sprite; alter only the offset echo treatment and slight misalignment.
+Composition: full body, bottom-centered, isolated overlay with transparent-safe padding.
+Avoid: new person, face redesign, extra limbs, room, window, creature, text, readable glyphs, dramatic glow, cast shadow, green subject pixels.

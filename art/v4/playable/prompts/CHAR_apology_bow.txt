@@ -1,0 +1,7 @@
+Use case: identity-preserve illustration-story.
+Asset type: layered full-body game sprite.
+Input image role: the supplied canonical CHAR_stand sprite is the only identity and outfit reference.
+Primary request: edit the supplied canonical sprite into the same woman seated and bending forward in a restrained apology. Her head is lowered, hands clasped near her knees, elbows close to her body, and the posture shows contained shame without collapsing or melodrama.
+Identity invariants: preserve the exact woman, long straight black hair, hair length and fringe, gray-olive blue-gray hoodie, dark trousers, understated dark shoes, matte worn linework, proportions, palette, and face structure. Change only the bowing posture and hands.
+Composition: full body, feet visible, bottom-centered, isolated production sprite.
+Avoid: desk, chair, room, audience, tears, exaggerated gesture, props, creature, background, cast shadow, text, UI, glamour, new hairstyle, different person, green subject pixels.

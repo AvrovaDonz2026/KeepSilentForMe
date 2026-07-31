@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "v4-playable-1",
+  "id": "v4-playable-2",
   "model": "gpt-image-2",
   "logicalCanvas": [
     1920,
@@ -8,8 +8,10 @@
   ],
   "layerOrder": [
     "background",
+    "npc",
     "character",
     "creature",
+    "ending",
     "dialogue",
     "text",
     "blackBar"
@@ -53,6 +55,68 @@
       "background": "apartment_empty",
       "character": "CHAR_stand",
       "creature": "CREEP_3"
+    }
+  },
+  "narrativeBindings": {
+    "L0": {
+      "scene": "apartment_rain",
+      "layers": [
+        { "asset": "CHAR_sleeve_press", "anchor": "scene.desk_chair" }
+      ]
+    },
+    "L1": {
+      "scene": "meeting_room",
+      "layers": [
+        { "asset": "CHAR_interview_sit", "anchor": "scene.meeting.candidate_chair_center" },
+        { "asset": "NPC_interviewer_a", "anchor": "scene.meeting.interviewer_left" },
+        { "asset": "NPC_interviewer_b", "anchor": "scene.meeting.interviewer_right" }
+      ]
+    },
+    "L2": {
+      "scene": "apartment_desk_live",
+      "layers": [
+        { "asset": "CHAR_livestream_speaking", "anchor": "scene.desk_chair" }
+      ]
+    },
+    "L3": {
+      "scene": "apartment_door",
+      "layers": [
+        { "asset": "CHAR_door", "anchor": "scene.door_inner_edge" }
+      ],
+      "variants": {
+        "friend": {
+          "default": "NPC_friend_door_silhouette",
+          "after": {
+            "L3_S04b": "NPC_friend_hesitant_silhouette"
+          }
+        }
+      }
+    },
+    "L4": {
+      "scene": "apartment_desk_apology",
+      "layers": [
+        { "asset": "CHAR_apology_bow", "anchor": "scene.desk_chair" }
+      ]
+    },
+    "L5": {
+      "scene": "apartment_empty",
+      "layers": [
+        { "asset": "CHAR_final_speaking", "anchor": "scene.floor_center_left" }
+      ],
+      "endingOverrides": {
+        "A_分离": {
+          "layers": ["CHAR_final_speaking"],
+          "hide": ["CREEP_3"]
+        },
+        "B_异化": {
+          "layers": ["CHAR_final_speaking", "ENDING_echo_overlap"],
+          "hide": ["CREEP_3"]
+        },
+        "C_吞没": {
+          "layers": ["ENDING_hollow_proxy"],
+          "hide": ["CHAR_final_speaking", "CREEP_3"]
+        }
+      }
     }
   },
   "faceMap": {
@@ -348,6 +412,161 @@
       "anchor": "scene.door_inner_edge"
     },
     {
+      "id": "CHAR_sleeve_press",
+      "path": "char/CHAR_sleeve_press.png",
+      "kind": "character",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "anchor": "scene.desk_chair"
+    },
+    {
+      "id": "CHAR_interview_sit",
+      "path": "char/CHAR_interview_sit.png",
+      "kind": "character",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "anchor": "scene.meeting.candidate_chair_center"
+    },
+    {
+      "id": "CHAR_livestream_speaking",
+      "path": "char/CHAR_livestream_speaking.png",
+      "kind": "character",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "anchor": "scene.desk_chair"
+    },
+    {
+      "id": "CHAR_apology_bow",
+      "path": "char/CHAR_apology_bow.png",
+      "kind": "character",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "anchor": "scene.desk_chair"
+    },
+    {
+      "id": "CHAR_final_speaking",
+      "path": "char/CHAR_final_speaking.png",
+      "kind": "character",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "anchor": "scene.floor_center_left"
+    },
+    {
+      "id": "NPC_friend_door_silhouette",
+      "path": "npc/NPC_friend_door_silhouette.png",
+      "kind": "npc",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "anchor": "scene.door_exterior_threshold"
+    },
+    {
+      "id": "NPC_friend_hesitant_silhouette",
+      "path": "npc/NPC_friend_hesitant_silhouette.png",
+      "kind": "npc",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "anchor": "scene.door_exterior_recede"
+    },
+    {
+      "id": "NPC_interviewer_a",
+      "path": "npc/NPC_interviewer_a.png",
+      "kind": "npc",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "anchor": "scene.meeting.interviewer_left"
+    },
+    {
+      "id": "NPC_interviewer_b",
+      "path": "npc/NPC_interviewer_b.png",
+      "kind": "npc",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "anchor": "scene.meeting.interviewer_right"
+    },
+    {
+      "id": "ENDING_echo_overlap",
+      "path": "ending/ENDING_echo_overlap.png",
+      "kind": "ending",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "anchor": "character.body_axis_floor",
+      "defaultOpacity": 0.55
+    },
+    {
+      "id": "ENDING_hollow_proxy",
+      "path": "ending/ENDING_hollow_proxy.png",
+      "kind": "ending",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "anchor": "scene.window_center_floor"
+    },
+    {
       "id": "CREEP_1",
       "path": "creature/CREEP_1.png",
       "kind": "creature",
@@ -455,468 +674,6 @@
       ],
       "anchor": "dialogue.zone_left_center",
       "stretch": "horizontal"
-    },
-    {
-      "id": "CHAR_sleeve_press",
-      "path": "char/CHAR_sleeve_press.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_interview_sit",
-      "path": "char/CHAR_interview_sit.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_livestream_speaking",
-      "path": "char/CHAR_livestream_speaking.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_apology_bow",
-      "path": "char/CHAR_apology_bow.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_final_speaking",
-      "path": "char/CHAR_final_speaking.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "NPC_friend_door_silhouette",
-      "path": "npc/NPC_friend_door_silhouette.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "NPC_friend_hesitant_silhouette",
-      "path": "npc/NPC_friend_hesitant_silhouette.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "NPC_interviewer_a",
-      "path": "npc/NPC_interviewer_a.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "NPC_interviewer_b",
-      "path": "npc/NPC_interviewer_b.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "ENDING_echo_overlap",
-      "path": "ending/ENDING_echo_overlap.png",
-      "kind": "endingLayer",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "ENDING_hollow_proxy",
-      "path": "ending/ENDING_hollow_proxy.png",
-      "kind": "endingLayer",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_sleeve_press",
-      "path": "char/CHAR_sleeve_press.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_interview_sit",
-      "path": "char/CHAR_interview_sit.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_livestream_speaking",
-      "path": "char/CHAR_livestream_speaking.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_apology_bow",
-      "path": "char/CHAR_apology_bow.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_final_speaking",
-      "path": "char/CHAR_final_speaking.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "NPC_friend_door_silhouette",
-      "path": "npc/NPC_friend_door_silhouette.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "NPC_friend_hesitant_silhouette",
-      "path": "npc/NPC_friend_hesitant_silhouette.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "NPC_interviewer_a",
-      "path": "npc/NPC_interviewer_a.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "NPC_interviewer_b",
-      "path": "npc/NPC_interviewer_b.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "ENDING_echo_overlap",
-      "path": "ending/ENDING_echo_overlap.png",
-      "kind": "endingLayer",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "ENDING_hollow_proxy",
-      "path": "ending/ENDING_hollow_proxy.png",
-      "kind": "endingLayer",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_sleeve_press",
-      "path": "char/CHAR_sleeve_press.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_interview_sit",
-      "path": "char/CHAR_interview_sit.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_livestream_speaking",
-      "path": "char/CHAR_livestream_speaking.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_apology_bow",
-      "path": "char/CHAR_apology_bow.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "CHAR_final_speaking",
-      "path": "char/CHAR_final_speaking.png",
-      "kind": "narrativeCharacter",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "NPC_friend_door_silhouette",
-      "path": "npc/NPC_friend_door_silhouette.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "NPC_friend_hesitant_silhouette",
-      "path": "npc/NPC_friend_hesitant_silhouette.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "NPC_interviewer_a",
-      "path": "npc/NPC_interviewer_a.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "NPC_interviewer_b",
-      "path": "npc/NPC_interviewer_b.png",
-      "kind": "npc",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.predefined"
-    },
-    {
-      "id": "ENDING_echo_overlap",
-      "path": "ending/ENDING_echo_overlap.png",
-      "kind": "endingLayer",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
-    },
-    {
-      "id": "ENDING_hollow_proxy",
-      "path": "ending/ENDING_hollow_proxy.png",
-      "kind": "endingLayer",
-      "dimensions": [
-        1024,
-        1024
-      ],
-      "pivot": [
-        0.5,
-        1.0
-      ],
-      "anchor": "scene.floor_center"
     }
   ],
   "creatureTransitions": {
@@ -925,50 +682,6 @@
       "to": "CREEP_3",
       "effect": "FX_censor_growth_strip",
       "durationMs": 500
-    }
-  },
-  "narrativeBindings": {
-    "L0": {
-      "scene": "apartment_rain",
-      "characterAction": "CHAR_sleeve_press",
-      "anchor": "scene.desk_area"
-    },
-    "L1": {
-      "scene": "meeting_room",
-      "characterAction": "CHAR_interview_sit",
-      "npcs": [
-        "NPC_interviewer_a",
-        "NPC_interviewer_b"
-      ],
-      "anchor": "scene.interview_table"
-    },
-    "L2": {
-      "scene": "apartment_desk_live",
-      "characterAction": "CHAR_livestream_speaking",
-      "anchor": "scene.desk_chair"
-    },
-    "L3": {
-      "scene": "apartment_door",
-      "npcs": [
-        "NPC_friend_door_silhouette",
-        "NPC_friend_hesitant_silhouette"
-      ],
-      "anchor": "scene.door_threshold"
-    },
-    "L4": {
-      "scene": "apartment_desk_apology",
-      "characterAction": "CHAR_apology_bow",
-      "anchor": "scene.floor_center"
-    },
-    "L5": {
-      "scene": "apartment_empty",
-      "characterAction": "CHAR_final_speaking",
-      "endingLayers": {
-        "A": null,
-        "B": "ENDING_echo_overlap",
-        "C": "ENDING_hollow_proxy"
-      },
-      "anchor": "scene.floor_center_left"
     }
   }
 }
