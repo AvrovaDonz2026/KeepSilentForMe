@@ -1,0 +1,50 @@
+{
+  "backgrounds": [
+    {
+      "id": "BG_apartment",
+      "name": "公寓主场景",
+      "url": null
+    },
+    {
+      "id": "BG_meeting_room",
+      "name": "会议室",
+      "url": null
+    }
+  ],
+  "character": [
+    {
+      "id": "CHAR_desk_pose",
+      "name": "书桌姿势侧影",
+      "url": null
+    }
+  ],
+  "expressions": [
+    {
+      "id": "FACE_anxious",
+      "name": "紧张",
+      "url": null
+    },
+    {
+      "id": "FACE_cold",
+      "name": "冷淡",
+      "url": null
+    },
+    {
+      "id": "FACE_dependent",
+      "name": "依赖",
+      "url": null
+    }
+  ],
+  "creature": [
+    {
+      "id": "CREATURE_stage1",
+      "name": "消音体阶段1-墨迹",
+      "url": null
+    },
+    {
+      "id": "CREATURE_stage2",
+      "name": "消音体阶段2-半身",
+      "url": null
+    }
+  ]
+}

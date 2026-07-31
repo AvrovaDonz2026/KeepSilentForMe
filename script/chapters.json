@@ -1,6 +1,6 @@
 {
   "game": "请替我沉默",
-  "version": "1.3",
+  "version": "1.2.1",
   "rules": {
     "zones_per_line": "3-4",
     "only_action": "drag_black_bar_continuous",
@@ -31,7 +31,8 @@
               "remain": "我把留给你了，请替我把它们吞下去。",
               "npc": "字被吃掉了。看桌角。",
               "flags": [],
-              "eat": "不能说的话"
+              "eat": "不能说的话",
+              "note": "教「吃」"
             },
             {
               "text": "请替我把它们吞下去",
@@ -41,7 +42,8 @@
                 "bond+"
               ],
               "eat": "替我吞下去",
-              "demo": "D0"
+              "demo": "D0",
+              "note": "D0 锚点"
             },
             {
               "text": "留给你了，",
@@ -221,7 +223,7 @@
         {
           "id": "L1_S04",
           "raw": "如果压力很大，我可能会想逃，但我会先把眼前的事做完。",
-          "face": "紧张",
+          "face": "假镇定",
           "zones": [
             {
               "text": "可能会想逃，但",
@@ -572,7 +574,8 @@
               "flags": [
                 "bond+"
               ],
-              "eat": "好像"
+              "eat": "好像",
+              "note": "实际正相反"
             },
             {
               "text": "什么话都能说",
@@ -590,7 +593,8 @@
               "flags": [
                 "mask+"
               ],
-              "eat": "有你在"
+              "eat": "有你在",
+              "note": "观众不知你是谁"
             },
             {
               "text": "我",
@@ -821,7 +825,8 @@
                 "trust-",
                 "crack+"
               ],
-              "eat": "没有在躲你"
+              "eat": "没有在躲你",
+              "note": "无最优"
             },
             {
               "text": "只是不知道该怎么面对你",
@@ -831,7 +836,8 @@
                 "secret_risk+",
                 "distance+"
               ],
-              "eat": "不知道怎么面对你"
+              "eat": "不知道怎么面对你",
+              "note": "像谎"
             },
             {
               "text": "我最近",
@@ -987,7 +993,7 @@
                 "risk+"
               ],
               "eat": "别人",
-              "note": "遮末尾别人"
+              "note": "末"
             }
           ]
         },
@@ -1101,7 +1107,17 @@
         "end_frame": "空门厅+肩侧半人影；灯忽然一暗，暗示舆论将至",
         "duration": "约8秒",
         "next": "L4弹幕噪音"
-      }
+      },
+      "pre_lines": [
+        {
+          "id": "L3_S04",
+          "type": "npc_only",
+          "coverable": false,
+          "speaker": "friend",
+          "text": "你是不是交了什么不能见人的朋友。",
+          "before": "L3_S04b"
+        }
+      ]
     },
     {
       "id": "L4",
@@ -1168,7 +1184,8 @@
                 "apology_perform+",
                 "mask+"
               ],
-              "eat": "不觉得做错"
+              "eat": "不觉得做错",
+              "note": "表演线"
             },
             {
               "text": "对不起，我知道你们想听这句话，",
@@ -1178,7 +1195,8 @@
                 "apology_refuse+",
                 "truth+"
               ],
-              "eat": "对不起…想听"
+              "eat": "对不起…想听",
+              "note": "硬刚线"
             },
             {
               "text": "想听这句话",
@@ -1293,7 +1311,7 @@
         {
           "id": "L4_S05",
           "raw": "我保证以后只说你们想听的，直到我再也想不起自己想说什么。",
-          "face": "讨好",
+          "face": "讨好→抽离",
           "zones": [
             {
               "text": "直到我再也想不起自己想说什么",
@@ -1558,7 +1576,7 @@
         {
           "id": "L5_S03",
           "raw": "这一次，请你不要再替我遮了。我想自己把话说完。",
-          "face": "依赖",
+          "face": "依赖→决意",
           "zones": [
             {
               "text": "请你不要再替我遮了",
@@ -1700,7 +1718,8 @@
               "npc": "",
               "flags": [],
               "eat": "请你",
-              "ending": "A_separate"
+              "ending": "A_separate",
+              "tone": "她收回祈使；消音被拒/淡出"
             },
             {
               "text": "把我",
@@ -1708,7 +1727,8 @@
               "npc": "",
               "flags": [],
               "eat": "把我",
-              "ending": "B_alienate"
+              "ending": "B_alienate",
+              "tone": "留下的不是「我」"
             },
             {
               "text": "留下来",
@@ -1716,7 +1736,8 @@
               "npc": "",
               "flags": [],
               "eat": "留下来",
-              "ending": "C_consume"
+              "ending": "C_consume",
+              "tone": "请求空壳；体接管"
             },
             {
               "text": "我",
@@ -1724,7 +1745,8 @@
               "npc": "",
               "flags": [],
               "eat": "我",
-              "ending": "C_cold"
+              "ending": "C_cold",
+              "tone": "身份抹去"
             }
           ],
           "is_ending": true
@@ -1953,5 +1975,10 @@
       ],
       "末卡": "你是她没有说出口的那个人。"
     }
+  },
+  "sync": {
+    "source": "台本.md",
+    "aligned": "2026-07-30",
+    "note": "以台本为准：face/notes/L3_S04 npc_only/L5 ending_seed&tone"
   }
 }

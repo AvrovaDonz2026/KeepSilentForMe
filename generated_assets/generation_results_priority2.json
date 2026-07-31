@@ -1,0 +1,35 @@
+{
+  "backgrounds": [
+    {
+      "id": "BG_door_hallway",
+      "name": "门厅",
+      "url": null
+    },
+    {
+      "id": "BG_finale_empty",
+      "name": "终局空房",
+      "url": null
+    }
+  ],
+  "character": [
+    {
+      "id": "CHAR_standing_back",
+      "name": "背影站姿",
+      "url": null
+    }
+  ],
+  "expressions": [
+    {
+      "id": "FACE_blank",
+      "name": "空白",
+      "url": null
+    }
+  ],
+  "creature": [
+    {
+      "id": "CREATURE_stage3",
+      "name": "消音体阶段3-重叠",
+      "url": null
+    }
+  ]
+}
