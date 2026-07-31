@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "v4-playable-2",
+  "id": "v4-playable-3",
   "model": "gpt-image-2",
   "logicalCanvas": [
     1920,
@@ -12,9 +12,11 @@
     "character",
     "creature",
     "ending",
+    "interactiveFx",
     "dialogue",
     "text",
-    "blackBar"
+    "blackBar",
+    "liveHud"
   ],
   "legacyBackgroundRoot": "../../bg",
   "backgrounds": {
@@ -60,12 +62,20 @@
   "narrativeBindings": {
     "L0": {
       "scene": "apartment_rain",
+      "replaceCharacter": true,
+      "replaceNpc": true,
+      "replaceCreature": false,
+      "replaceSceneLayers": false,
       "layers": [
         { "asset": "CHAR_sleeve_press", "anchor": "scene.desk_chair" }
       ]
     },
     "L1": {
       "scene": "meeting_room",
+      "replaceCharacter": true,
+      "replaceNpc": true,
+      "replaceCreature": false,
+      "replaceSceneLayers": false,
       "layers": [
         { "asset": "CHAR_interview_sit", "anchor": "scene.meeting.candidate_chair_center" },
         { "asset": "NPC_interviewer_a", "anchor": "scene.meeting.interviewer_left" },
@@ -74,12 +84,20 @@
     },
     "L2": {
       "scene": "apartment_desk_live",
+      "replaceCharacter": true,
+      "replaceNpc": true,
+      "replaceCreature": false,
+      "replaceSceneLayers": false,
       "layers": [
         { "asset": "CHAR_livestream_speaking", "anchor": "scene.desk_chair" }
       ]
     },
     "L3": {
       "scene": "apartment_door",
+      "replaceCharacter": true,
+      "replaceNpc": true,
+      "replaceCreature": false,
+      "replaceSceneLayers": false,
       "layers": [
         { "asset": "CHAR_door", "anchor": "scene.door_inner_edge" }
       ],
@@ -94,27 +112,157 @@
     },
     "L4": {
       "scene": "apartment_desk_apology",
+      "replaceCharacter": true,
+      "replaceNpc": true,
+      "replaceCreature": false,
+      "replaceSceneLayers": false,
       "layers": [
         { "asset": "CHAR_apology_bow", "anchor": "scene.desk_chair" }
       ]
     },
     "L5": {
       "scene": "apartment_empty",
+      "replaceCharacter": true,
+      "replaceNpc": true,
+      "replaceCreature": false,
+      "replaceSceneLayers": false,
       "layers": [
         { "asset": "CHAR_final_speaking", "anchor": "scene.floor_center_left" }
       ],
       "endingOverrides": {
-        "A_分离": {
+        "A_separate": {
+          "replace": ["CHAR_final_speaking"],
           "layers": ["CHAR_final_speaking"],
-          "hide": ["CREEP_3"]
+          "hide": ["CREEP_3"],
+          "anchorByAsset": { "CHAR_final_speaking": "scene.floor_center_left" }
         },
-        "B_异化": {
+        "B_alienate": {
+          "replace": ["CHAR_final_speaking", "ENDING_echo_overlap"],
           "layers": ["CHAR_final_speaking", "ENDING_echo_overlap"],
-          "hide": ["CREEP_3"]
+          "hide": ["CREEP_3"],
+          "anchorByAsset": {
+            "CHAR_final_speaking": "scene.floor_center_left",
+            "ENDING_echo_overlap": "character.body_axis_floor"
+          }
         },
-        "C_吞没": {
+        "C_consume": {
+          "replace": ["ENDING_hollow_proxy"],
           "layers": ["ENDING_hollow_proxy"],
-          "hide": ["CHAR_final_speaking", "CREEP_3"]
+          "hide": ["CHAR_final_speaking", "CREEP_3"],
+          "anchorByAsset": { "ENDING_hollow_proxy": "scene.window_center_floor" }
+        },
+        "C_cold": {
+          "replace": ["ENDING_hollow_proxy"],
+          "layers": ["ENDING_hollow_proxy"],
+          "hide": ["CHAR_final_speaking", "CREEP_3"],
+          "anchorByAsset": { "ENDING_hollow_proxy": "scene.window_center_floor" }
+        }
+      }
+    }
+  },
+  "endingIds": ["A_separate", "B_alienate", "C_consume", "C_cold"],
+  "interactiveBindings": {
+    "L1": {
+      "scene": "meeting_room",
+      "replaceSceneLayers": false,
+      "states": {}
+    },
+    "L2": {
+      "scene": "apartment_desk_live",
+      "replaceSceneLayers": false,
+      "states": {
+        "live": {
+          "group": "stream",
+          "trigger": "L2_S01",
+          "layers": [
+            { "asset": "UI_live_dot", "anchor": "scene.crt_live_indicator", "layer": "liveHud" },
+            { "asset": "FX_crt_glow_reflection", "anchor": "scene.desk_crt_screen", "layer": "interactiveFx" },
+            { "asset": "FX_comment_noise_stream", "anchor": "scene.crt_comment_zone", "layer": "interactiveFx" }
+          ]
+        },
+        "crt_off": {
+          "group": "stream",
+          "trigger": "L2_S07",
+          "layers": [
+            { "asset": "FX_crt_screen_off", "anchor": "scene.desk_crt_screen", "layer": "interactiveFx" }
+          ]
+        }
+      }
+    },
+    "L3": {
+      "scene": "apartment_door",
+      "replaceSceneLayers": false,
+      "events": {
+        "door_knock": {
+          "trigger": "L3_S01",
+          "durationMs": 360,
+          "layers": [
+            { "asset": "FX_door_knock_ripple", "anchor": "scene.door_outer_panel", "layer": "interactiveFx" }
+          ]
+        },
+        "lock_click": {
+          "trigger": "L3_S04",
+          "durationMs": 220,
+          "layers": [
+            { "asset": "FX_door_lock_click", "anchor": "scene.door_lock", "layer": "interactiveFx" }
+          ]
+        }
+      }
+    },
+    "L4": {
+      "scene": "apartment_desk_apology",
+      "replaceSceneLayers": false,
+      "states": {
+        "live": {
+          "group": "stream",
+          "trigger": "L4_S01",
+          "layers": [
+            { "asset": "UI_live_dot", "anchor": "scene.crt_live_indicator", "layer": "liveHud" },
+            { "asset": "FX_comment_noise_stream", "anchor": "scene.crt_comment_zone", "layer": "interactiveFx" }
+          ]
+        },
+        "bar_locked": {
+          "group": "bar",
+          "trigger": "L4_S05",
+          "layers": [
+            { "asset": "UI_bar_locked", "anchor": "dialogue.zone_left_center", "layer": "blackBar" }
+          ]
+        },
+        "bar_cracked": {
+          "group": "bar",
+          "trigger": "L4_S07",
+          "layers": [
+            { "asset": "UI_bar_cracked", "anchor": "dialogue.zone_left_center", "layer": "blackBar" }
+          ]
+        }
+      },
+      "events": {
+        "bar_shatter": {
+          "trigger": "L4_S07",
+          "durationMs": 520,
+          "layers": [
+            { "asset": "FX_censor_shatter", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        }
+      }
+    },
+    "L5": {
+      "scene": "apartment_empty",
+      "replaceSceneLayers": false,
+      "events": {
+        "gray_letter_fall": {
+          "trigger": "L5_S03",
+          "durationMs": 1200,
+          "layers": [
+            { "asset": "FX_gray_letter_fall", "anchor": "character.back_shoulder", "layer": "interactiveFx" }
+          ]
+        },
+        "bar_shatter": {
+          "trigger": "L5_S06",
+          "durationMs": 520,
+          "layers": [
+            { "asset": "FX_censor_shatter", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
         }
       }
     }
@@ -674,6 +822,89 @@
       ],
       "anchor": "dialogue.zone_left_center",
       "stretch": "horizontal"
+    },
+    {
+      "id": "FX_crt_glow_reflection",
+      "path": "fx/FX_crt_glow_reflection.png",
+      "kind": "effect",
+      "dimensions": [1024, 1024],
+      "pivot": [0.5, 0.5],
+      "anchor": "scene.desk_crt_screen"
+    },
+    {
+      "id": "FX_crt_screen_off",
+      "path": "fx/FX_crt_screen_off.png",
+      "kind": "effect",
+      "dimensions": [1024, 1024],
+      "pivot": [0.5, 0.5],
+      "anchor": "scene.desk_crt_screen"
+    },
+    {
+      "id": "UI_live_dot",
+      "path": "ui/UI_live_dot.png",
+      "kind": "ui",
+      "dimensions": [128, 128],
+      "pivot": [0.5, 0.5],
+      "anchor": "scene.crt_live_indicator"
+    },
+    {
+      "id": "FX_comment_noise_stream",
+      "path": "fx/FX_comment_noise_stream.png",
+      "kind": "effect",
+      "dimensions": [1024, 1024],
+      "pivot": [0.5, 0.5],
+      "anchor": "scene.crt_comment_zone"
+    },
+    {
+      "id": "FX_door_knock_ripple",
+      "path": "fx/FX_door_knock_ripple.png",
+      "kind": "effect",
+      "dimensions": [1024, 1024],
+      "pivot": [0.5, 0.5],
+      "anchor": "scene.door_outer_panel"
+    },
+    {
+      "id": "FX_door_lock_click",
+      "path": "fx/FX_door_lock_click.png",
+      "kind": "effect",
+      "dimensions": [1024, 1024],
+      "pivot": [0.5, 0.5],
+      "anchor": "scene.door_lock"
+    },
+    {
+      "id": "UI_bar_locked",
+      "path": "ui/UI_bar_locked.png",
+      "kind": "ui",
+      "dimensions": [400, 48],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "UI_bar_cracked",
+      "path": "ui/UI_bar_cracked.png",
+      "kind": "ui",
+      "dimensions": [400, 48],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "FX_censor_shatter",
+      "path": "fx/FX_censor_shatter.png",
+      "kind": "effect",
+      "dimensions": [1024, 1024],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "FX_gray_letter_fall",
+      "path": "fx/FX_gray_letter_fall.png",
+      "kind": "effect",
+      "dimensions": [1024, 1024],
+      "pivot": [0.5, 0.0],
+      "anchor": "character.back_shoulder"
     }
   ],
   "creatureTransitions": {

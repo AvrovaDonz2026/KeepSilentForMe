@@ -8,6 +8,16 @@ import os
 import json
 from PIL import Image
 
+
+# Compatibility entry point for older documentation and tooling. The playable
+# pack now includes interactive state/event layers, so the canonical validator
+# is validate.py; delegate before the legacy narrative-only checks below run.
+if __name__ == "__main__":
+    import runpy
+
+    runpy.run_path(os.path.join(os.path.dirname(__file__), "validate.py"), run_name="__main__")
+    raise SystemExit(0)
+
 PROJECT_ROOT = "/home/donz/KeepSilentForMe/art/v4/playable"
 
 # 扩展包资产清单

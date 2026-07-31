@@ -1,0 +1,11 @@
+Use case: illustration-story.
+Asset type: layered transparent prop-state overlay for a 2D game.
+Input image role: the supplied glow-reflection layer is the only geometry
+reference; preserve its exact screen-face silhouette and registration.
+Primary request: convert that same screen face into a screen-off state. Draw one
+near-black, slightly reflective CRT glass plane with only the thin existing edge.
+Composition: screen face only, front-facing, centered in the same transparent
+registration box. The visible subject must be a single rounded dark glass plane.
+Do not add any housing, bezel, outer frame, feet, buttons, or monitor body.
+Avoid: glowing screen, readable text, UI, logos, room, desk, keyboard, person,
+hands, reflections of a face, cast shadow, and green subject pixels.

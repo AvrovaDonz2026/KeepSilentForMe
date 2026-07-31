@@ -1,0 +1,10 @@
+Use case: illustration-story.
+Asset type: layered transparent interaction effect for a 2D game.
+Input image role: the supplied K6 friend-at-door frame is the only door-panel
+placement and material reference; do not reproduce the full room or people.
+Primary request: isolate a restrained impact ripple on a dark wooden door panel:
+three uneven thin gray rings and a tiny dull red-brown pressure accent at the
+knock point. It is a visual cue for one knock, not a comic sound symbol.
+Composition: centered ripple cluster, transparent padding, no door rectangle.
+Avoid: text, speech marks, sound-effect lettering, hand, person, face, room,
+bright red, neon glow, cast shadow, and green subject pixels.

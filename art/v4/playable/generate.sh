@@ -45,6 +45,12 @@ FACE_IDS=(
   FACE_downcast FACE_camera
 )
 
+INTERACTIVE_IDS=(
+  FX_crt_glow_reflection FX_crt_screen_off UI_live_dot
+  FX_comment_noise_stream FX_door_knock_ripple FX_door_lock_click
+  UI_bar_locked UI_bar_cracked FX_censor_shatter FX_gray_letter_fall
+)
+
 log() {
   printf '[v4-playable] %s\n' "$*"
 }
@@ -279,6 +285,58 @@ render_creature() {
   fit_canvas "$alpha" "$ROOT/creature/${id}.png" 1024x1024
 }
 
+render_interactive_layer() {
+  local id="$1"
+  local destination="$2"
+  local model_size="$3"
+  local final_size="$4"
+  local alpha="$TMP_ROOT/${id}-alpha.png"
+  shift 4
+  if [[ "$DRY_RUN" == "1" ]]; then
+    run_model "$id" "$model_size" "$SOURCE/${id}.png" "$@"
+    return 0
+  fi
+  if file_ready "$ROOT/$destination/${id}.png"; then
+    log "skip final $id"
+    return 0
+  fi
+  run_model "$id" "$model_size" "$SOURCE/${id}.png" "$@"
+  to_alpha "$SOURCE/${id}.png" "$alpha"
+  case "$id" in
+    UI_live_dot)
+      # GPT Image 2 requires a large request canvas; trim the generated dot
+      # before reducing it to the compact runtime HUD asset.
+      magick "$alpha" -trim +repage -resize '96x96' -background none -gravity center -extent "$final_size" "$ROOT/$destination/${id}.png"
+      ;;
+    UI_bar_locked|UI_bar_cracked)
+      magick "$alpha" -trim +repage -resize "$final_size" "$ROOT/$destination/${id}.png"
+      ;;
+    *)
+      fit_canvas "$alpha" "$ROOT/$destination/${id}.png" "$final_size"
+      ;;
+  esac
+}
+
+render_crt_screen_off() {
+  if [[ ! -s "$SOURCE/FX_crt_glow_reflection.png" ]]; then
+    render_interactive_layer FX_crt_glow_reflection fx 1024x1024 1024x1024 "$R0C"
+  fi
+  render_interactive_layer FX_crt_screen_off fx 1024x1024 1024x1024 "$SOURCE/FX_crt_glow_reflection.png"
+}
+
+render_interactive() {
+  render_interactive_layer FX_crt_glow_reflection fx 1024x1024 1024x1024 "$R0C"
+  render_crt_screen_off
+  render_interactive_layer UI_live_dot ui 1024x1024 128x128 "$SOURCE/FX_ink_glyph_motes.png"
+  render_interactive_layer FX_comment_noise_stream fx 1024x1024 1024x1024 "$SOURCE/FX_ink_glyph_motes.png"
+  render_interactive_layer FX_door_knock_ripple fx 1024x1024 1024x1024 "$K6"
+  render_interactive_layer FX_door_lock_click fx 1024x1024 1024x1024 "$K6"
+  render_interactive_layer UI_bar_locked ui 1536x512 400x48 "$SOURCE/UI_bar.png"
+  render_interactive_layer UI_bar_cracked ui 1536x512 400x48 "$SOURCE/UI_bar.png"
+  render_interactive_layer FX_censor_shatter fx 1024x1024 1024x1024 "$SOURCE/FX_censor_growth_strip.png"
+  render_interactive_layer FX_gray_letter_fall fx 1024x1024 1024x1024 "$SOURCE/FX_ink_glyph_motes.png"
+}
+
 render_motes() {
   local alpha="$TMP_ROOT/FX_ink_glyph_motes-alpha.png"
   if [[ "$DRY_RUN" == "1" ]]; then
@@ -397,7 +455,7 @@ render_creatures() {
 
 usage() {
   cat <<'EOF'
-Usage: generate.sh [all|faces|characters|creatures|npcs|endings|narrative|fx|ui|ASSET_ID]
+Usage: generate.sh [all|faces|characters|creatures|npcs|endings|narrative|fx|ui|interactive|ASSET_ID]
 
 Environment:
   OPENAI_API_KEY      Required unless DRY_RUN=1.
@@ -431,6 +489,7 @@ main() {
       render_growth_strip
       render_dialog
       render_bar
+      render_interactive
       ;;
     faces) render_faces ;;
     characters) render_characters ;;
@@ -450,6 +509,7 @@ main() {
       render_dialog
       render_bar
       ;;
+    interactive) render_interactive ;;
     FACE_base) render_base ;;
     FACE_anxious|FACE_composed|FACE_fake_smile|FACE_cold|FACE_breaking|FACE_dependent|FACE_blank|FACE_pleasing|FACE_detached|FACE_resolved|FACE_downcast|FACE_camera)
       render_face "$target"
@@ -481,6 +541,16 @@ main() {
     FX_censor_growth_strip) render_growth_strip ;;
     UI_dialog) render_dialog ;;
     UI_bar) render_bar ;;
+    FX_crt_glow_reflection) render_interactive_layer FX_crt_glow_reflection fx 1024x1024 1024x1024 "$R0C" ;;
+    FX_crt_screen_off) render_crt_screen_off ;;
+    UI_live_dot) render_interactive_layer UI_live_dot ui 1024x1024 128x128 "$SOURCE/FX_ink_glyph_motes.png" ;;
+    FX_comment_noise_stream) render_interactive_layer FX_comment_noise_stream fx 1024x1024 1024x1024 "$SOURCE/FX_ink_glyph_motes.png" ;;
+    FX_door_knock_ripple) render_interactive_layer FX_door_knock_ripple fx 1024x1024 1024x1024 "$K6" ;;
+    FX_door_lock_click) render_interactive_layer FX_door_lock_click fx 1024x1024 1024x1024 "$K6" ;;
+    UI_bar_locked) render_interactive_layer UI_bar_locked ui 1536x512 400x48 "$SOURCE/UI_bar.png" ;;
+    UI_bar_cracked) render_interactive_layer UI_bar_cracked ui 1536x512 400x48 "$SOURCE/UI_bar.png" ;;
+    FX_censor_shatter) render_interactive_layer FX_censor_shatter fx 1024x1024 1024x1024 "$SOURCE/FX_censor_growth_strip.png" ;;
+    FX_gray_letter_fall) render_interactive_layer FX_gray_letter_fall fx 1024x1024 1024x1024 "$SOURCE/FX_ink_glyph_motes.png" ;;
     -h|--help|help)
       usage
       ;;

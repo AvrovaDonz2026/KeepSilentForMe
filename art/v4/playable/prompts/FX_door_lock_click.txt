@@ -1,0 +1,10 @@
+Use case: illustration-story.
+Asset type: layered transparent interaction effect for a 2D game.
+Input image role: the supplied K6 friend-at-door frame is the only lock location
+and dark-wood material reference; do not reproduce the full door or room.
+Primary request: isolate a tiny metallic lock-latch click accent: a short dull
+silver latch line, one compressed angular tick, and a faint dark-red pressure
+glint. Keep it understated and readable for a brief state change.
+Composition: compact horizontal mark with transparent padding, no lock body.
+Avoid: text, lettering, cartoon sparks, key, hand, person, room, neon glow,
+cast shadow, and green subject pixels.

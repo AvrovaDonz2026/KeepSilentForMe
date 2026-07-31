@@ -1,0 +1,12 @@
+Use case: illustration-story.
+Asset type: layered transparent censorship-break effect for a 2D game.
+Input image role: the supplied censor-growth strip is the only material and
+texture reference; do not copy its full strip layout.
+Primary request: a horizontal burst of matte-black censorship-bar shards
+breaking apart, with torn gray unreadable glyph scraps and a few low-opacity
+paper-dark fragments moving outward. The center must be visibly broken open,
+not a solid bar and not a monster.
+Composition: wide horizontal effect, transparent padding, asymmetrical but
+controlled debris suitable for a short animation frame.
+Avoid: readable letters, words, arrows, faces, limbs, room, dialogue panel,
+bright sparks, neon, blood, cast shadow, and green subject pixels.

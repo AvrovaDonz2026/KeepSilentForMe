@@ -1,0 +1,10 @@
+Use case: ui-mockup.
+Asset type: compact transparent livestream status indicator for a 2D game HUD.
+Input image role: any supplied texture image is palette-only reference; ignore
+its subjects and composition completely.
+Primary request: one small muted signal-red live indicator dot, a flat circular
+dot with a very restrained dark red edge and no label. It must remain legible
+against a near-black CRT frame without becoming neon.
+Composition: one centered dot, generous transparent padding, no other marks.
+Avoid: words, letters, LIVE text, icons, rings, panel, background, shadow,
+reflection, watermark, and green subject pixels.

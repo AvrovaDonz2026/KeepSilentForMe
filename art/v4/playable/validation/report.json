@@ -833,6 +833,256 @@
         "requiresTransparentCorners": false
       },
       "greenPixels": 0
+    },
+    {
+      "id": "FX_crt_glow_reflection",
+      "path": "fx/FX_crt_glow_reflection.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 636507,
+        "partial": 5158,
+        "opaque": 407530,
+        "opaqueFraction": 0.38865089416503906,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_crt_screen_off",
+      "path": "fx/FX_crt_screen_off.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 537658,
+        "partial": 2823,
+        "opaque": 508095,
+        "opaqueFraction": 0.4845571517944336,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "UI_live_dot",
+      "path": "ui/UI_live_dot.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        128,
+        128
+      ],
+      "alpha": {
+        "transparent": 9261,
+        "partial": 7123,
+        "opaque": 18,
+        "opaqueFraction": 0.0010986328125,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": false
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_comment_noise_stream",
+      "path": "fx/FX_comment_noise_stream.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 1009596,
+        "partial": 34084,
+        "opaque": 6503,
+        "opaqueFraction": 0.006201744079589844,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_door_knock_ripple",
+      "path": "fx/FX_door_knock_ripple.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 997175,
+        "partial": 48882,
+        "opaque": 4225,
+        "opaqueFraction": 0.004029273986816406,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_door_lock_click",
+      "path": "fx/FX_door_lock_click.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 1042233,
+        "partial": 1247,
+        "opaque": 5122,
+        "opaqueFraction": 0.0048847198486328125,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "UI_bar_locked",
+      "path": "ui/UI_bar_locked.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        400,
+        48
+      ],
+      "alpha": {
+        "transparent": 21,
+        "partial": 1917,
+        "opaque": 17706,
+        "opaqueFraction": 0.9221875,
+        "cornerMax": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "requiresTransparentCorners": false
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "UI_bar_cracked",
+      "path": "ui/UI_bar_cracked.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        400,
+        48
+      ],
+      "alpha": {
+        "transparent": 8,
+        "partial": 1867,
+        "opaque": 17751,
+        "opaqueFraction": 0.92453125,
+        "cornerMax": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "requiresTransparentCorners": false
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_censor_shatter",
+      "path": "fx/FX_censor_shatter.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 939164,
+        "partial": 84884,
+        "opaque": 50025,
+        "opaqueFraction": 0.047707557678222656,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_gray_letter_fall",
+      "path": "fx/FX_gray_letter_fall.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 1021330,
+        "partial": 10200,
+        "opaque": 17046,
+        "opaqueFraction": 0.016256332397460938,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
     }
   ],
   "backgrounds": [
@@ -903,5 +1153,5 @@
     }
   ],
   "ok": true,
-  "assetCount": 33
+  "assetCount": 43
 }

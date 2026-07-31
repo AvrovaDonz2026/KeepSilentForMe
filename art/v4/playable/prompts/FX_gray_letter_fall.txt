@@ -1,0 +1,12 @@
+Use case: illustration-story.
+Asset type: layered transparent ending effect for a 2D game.
+Input image role: the supplied ink/glyph motes sprite is a texture reference;
+do not copy its whole arrangement.
+Primary request: a sparse vertical fall of gray letter-like ash and torn paper
+fragments, descending from a shoulder-height origin toward the lower edge. The
+marks are abstract, broken, and completely unreadable; a few pieces are darker
+than the rest and feel like dead subtitle scraps.
+Composition: loose downward particle trail with transparent gaps and generous
+padding, no person or shoulder included.
+Avoid: readable Chinese or Latin text, numbers, UI, smoke cloud, fire, face,
+room, cast shadow, bright white, neon, and green subject pixels.

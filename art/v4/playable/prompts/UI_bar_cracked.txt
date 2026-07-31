@@ -1,0 +1,11 @@
+Use case: ui-mockup.
+Asset type: transparent censorship-bar state variant for a 2D game.
+Input image role: the supplied UI_bar sprite is the exact geometry and width
+reference; preserve its square ends and horizontal proportions.
+Primary request: edit the same matte-black censorship bar into a cracked,
+unstable state. Keep the bar as one horizontal silhouette with three or four
+thin irregular gray fracture lines and a few tiny matte fragments still attached
+to its edges; no explosion yet.
+Composition: isolated horizontal bar with transparent padding, geometry unchanged.
+Avoid: arrows, padlocks, icons, letters, labels, panel, background, shadow,
+characters, bright sparks, and green subject pixels.

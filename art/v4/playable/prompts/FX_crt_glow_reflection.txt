@@ -1,0 +1,14 @@
+Use case: illustration-story.
+Asset type: layered transparent screen-light overlay for a 2D game.
+Input image role: the supplied R0c desk-props plate is the only CRT shape and
+proportion reference; do not reproduce the desk or room.
+Primary request: isolate a restrained cold blue-gray reflection/glow contained
+inside the glass face of a chunky beige-gray CRT monitor. The glow is a dim,
+unreadable screen reflection with a few soft vertical scan-like bands and one
+faint reflected shoulder contour; it must read as light on glass, not a new
+monitor or a scene.
+Composition: one front-facing rectangular CRT-screen glow area with generous
+transparent padding, no bezel outside the screen rectangle.
+Avoid: readable text, interface panels, comments, logos, room, desk, keyboard,
+person, face, hands, neon cyan, lens flare, cast shadow, and green subject
+pixels. Keep the glow opaque enough to key cleanly but subtle and low contrast.

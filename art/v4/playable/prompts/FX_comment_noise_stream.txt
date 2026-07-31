@@ -1,0 +1,12 @@
+Use case: illustration-story.
+Asset type: layered transparent livestream comment-noise effect for a 2D game.
+Input image role: the supplied ink/glyph motes sprite is a texture and density
+reference only; do not copy its whole composition.
+Primary request: a vertical stream of tiny pale gray and dirty blue-gray
+abstract comment fragments and broken glyph-like flecks, clustered as noisy
+motion beside a CRT screen. Every mark must be unreadable and fragmentary; the
+effect should feel like audience chatter without depicting a UI panel.
+Composition: loose vertical cluster with transparent gaps and generous padding.
+Avoid: readable Chinese or Latin words, numbers, chat boxes, usernames, logos,
+faces, speech bubbles, room, cast shadow, bright white, neon colors, and green
+subject pixels.

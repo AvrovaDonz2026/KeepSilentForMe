@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import re
 import sys
 from typing import Any
 
@@ -16,6 +17,8 @@ CORNER_SIZE = 8
 ALPHA_CORNER_LIMIT = 8
 OPAQUE_ALPHA = 245
 GREEN_ERROR = (4, 251, 4)
+EXPECTED_ENDING_IDS = {"A_separate", "B_alienate", "C_consume", "C_cold"}
+EXPECTED_INTERACTIVE_LEVELS = ("L1", "L2", "L3", "L4", "L5")
 
 
 def is_within(path: Path, parent: Path) -> bool:
@@ -103,6 +106,9 @@ def validate_narrative_bindings(
         scene = binding.get("scene")
         if not isinstance(scene, str) or scene not in scene_bindings:
             add_error(report, f"narrativeBindings.{level}.scene references missing scene {scene}")
+        for flag in ("replaceCharacter", "replaceNpc", "replaceCreature", "replaceSceneLayers"):
+            if not isinstance(binding.get(flag), bool):
+                add_error(report, f"narrativeBindings.{level}.{flag} must be boolean")
         layers = binding.get("layers")
         if not isinstance(layers, list):
             add_error(report, f"narrativeBindings.{level}.layers must be an array")
@@ -132,19 +138,27 @@ def validate_narrative_bindings(
             add_error(report, "narrativeBindings.L3.variants.friend.after must be an object")
         else:
             for state, asset in after.items():
+                if state != "L3_S04b":
+                    add_error(report, f"narrativeBindings.L3 friend after has unknown state {state}")
                 if asset not in asset_ids:
                     add_error(report, f"narrativeBindings.L3 friend after {state} references missing asset {asset}")
+
+    ending_ids = manifest.get("endingIds")
+    if not isinstance(ending_ids, list) or set(ending_ids) != EXPECTED_ENDING_IDS:
+        add_error(report, "endingIds must contain A_separate, B_alienate, C_consume, and C_cold")
 
     l5_binding = bindings.get("L5")
     ending_overrides = l5_binding.get("endingOverrides") if isinstance(l5_binding, dict) else None
     if not isinstance(ending_overrides, dict):
         add_error(report, "narrativeBindings.L5.endingOverrides must be an object")
     else:
+        if set(ending_overrides) != EXPECTED_ENDING_IDS:
+            add_error(report, "narrativeBindings.L5.endingOverrides must match endingIds")
         for ending, override in ending_overrides.items():
             if not isinstance(override, dict):
                 add_error(report, f"narrativeBindings.L5.endingOverrides.{ending} must be an object")
                 continue
-            for list_key in ("layers", "hide"):
+            for list_key in ("replace", "layers", "hide"):
                 values = override.get(list_key)
                 if not isinstance(values, list):
                     add_error(report, f"narrativeBindings.L5.endingOverrides.{ending}.{list_key} must be an array")
@@ -152,6 +166,88 @@ def validate_narrative_bindings(
                 for asset in values:
                     if asset not in asset_ids:
                         add_error(report, f"narrativeBindings.L5.endingOverrides.{ending}.{list_key} references missing asset {asset}")
+            anchors = override.get("anchorByAsset")
+            if not isinstance(anchors, dict):
+                add_error(report, f"narrativeBindings.L5.endingOverrides.{ending}.anchorByAsset must be an object")
+            else:
+                for asset in override.get("replace", []):
+                    anchor = anchors.get(asset)
+                    if not isinstance(anchor, str) or not anchor.strip():
+                        add_error(report, f"narrativeBindings.L5.endingOverrides.{ending} needs an anchor for {asset}")
+
+
+def validate_interactive_bindings(
+    manifest: dict[str, Any],
+    asset_ids: set[Any],
+    report: dict[str, Any],
+) -> None:
+    bindings = manifest.get("interactiveBindings")
+    if not isinstance(bindings, dict):
+        add_error(report, "interactiveBindings must be an object")
+        return
+
+    scene_bindings = manifest.get("sceneBindings", {})
+    if not isinstance(scene_bindings, dict):
+        scene_bindings = {}
+    layer_order = manifest.get("layerOrder", [])
+    if not isinstance(layer_order, list):
+        layer_order = []
+    layer_ids = set(layer_order)
+
+    for level in EXPECTED_INTERACTIVE_LEVELS:
+        binding = bindings.get(level)
+        if not isinstance(binding, dict):
+            add_error(report, f"interactiveBindings.{level} must be an object")
+            continue
+        scene = binding.get("scene")
+        if not isinstance(scene, str) or scene not in scene_bindings:
+            add_error(report, f"interactiveBindings.{level}.scene references missing scene {scene}")
+        if not isinstance(binding.get("replaceSceneLayers"), bool):
+            add_error(report, f"interactiveBindings.{level}.replaceSceneLayers must be boolean")
+
+        for bucket in ("states", "events"):
+            entries = binding.get(bucket, {})
+            if entries is None:
+                continue
+            if not isinstance(entries, dict):
+                add_error(report, f"interactiveBindings.{level}.{bucket} must be an object")
+                continue
+            for name, entry in entries.items():
+                if not isinstance(entry, dict):
+                    add_error(report, f"interactiveBindings.{level}.{bucket}.{name} must be an object")
+                    continue
+                trigger = entry.get("trigger")
+                if trigger is not None and (
+                    not isinstance(trigger, str)
+                    or re.fullmatch(r"L[1-5]_S\d+[A-Za-z]*", trigger) is None
+                ):
+                    add_error(report, f"interactiveBindings.{level}.{bucket}.{name}.trigger must be a chapter line ID")
+                if bucket == "states" and (
+                    not isinstance(entry.get("group"), str)
+                    or not entry.get("group", "").strip()
+                ):
+                    add_error(report, f"interactiveBindings.{level}.states.{name}.group must be a non-empty string")
+                if bucket == "events":
+                    duration = entry.get("durationMs")
+                    if not isinstance(duration, int) or duration <= 0:
+                        add_error(report, f"interactiveBindings.{level}.{bucket}.{name}.durationMs must be positive")
+                layers = entry.get("layers")
+                if not isinstance(layers, list) or not layers:
+                    add_error(report, f"interactiveBindings.{level}.{bucket}.{name}.layers must be a non-empty array")
+                    continue
+                for index, layer in enumerate(layers):
+                    if not isinstance(layer, dict):
+                        add_error(report, f"interactiveBindings.{level}.{bucket}.{name}.layers[{index}] must be an object")
+                        continue
+                    asset = layer.get("asset")
+                    if asset not in asset_ids:
+                        add_error(report, f"interactiveBindings.{level}.{bucket}.{name}.layers[{index}] references missing asset {asset}")
+                    anchor = layer.get("anchor")
+                    if not isinstance(anchor, str) or not anchor.strip():
+                        add_error(report, f"interactiveBindings.{level}.{bucket}.{name}.layers[{index}] needs a non-empty anchor")
+                    render_layer = layer.get("layer")
+                    if render_layer not in layer_ids:
+                        add_error(report, f"interactiveBindings.{level}.{bucket}.{name}.layers[{index}] uses unknown layer {render_layer}")
 
 
 def check_asset(
@@ -221,6 +317,7 @@ def validate_references(manifest: dict[str, Any], report: dict[str, Any]) -> Non
     asset_ids = set(ids)
 
     validate_narrative_bindings(manifest, asset_ids, report)
+    validate_interactive_bindings(manifest, asset_ids, report)
 
     for label, binding in manifest.get("faceMap", {}).items():
         if not isinstance(binding, dict):

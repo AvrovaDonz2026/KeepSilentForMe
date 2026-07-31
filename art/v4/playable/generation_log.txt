@@ -95,3 +95,22 @@ NPC: 4
 结局层: 2
 
 ✅ 扩展包生成完成
+
+================================================================================
+Interactive state/event batch (2026-07-31)
+================================================================================
+
+Generated through /v1/images/edits with one visual reference per asset:
+- FX_crt_glow_reflection -> fx/FX_crt_glow_reflection.png
+- FX_crt_screen_off -> fx/FX_crt_screen_off.png (re-edited from the glow screen reference to preserve screen-only registration)
+- UI_live_dot -> ui/UI_live_dot.png
+- FX_comment_noise_stream -> fx/FX_comment_noise_stream.png
+- FX_door_knock_ripple -> fx/FX_door_knock_ripple.png
+- FX_door_lock_click -> fx/FX_door_lock_click.png
+- UI_bar_locked -> ui/UI_bar_locked.png
+- UI_bar_cracked -> ui/UI_bar_cracked.png
+- FX_censor_shatter -> fx/FX_censor_shatter.png
+- FX_gray_letter_fall -> fx/FX_gray_letter_fall.png
+
+The interactive bindings live in manifest.json and use chapter-line triggers,
+exclusive state groups, runtime anchors, and render-layer names for L2-L5.
