@@ -1,0 +1,12 @@
+Primary request: Create one transparent full-body production game sprite of the
+same young adult East Asian woman from the supplied v4 references. She sits at
+an implied desk in a tired inward posture, shown in a three-quarter side/back
+view facing left. She has long straight black hair, a loose gray-olive or
+blue-gray hoodie, and her head is slightly bowed. Keep her legs, torso, and
+feet readable within the canvas, with her forearms naturally extending toward
+an implied tabletop just outside the asset. This is a quiet exhausted pose, not
+a dramatic collapse.
+
+Do not include the desk, chair, monitor, keyboard, room, floor, door, window,
+creature, props, text, UI, or any scenery. Isolate only the woman with clear
+silhouette separation and full body visible.

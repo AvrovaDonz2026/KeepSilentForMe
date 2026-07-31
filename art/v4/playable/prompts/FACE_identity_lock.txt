@@ -1,0 +1,7 @@
+This is a surgical expression edit. The first supplied image is the canonical
+identity reference and must remain the same person. Preserve the exact face
+shape, eye spacing, nose, lips, skin texture, hairline, hairstyle, hoodie,
+framing, camera angle, lighting, palette, and all pixels outside the facial
+expression area. Do not redesign, beautify, age, stylize, or reinterpret her.
+Only the requested eyebrow, eye-gaze, eyelid, and mouth muscle changes may be
+introduced inside the supplied mask. Keep the green chroma-key background flat.

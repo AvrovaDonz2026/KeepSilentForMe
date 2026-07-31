@@ -1,0 +1,10 @@
+Primary request: Create a clean transparent 2D visual-novel dialogue panel
+asset with no text. It is a wide near-black charcoal panel with a restrained
+thin dirty-gray outline, lightly worn paper/film grain, and modest squared
+corners. Keep a broad uniform empty interior that can receive live dialogue
+text later. The left and right edges must be simple and structurally consistent
+so the panel can be safely nine-sliced into a wider runtime panel.
+
+No words, letters, labels, icons, portraits, buttons, controls, logos,
+watermarks, scenery, characters, or cast shadows. The panel itself should be
+opaque while the outside is chroma-key background for alpha extraction.

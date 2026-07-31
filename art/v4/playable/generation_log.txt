@@ -1,0 +1,97 @@
+================================================================================
+V4 Narrative Character Extension Pack Generator
+================================================================================
+
+================================================================================
+处理类别: character_actions
+================================================================================
+
+生成: CHAR_sleeve_press
+  章节: L0
+  源图: source/CHAR_stand.png
+  输出: char/CHAR_sleeve_press.png
+  ❌ 生成失败: 'url'
+
+生成: CHAR_interview_sit
+  章节: L1
+  源图: source/CHAR_stand.png
+  输出: char/CHAR_interview_sit.png
+  ❌ 生成失败: 'url'
+
+生成: CHAR_livestream_speaking
+  章节: L2
+  源图: source/CHAR_stand.png
+  输出: char/CHAR_livestream_speaking.png
+  ❌ 生成失败: 'url'
+
+生成: CHAR_apology_bow
+  章节: L4
+  源图: source/CHAR_stand.png
+  输出: char/CHAR_apology_bow.png
+  ❌ 生成失败: 'url'
+
+生成: CHAR_final_speaking
+  章节: L5
+  源图: source/CHAR_stand.png
+  输出: char/CHAR_final_speaking.png
+  ❌ 生成失败: 'url'
+
+================================================================================
+处理类别: npcs
+================================================================================
+
+生成: NPC_friend_door_silhouette
+  章节: L3
+  源图: ../../../storyboard/frames/K6-friend-at-door.png
+  输出: npc/NPC_friend_door_silhouette.png
+  ❌ 生成失败: 'url'
+
+生成: NPC_friend_hesitant_silhouette
+  章节: L3
+  源图: ../../../storyboard/frames/K6-friend-at-door.png
+  输出: npc/NPC_friend_hesitant_silhouette.png
+  ❌ 生成失败: 'url'
+
+生成: NPC_interviewer_a
+  章节: L1
+  源图: ../../../storyboard/frames/K3-interview.png
+  输出: npc/NPC_interviewer_a.png
+  ❌ API错误: 403
+  响应: {"error":{"message":"user quota is not enough (request id: 20260731173011605247994OnW5XhUd)","type":"new_api_error","param":"","code":"local:insufficient_quota"}}
+
+生成: NPC_interviewer_b
+  章节: L1
+  源图: ../../../storyboard/frames/K3-interview.png
+  输出: npc/NPC_interviewer_b.png
+  ❌ API错误: 403
+  响应: {"error":{"message":"user quota is not enough (request id: 20260731173015568022181UwkAKhtk)","type":"new_api_error","param":"","code":"local:insufficient_quota"}}
+
+================================================================================
+处理类别: ending_layers
+================================================================================
+
+生成: ENDING_echo_overlap
+  章节: L5_B
+  源图: source/CHAR_stand.png
+  输出: ending/ENDING_echo_overlap.png
+  ❌ API错误: 403
+  响应: {"error":{"message":"user quota is not enough (request id: 20260731173018815782718WmBMX0xm)","type":"new_api_error","param":"","code":"local:insufficient_quota"}}
+
+生成: ENDING_hollow_proxy
+  章节: L5_C
+  源图: creature/CREEP_3.png
+  输出: ending/ENDING_hollow_proxy.png
+  ❌ API错误: 403
+  响应: {"error":{"message":"user quota is not enough (request id: 20260731173021787799696q9T2xsNF)","type":"new_api_error","param":"","code":"local:insufficient_quota"}}
+✅ manifest.json 已更新（新增 11 个资产）
+✅ 联系表已生成: /home/donz/KeepSilentForMe/art/v4/playable/NARRATIVE_CONTACT_SHEET.md
+
+================================================================================
+完成统计
+================================================================================
+总资产数: 11
+主角动作: 5
+NPC: 4
+结局层: 2
+
+✅ 扩展包生成完成

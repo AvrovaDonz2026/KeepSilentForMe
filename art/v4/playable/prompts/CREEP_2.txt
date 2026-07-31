@@ -1,0 +1,10 @@
+Primary request: Create a medium transparent production game sprite for the
+second stage of the "silence creature" from the v4 references. It is a denser
+matte-black mass of overlapping censor bars, folded tape-like blackout strips,
+unreadable ink fragments, and compressed illegible glyph debris. Its long
+diagonal shape is suited to crossing behind a shoulder or across a torso, but
+it remains a graphic occlusion rather than a biological creature.
+
+Absolutely no face, eyes, mouth, teeth, head, hair, body, limbs, skeletal
+anatomy, animal form, mascot shape, or human silhouette. No readable text,
+logos, UI, background, room, props, or cast shadow.

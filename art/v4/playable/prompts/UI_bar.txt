@@ -1,0 +1,8 @@
+Primary request: Create a compact transparent production UI asset: one solid
+matte-black horizontal censorship bar with very subtle worn edge texture. It
+must have clean square ends, a uniform central body, and be appropriate for
+horizontal stretching over selected dialogue words. Keep the bar centered with
+generous empty chroma-key padding around it.
+
+No words, letters, labels, icons, logos, buttons, panels, characters,
+background, props, or cast shadows. The bar itself is opaque black.

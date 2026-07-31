@@ -1,0 +1,9 @@
+Primary request: Create a transparent 2D game effect sheet of small drifting
+matte-black ink motes, torn censorship fragments, and abstract illegible glyph
+dust. Arrange many separate particles across the canvas with a gentle current
+from lower left to upper right; leave the center somewhat open so the sheet can
+be composited over dialogue. Each particle must remain visibly separate and
+readable at small scale.
+
+Use no readable language, no letters that form words, no face, eyes, mouth,
+head, creature body, person, background, room, UI, icons, or cast shadow.

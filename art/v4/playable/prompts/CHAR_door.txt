@@ -1,0 +1,11 @@
+Primary request: Create one transparent full-body production game sprite of the
+same young adult East Asian woman from the supplied v4 references. Show her in
+a three-quarter back/side view at a doorway threshold gesture: one arm reaches
+slightly outward as though touching a door edge just beyond the asset, while
+the rest of her body hesitates and remains withdrawn. She has long straight
+black hair, a loose gray-olive or blue-gray hoodie, dark trousers, and simple
+shoes. Keep the complete figure and both feet inside the canvas.
+
+Do not draw an actual door, hallway, room, floor, shadow, furniture, creature,
+props, text, UI, or scenery. Isolate only the woman with crisp silhouette
+edges and enough empty padding around the reaching hand.

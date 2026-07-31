@@ -1,0 +1,11 @@
+Primary request: Create one transparent full-body production game sprite of the
+same young adult East Asian woman from the supplied v4 references. She stands
+quietly in a three-quarter back/side view, with long straight black hair, a
+loose gray-olive or blue-gray hoodie, dark simple trousers, and understated
+shoes. Her arms rest near her sides inside long sleeves and her posture is
+still, distant, and tired rather than heroic or fashionable. Keep the entire
+body and both feet visible on canvas.
+
+Do not include a room, floor, shadows, furniture, door, window, creature,
+props, text, UI, or scenery. Isolate only the woman with a clean readable
+silhouette.

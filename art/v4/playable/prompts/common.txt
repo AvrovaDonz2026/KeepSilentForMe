@@ -1,0 +1,20 @@
+Use case: illustration-story.
+Asset type: production-ready 2D game asset for Keep Silent For Me.
+Supplied images are visual references only. Preserve their character identity,
+matte hand-drawn linework, and v4 doomer continuity, but do not copy their
+background or bake in their scene composition.
+
+Art direction: dense but controlled hand-drawn 2D realistic animation linework,
+matte worn surfaces, subtle cross-hatching, fine 35mm film grain. Contemporary
+urban China, quiet exhausted observational mood. Near black, blue-black, dirty
+gray-green, subdued sodium brown; signal red only when specifically requested
+and never over two percent of the image. No cyberpunk neon, glossy 3D, bright
+anime rendering, idol livestream styling, glamour, watermarks, subtitle bars,
+storyboard borders, arrows, coordinates, or readable UI text.
+
+Create the subject on a perfectly flat solid #00ff00 chroma-key background for
+background removal. The background must be one uniform color with no gradients,
+texture, reflections, floor plane, lighting variation, or shadows. Keep generous
+transparent-safe padding around the subject and crisp separable edges. Do not use
+#00ff00 in the subject. No cast shadow, contact shadow, reflection, watermark, or
+unrequested text.

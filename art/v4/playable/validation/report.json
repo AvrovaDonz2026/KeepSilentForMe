@@ -1,0 +1,632 @@
+{
+  "manifest": "/home/donz/KeepSilentForMe/art/v4/playable/manifest.json",
+  "errors": [],
+  "warnings": [
+    "background apartment_rain: does not match logical canvas [1920, 1080]; runtime must fit or crop it",
+    "background meeting_room: does not match logical canvas [1920, 1080]; runtime must fit or crop it",
+    "background apartment_desk_live: does not match logical canvas [1920, 1080]; runtime must fit or crop it",
+    "background apartment_door: does not match logical canvas [1920, 1080]; runtime must fit or crop it",
+    "background apartment_empty: does not match logical canvas [1920, 1080]; runtime must fit or crop it"
+  ],
+  "assets": [
+    {
+      "id": "FACE_anxious",
+      "path": "faces/FACE_anxious.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 383855,
+        "partial": 7482,
+        "opaque": 657239,
+        "opaqueFraction": 0.6267919540405273,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FACE_composed",
+      "path": "faces/FACE_composed.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 383547,
+        "partial": 7455,
+        "opaque": 657574,
+        "opaqueFraction": 0.6271114349365234,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FACE_fake_smile",
+      "path": "faces/FACE_fake_smile.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 383253,
+        "partial": 7680,
+        "opaque": 657643,
+        "opaqueFraction": 0.6271772384643555,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FACE_cold",
+      "path": "faces/FACE_cold.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 383774,
+        "partial": 7163,
+        "opaque": 657639,
+        "opaqueFraction": 0.6271734237670898,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FACE_breaking",
+      "path": "faces/FACE_breaking.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 384068,
+        "partial": 7357,
+        "opaque": 657151,
+        "opaqueFraction": 0.6267080307006836,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FACE_dependent",
+      "path": "faces/FACE_dependent.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 385481,
+        "partial": 7421,
+        "opaque": 655674,
+        "opaqueFraction": 0.6252994537353516,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FACE_blank",
+      "path": "faces/FACE_blank.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 383776,
+        "partial": 7410,
+        "opaque": 657390,
+        "opaqueFraction": 0.6269359588623047,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FACE_pleasing",
+      "path": "faces/FACE_pleasing.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 383836,
+        "partial": 7372,
+        "opaque": 657368,
+        "opaqueFraction": 0.6269149780273438,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FACE_detached",
+      "path": "faces/FACE_detached.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 387140,
+        "partial": 7982,
+        "opaque": 653454,
+        "opaqueFraction": 0.6231822967529297,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FACE_resolved",
+      "path": "faces/FACE_resolved.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 383804,
+        "partial": 7344,
+        "opaque": 657428,
+        "opaqueFraction": 0.6269721984863281,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FACE_downcast",
+      "path": "faces/FACE_downcast.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 390046,
+        "partial": 8334,
+        "opaque": 650196,
+        "opaqueFraction": 0.6200752258300781,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FACE_camera",
+      "path": "faces/FACE_camera.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 383440,
+        "partial": 7253,
+        "opaque": 657883,
+        "opaqueFraction": 0.627406120300293,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "CHAR_desk",
+      "path": "char/CHAR_desk.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 835802,
+        "partial": 8464,
+        "opaque": 205531,
+        "opaqueFraction": 0.19600963592529297,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "CHAR_stand",
+      "path": "char/CHAR_stand.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 917349,
+        "partial": 5981,
+        "opaque": 126078,
+        "opaqueFraction": 0.12023735046386719,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "CHAR_door",
+      "path": "char/CHAR_door.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 908019,
+        "partial": 6912,
+        "opaque": 134500,
+        "opaqueFraction": 0.12826919555664062,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "CREEP_1",
+      "path": "creature/CREEP_1.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 939215,
+        "partial": 21717,
+        "opaque": 91270,
+        "opaqueFraction": 0.08704185485839844,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "CREEP_2",
+      "path": "creature/CREEP_2.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 846196,
+        "partial": 52370,
+        "opaque": 158449,
+        "opaqueFraction": 0.1511087417602539,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "CREEP_3",
+      "path": "creature/CREEP_3.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 732140,
+        "partial": 14341,
+        "opaque": 304386,
+        "opaqueFraction": 0.2902851104736328,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_ink_glyph_motes",
+      "path": "fx/FX_ink_glyph_motes.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 994311,
+        "partial": 37947,
+        "opaque": 19177,
+        "opaqueFraction": 0.018288612365722656,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_censor_growth_strip",
+      "path": "fx/FX_censor_growth_strip.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        256
+      ],
+      "alpha": {
+        "transparent": 141326,
+        "partial": 15973,
+        "opaque": 106901,
+        "opaqueFraction": 0.4077949523925781,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "UI_dialog",
+      "path": "ui/UI_dialog.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1920,
+        480
+      ],
+      "alpha": {
+        "transparent": 204883,
+        "partial": 16213,
+        "opaque": 704210,
+        "opaqueFraction": 0.7641167534722222,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": false
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "UI_bar",
+      "path": "ui/UI_bar.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        400,
+        48
+      ],
+      "alpha": {
+        "transparent": 15,
+        "partial": 1822,
+        "opaque": 17702,
+        "opaqueFraction": 0.9219791666666667,
+        "cornerMax": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "requiresTransparentCorners": false
+      },
+      "greenPixels": 0
+    }
+  ],
+  "backgrounds": [
+    {
+      "id": "apartment_rain",
+      "path": "../../bg/BG_apartment.png",
+      "errors": [],
+      "warnings": [
+        "does not match logical canvas [1920, 1080]; runtime must fit or crop it"
+      ],
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "meeting_room",
+      "path": "../../bg/BG_meeting.png",
+      "errors": [],
+      "warnings": [
+        "does not match logical canvas [1920, 1080]; runtime must fit or crop it"
+      ],
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "apartment_desk_live",
+      "path": "../../bg/BG_live.png",
+      "errors": [],
+      "warnings": [
+        "does not match logical canvas [1920, 1080]; runtime must fit or crop it"
+      ],
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "apartment_door",
+      "path": "../../bg/BG_door.png",
+      "errors": [],
+      "warnings": [
+        "does not match logical canvas [1920, 1080]; runtime must fit or crop it"
+      ],
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "apartment_empty",
+      "path": "../../bg/BG_finale.png",
+      "errors": [],
+      "warnings": [
+        "does not match logical canvas [1920, 1080]; runtime must fit or crop it"
+      ],
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    }
+  ],
+  "ok": true,
+  "assetCount": 22
+}

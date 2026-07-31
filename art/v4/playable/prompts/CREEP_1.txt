@@ -1,0 +1,11 @@
+Primary request: Create a small transparent production game sprite for the
+first stage of the "silence creature" from the v4 references. It is a compact
+matte-black censor fragment: a few overlapping broken rectangular blackout
+bars, unreadable ink smears, and sparse illegible glyph scraps. It feels like a
+minor invasive text censor lodged near a desk corner or sleeve cuff. Keep the
+mass small and asymmetric with open transparent space around it.
+
+This is abstract graphic contamination, never a character. Absolutely no face,
+eyes, mouth, teeth, head, hair, body, limbs, animal anatomy, mascot shape, or
+human silhouette. No readable words, logos, UI, background, room, props, or
+cast shadow.

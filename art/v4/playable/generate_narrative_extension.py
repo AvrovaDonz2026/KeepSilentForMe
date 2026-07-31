@@ -12,7 +12,7 @@ from PIL import Image
 import io
 
 # API配置
-API_BASE = "https://api.qingyun.top/v1"
+API_BASE = "https://api.qingyuntop.top/v1"
 API_KEY = "sk-oQ0L8sg62Ny0Od2ZJlcPpcgOBTaZHDhY1l4I2WFZNO9Q5jAU"
 
 # 项目路径
