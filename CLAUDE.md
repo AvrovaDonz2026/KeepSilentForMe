@@ -123,8 +123,8 @@ web/
 ### Day 1+: Start Development
 
 ```bash
-# Copy Day 1 demo template from WEB_TECH_STACK.md §Quick Start
-# 160-line HTML with full drag-snap implementation
+# Copy the Day 1 demo template from WEB_TECH_STACK.md §Quick Start
+# The repository has no web/ implementation yet; treat this as the first prototype.
 
 # Local development server
 python3 -m http.server 8000

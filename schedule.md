@@ -24,7 +24,7 @@
 
 - **整体**：手绘 2D 写实动画线稿 + 深黑室内层级 + 细 35mm 颗粒；对话框 UI 与黑条叠在原画之上。焦点仍是“句子 / 黑条 / 少女 / 消音体”。
 - **不是**：亮色可爱偶像立绘、赛博霓虹、厚涂商业萌系、高光 3D。
-- **少女**：长黑发、灰橄榄/蓝灰连帽或朴素层；多侧影与背影；6—8 个**微表情**（紧张、假笑、冷淡、崩溃边缘、依赖、空白、讨好、抽离）。
+- **少女**：长黑发、灰橄榄/蓝灰连帽或朴素层；多侧影与背影；V4 已提供 10 个基础表情 + 2 个变体（紧张、假笑、冷淡、崩溃边缘、依赖、空白、讨好、抽离等）。
 - **消音体（玩家）**：哑光墨迹与黑体残字蠕动聚合；三阶段（桌角渗墨 → 身侧半人 → 几乎重叠的实体），从属同一套蓝黑阶，禁止霓虹特效。
 - **场景**：旧公寓书桌/面试隔间/门厅/空房；单点台灯 + 冷窗光；雨夜湿材质可作过场。不做探索。
 - **关系参考**：《主播女孩重度依赖》的黏着与直播压迫 —— **视觉上不跟它的甜系**，跟 doomer 母版的疲惫与封闭。
@@ -282,8 +282,8 @@
 | 每关台词 | **6—7 句**可遮（见 `台本.md` v1.2） |
 | 可处理台词总计 | 约 **35** 句 |
 | 每句可遮挡区 | 3—4 个 |
-| 少女关键姿势 + 表情 | 1 套 doomer 线稿（3—5 姿势 / 6—8 微表情） |
-| 场景 BG | 5+ 张 16:9 深黑室内（公寓锁 + 会议室） |
+| 少女关键姿势 + 表情 | V4 运行时 8 姿势 / 10 个基础表情 + 2 个变体 |
+| 场景 BG | 5 张旧批次深黑室内 PNG（运行时 fit/crop 到 16:9 逻辑画布） |
 | **关末 AI 视频** | **约 9–11 条**，每条 6–12s（图生视频） |
 | 消音体阶段 | 3（哑光墨迹系） |
 | 结局 | 2—3（终句 zone 决定 + 结局视频） |
@@ -633,6 +633,7 @@ document.getElementById('start-button').addEventListener('click', async () => {
 | **程序（菜鸟）** | 本文 §十六 快速启动 | §11.5 单句状态机 | 复制Day 1 HTML |
 | **美术（菜鸟）** | `art-style.md` + 本文 §十二 | Demo 图 D0–D6 | §十二资产表 |
 | **策划/文案** | `台本.md` | 本文 §4 | JSON 字段表 |
+| **资产/技术整合** | `art/v4/playable/README.md` | `manifest.json` + `validate.py` | V4 资产验收 |
 | **全员** | 本文 §九 | `selling-points.md` | 验收 §十四 |
 
 ```text
@@ -648,6 +649,11 @@ KeepSilentForMe/
 │   └── ...
 └── [Web项目目录结构见 §11.3]
 ```
+
+当前静态可玩资产的唯一入口是 `art/v4/playable/manifest.json`；它通过
+`sceneBindings` 兼容引用 `art/bg/` 的五张旧背景，并管理透明角色、表情、NPC、
+消音体、结局、FX 和 UI。Web 项目创建后可以把这些类别复制到自己的 `assets/`
+目录，但不要重新维护一份独立的资产清单。
 
 **原则**：对白与分支以 **JSON 为准**；画风以 **art-style + Demo 图** 为准；关末电影感以 **台本视频节** 为准。不要在三个地方各写一套互相矛盾的句子。
 
@@ -1231,7 +1237,7 @@ function playVideoWithAudio(videoId) {
     {
       "id": "L1",
       "title": "面试",
-      "scene": "meeting_room",  // 对应 assets/bg/BG_meeting_room.jpg
+      "scene": "meeting_room",  // 对应 manifest.sceneBindings.meeting_room
       "creature": "stage1",     // CSS类名: .creature.stage-1
       "goal": "pass>=4 && fail<2",
       "lines": [/* 见下 */],
@@ -1245,7 +1251,7 @@ function playVideoWithAudio(videoId) {
 {
   "id": "L1_S01",
   "raw": "我叫——算了，名字不重要，我只是一个很普通、很容易把事情搞砸的人。",
-  "face": "紧张",           // 对应 assets/char/face_紧张.png
+  "face": "紧张",           // script 标签；由 manifest.faceMap 映射到 FACE_anxious
   "zones": [
     {
       "text": "很容易把事情搞砸",  // ⚠️ 必须是raw的连续子串
@@ -1290,21 +1296,21 @@ function validateChaptersData(data) {
 
 ### 12.1 你要交的东西（打勾表）
 
-| 序号 | 资产 | 规格 | 参考 | 文件名建议 |
+| 序号 | 资产 | 规格 | 参考 | 当前入口 |
 | --- | --- | --- | --- | --- |
-| 1 | 公寓主场景 | 1920×1080 PNG | R0 / D0 | `BG_apartment.png` |
-| 2 | 会议室 | 1920×1080 | D1 | `BG_meeting.png` |
-| 3 | 直播桌（可与公寓同底差分） | 1920×1080 | D2 D4 | `BG_live.png` |
-| 4 | 门厅 | 1920×1080 | D3 | `BG_door.png` |
-| 5 | 终局空房 | 1920×1080 | D5 | `BG_finale.png` |
-| 6 | 少女 3 姿势 | 透明底或半身 | D0–D5 | `CHAR_desk.png` `CHAR_stand.png` `CHAR_door.png` |
-| 7 | 表情 8 张 | 仅脸差分或全头 | 见 face 枚举 | `FACE_紧张.png` … |
-| 8 | 消音体 Stage1/2/3 | 透明底 | D6 | `CREEP_1.png` … |
-| 9 | 对话框九宫 | 深色半透 | D0 UI | `UI_dialog.png` |
-| 10 | 黑条 | 纯黑哑光长条 | D0 | `UI_bar.png` |
-| 11 | 关末视频 9–11 条 | 16:9 mp4 6–12s | 台本 V* | `video/V*.mp4` |
+| 1–5 | 场景 BG | 5 张旧批次 PNG，1536×1024；运行时 fit/crop 到 1920×1080 逻辑画布 | R0 / D0–D5 | `art/bg/BG_*.png`，由 manifest `backgrounds` 引用 |
+| 6 | 少女叙事姿势 | 8 张透明 RGBA 层 | D0–D5 | `art/v4/playable/char/` |
+| 7 | 对话表情 | 10 个基础表情 + 2 个变体 | face 枚举 | `art/v4/playable/faces/`，由 `faceMap` 映射 |
+| 8 | 消音体 Stage1/2/3 | 3 张透明 RGBA 层 | D6 | `art/v4/playable/creature/` |
+| 9 | NPC 层 | 4 张透明 RGBA 层 | D3 / D1 | `art/v4/playable/npc/` |
+| 10 | 结局层 | 2 张透明 RGBA 层 | 台本终局 | `art/v4/playable/ending/` |
+| 11 | FX 交互层 | 9 张透明 RGBA 层 | 章节触发 | `art/v4/playable/fx/` |
+| 12 | UI 运行时层 | 5 张透明 RGBA 层 | D0 / 直播 / 黑条状态 | `art/v4/playable/ui/` |
+| 13 | 关末视频 | 9–11 条，16:9 MP4，6–12s | 台本 V* | `video/V*.mp4`（待制作） |
 
-**竖切可偷懒**：BG+角色合成一张静帧/章；表情只做 3 个；视频先黑场占位。
+**当前状态**：序号 6–12 已在 V4 可玩资产包中完成并通过校验；序号 1–5 由
+V4 manifest 通过兼容入口引用 `art/bg/`，视频仍按台本分镜待制作。
+竖切可以先加载 manifest 中的 L0/L1 绑定，视频用黑场占位。
 
 ### 12.2 画风铁律（违反即返工）
 
@@ -1372,14 +1378,14 @@ function validateChaptersData(data) {
 6. 命名放入 video/（见台本附录）
 ```
 
-### 12.8 美术日程建议（与程序并行）
+### 12.8 美术日程建议（V4 静态包已完成，与程序并行）
 
 | 日 | 美术产出 |
 | --- | --- |
-| 1 | 锁 R0 公寓 BG + UI 对话框/黑条 |
-| 2 | 会议室 BG + 少女 1 姿势 + 3 表情 |
-| 3 | 门厅 + 直播差分 + Stage1/2 |
-| 4 | Stage3 + 终局空房 + 剩余表情 |
+| 1 | 读取 `art/v4/playable/manifest.json`，接入 L0/L1 的 BG、角色、表情与 UI |
+| 2 | 跑 `validate.py`，确认透明通道、尺寸和锚点；补缺的 Web 资源复制脚本 |
+| 3 | 接入门厅/NPC/直播交互层，核对 `interactiveBindings` 的章节触发 |
+| 4 | 接入 Stage3、结局层和结束画面；确认 `endingIds` 映射 |
 | 5–6 | 关末视频批量 |
 | 7 | 修崩溃帧、预告截图 |
 
@@ -1556,8 +1562,8 @@ BGM来源：
 **程序今天（Day 1）：**  
 ① 创建 `index.html` + 基础CSS → ② fetch读取 `chapters.json` → ③ 渲染1句话，用 `<span class="zone">` 包裹 → ④ 黑条可拖动（pointerdown/move/up） → ⑤ 松手吸附到最近zone → ⑥ 切换remain文本 → ⑦ flags累加
 
-**美术今天（Day 1）：**  
-① 打开 `D0` `D1` `D6` 参考 → ② 生成/绘制 BG_apartment.jpg → ③ 设计对话框UI（半透明深灰） → ④ 黑条素材（纯黑矩形） → ⑤ Stage1墨团素材
+**美术今天（静态包已完成）：**
+① 阅读 `art/v4/playable/README.md` → ② 运行 `python3 art/v4/playable/validate.py` → ③ 按 manifest 接入 L0/L1 的背景、角色、表情、对话框和黑条 → ④ 把视频与音频列为后续开发资产，不在旧批次目录重复生成
 
 **音频今天（Day 6）：**  
 ① 访问 freesound.org 搜索 "paper rustle" "ink drip" "snap" → ② 下载5-8个SFX → ③ 访问 incompetech.com 选择3首BGM（ambient/dark） → ④ 转换为MP3格式
@@ -1650,7 +1656,7 @@ git push origin main
 ✅ 跨平台：PC/Mac/iOS/Android统一  
 ✅ 快速迭代：F5刷新即测试  
 ✅ 易分发：一个URL即可分享  
-✅ 字符热区问题已解决：DOM自动计算  
+✅ 字符热区方案已确定：DOM自动计算，待 Day 0 原型实测
 
 ### 挑战
 ⚠️ 移动端视频自动播放限制（已有解决方案）  
@@ -1665,14 +1671,19 @@ production/
 ├── js/                     # 8-10个JS模块
 ├── assets/                 # 所有资产
 │   ├── data/chapters.json  # 35句完整数据
-│   ├── bg/                 # 5张场景（WebP，每张<500KB）
-│   ├── char/               # 3姿势+8表情（PNG）
-│   ├── creature/           # 3个Stage（PNG透明底）
+│   ├── bg/                 # 5张场景（可转WebP；旧批次源为1536×1024 PNG）
+│   ├── char/               # V4 8姿势（RGBA PNG）
+│   ├── faces/              # V4 10基础表情+2变体（RGBA PNG）
+│   ├── npc/                # V4 4个NPC层（RGBA PNG）
+│   ├── creature/           # V4 3个Stage（RGBA PNG）
+│   ├── ending/             # V4 2个结局层（RGBA PNG）
+│   ├── fx/                 # V4 9个交互层（RGBA PNG）
+│   ├── ui/                 # V4 5个UI层（RGBA PNG）
 │   ├── video/              # 9-11条视频（MP4，共<80MB）
 │   └── audio/              # SFX+BGM（MP3，共<5MB）
 └── README.md
 
-总体积估算：<100MB
+V4 当前静态运行时 PNG 约 24 MiB；视频和音频接入后再按压缩结果核算总体积。
 首屏加载：<5MB（渐进加载）
 ```
 

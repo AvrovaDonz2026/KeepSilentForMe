@@ -8,16 +8,35 @@ composition: full-body sprites remain separate from the dialogue portrait cards.
 
 ## Deliverables
 
-- `faces/`: 12 interchangeable dialogue portraits.
+- `faces/`: 12 interchangeable dialogue portraits (10 base expressions plus 2 variants).
 - `char/`: desk, standing, door-side, and five narrative full-body sprites.
 - `npc/`: friend silhouettes and interview-side observers.
 - `ending/`: the overlap echo and hollow replacement ending sprites.
 - `creature/`: the three silence-entity stages.
-- `fx/`: reusable ink/glyph effects plus CRT, door, shatter, and falling-letter state layers.
-- `ui/`: the dialogue panel, draggable censor bar, live indicator, and bar-state variants.
+- `fx/`: 9 reusable ink/glyph, CRT, door, shatter, and falling-letter state layers.
+- `ui/`: 5 runtime UI layers: dialogue panel, censor bar, live indicator, and bar-state variants.
 - `source/`: raw chroma-key model output retained for reprocessing.
-- `validation/interactive-contact-sheet.png`: visual review sheet for the ten interactive layers.
+- `validation/`: validator report plus category and full-pack visual contact sheets.
 - `manifest.json`: runtime labels, dimensions, anchors, and animation mappings.
+
+## Directory Layout
+
+The generated runtime files and their editable inputs stay separated:
+
+```text
+art/v4/playable/
+  faces/ char/ npc/ creature/ ending/ fx/ ui/  final RGBA runtime layers
+  source/                                      raw keyed model output and masks
+  prompts/                                     per-asset prompts and common style lock
+  validation/                                  report and visual contact sheets
+  generate.sh                                  one generation entry point
+  manifest.json                                runtime paths and chapter bindings
+```
+
+`source/` is intentionally retained for identity-locked edits and re-keying;
+the engine should load only the category folders listed in `manifest.json`.
+The older root-level `art/` folders are compatibility inputs, not a second
+runtime pack.
 
 ## Generation
 
@@ -70,7 +89,7 @@ from `source/CREEP_3.png`.
 
 The interactive layers also use `/images/edits`, one visual reference per asset,
 and never add a person to the effect. `interactiveBindings` records the chapter
-line trigger, exclusive state group, runtime anchor, and render layer for L2-L5;
+line trigger, optional exclusive state group, runtime anchor, and render layer for L2-L5;
 L1 intentionally has no CRT overlay because its scene is the meeting room.
 The machine ending IDs are `A_separate`, `B_alienate`, `C_consume`, and
 `C_cold`; Chinese labels remain display-only in the screenplay.

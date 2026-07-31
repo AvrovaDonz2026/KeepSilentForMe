@@ -314,7 +314,7 @@ def generate_contact_sheet(assets_data):
             output.append(f"  - 源图: {asset['source']}\n")
             output.append(f"  - 输出: {asset['output_path']}\n\n")
 
-    contact_sheet_path = f"{PROJECT_ROOT}/NARRATIVE_CONTACT_SHEET.md"
+    contact_sheet_path = f"{PROJECT_ROOT}/validation/narrative-contact-sheet.md"
     with open(contact_sheet_path, 'w', encoding='utf-8') as f:
         f.write(''.join(output))
 

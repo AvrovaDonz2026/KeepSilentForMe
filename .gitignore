@@ -91,3 +91,6 @@ __pycache__/
 ~$*.docx
 ~$*.doc
 .~lock.*
+# Local generation logs and caches
+/art/gen/
+.venv/

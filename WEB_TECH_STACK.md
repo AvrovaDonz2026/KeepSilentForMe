@@ -21,7 +21,7 @@
 
 | 优势 | 说明 |
 |------|------|
-| **字符热区问题已解决** | DOM `getBoundingClientRect()` 自动计算中文字符包围盒 |
+| **字符热区方案已确定** | DOM `getBoundingClientRect()` 自动计算中文字符包围盒，需在 Day 0 原型中实测 |
 | **零构建流程** | 无需Webpack/Vite，F5刷新即可测试 |
 | **跨平台原生** | 同一份代码运行在PC/Mac/iOS/Android |
 | **部署简单** | 静态托管，一键发布到Vercel/Netlify |
@@ -183,9 +183,9 @@ function exportSave() {
 
 ---
 
-## Day 0 技术验证
+## Day 0 技术验证（开发启动前待办）
 
-**必须在Day 0完成以下3项验证**，否则不要开始Day 1开发：
+以下 3 项必须在 Day 1 开发前完成；当前仓库尚未包含 `web/` 原型，因此这里的勾选状态仍由开发验收填写。
 
 ### 验证1：字符热区吸附（2小时）
 
@@ -480,7 +480,7 @@ function exportSave() {
 - 使用 `transform` 代替 `left/top`
 - `requestAnimationFrame` 节流拖拽事件
 - `will-change` 提示浏览器优化
-- 图片用WebP格式，视频720p
+- 场景 BG 可转 WebP，透明运行时层保留 manifest 规定的 RGBA PNG；视频使用 720p
 
 ### Q5: 如何部署到生产环境？
 **A**: 
@@ -503,8 +503,9 @@ vercel
 - **完整策划案**：`schedule.md`（含§十一 Web程序组装手册）
 - **台词脚本**：`台本.md`（35句完整数据）
 - **美术规范**：`art-style.md`（Doomer风格）
+- **当前可玩资产包**：`art/v4/playable/README.md`（manifest、生成入口与校验）
 - **项目总览**：`README.md`
 
 ---
 
-*文档版本：v1.0 · 最后更新：2026-07-30*
+*文档版本：v1.1 · 最后更新：2026-08-01*
