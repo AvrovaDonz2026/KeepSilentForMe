@@ -1083,6 +1083,306 @@
         "requiresTransparentCorners": true
       },
       "greenPixels": 0
+    },
+    {
+      "id": "UI_bar_hover",
+      "path": "ui/UI_bar_hover.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        400,
+        48
+      ],
+      "alpha": {
+        "transparent": 0,
+        "partial": 19200,
+        "opaque": 7738,
+        "opaqueFraction": 0.40302083333333333,
+        "cornerMax": [
+          242,
+          240,
+          246,
+          232
+        ],
+        "requiresTransparentCorners": false
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "UI_bar_active",
+      "path": "ui/UI_bar_active.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        400,
+        48
+      ],
+      "alpha": {
+        "transparent": 647,
+        "partial": 1746,
+        "opaque": 16979,
+        "opaqueFraction": 0.8843229166666666,
+        "cornerMax": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "requiresTransparentCorners": false
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "UI_bar_snap",
+      "path": "ui/UI_bar_snap.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        400,
+        48
+      ],
+      "alpha": {
+        "transparent": 1224,
+        "partial": 1914,
+        "opaque": 16224,
+        "opaqueFraction": 0.845,
+        "cornerMax": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "requiresTransparentCorners": false
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_zone_hint",
+      "path": "fx/FX_zone_hint.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        256
+      ],
+      "alpha": {
+        "transparent": 236701,
+        "partial": 0,
+        "opaque": 25443,
+        "opaqueFraction": 0.09705734252929688,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_zone_snap_pulse",
+      "path": "fx/FX_zone_snap_pulse.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        256
+      ],
+      "alpha": {
+        "transparent": 252366,
+        "partial": 9662,
+        "opaque": 685,
+        "opaqueFraction": 0.002613067626953125,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_censor_drag_trail",
+      "path": "fx/FX_censor_drag_trail.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        256
+      ],
+      "alpha": {
+        "transparent": 247825,
+        "partial": 13816,
+        "opaque": 2388,
+        "opaqueFraction": 0.0091094970703125,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_censor_absorb",
+      "path": "fx/FX_censor_absorb.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        256
+      ],
+      "alpha": {
+        "transparent": 218647,
+        "partial": 37409,
+        "opaque": 15530,
+        "opaqueFraction": 0.05924224853515625,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_dialog_refresh_glitch",
+      "path": "fx/FX_dialog_refresh_glitch.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        256
+      ],
+      "alpha": {
+        "transparent": 253568,
+        "partial": 7928,
+        "opaque": 822,
+        "opaqueFraction": 0.00313568115234375,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_bar_reject_shiver",
+      "path": "fx/FX_bar_reject_shiver.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        256
+      ],
+      "alpha": {
+        "transparent": 225248,
+        "partial": 8440,
+        "opaque": 29538,
+        "opaqueFraction": 0.11267852783203125,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_text_fragment_burst",
+      "path": "fx/FX_text_fragment_burst.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 938921,
+        "partial": 85591,
+        "opaque": 24064,
+        "opaqueFraction": 0.02294921875,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_letter_to_creature_arc",
+      "path": "fx/FX_letter_to_creature_arc.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 1006289,
+        "partial": 18664,
+        "opaque": 23623,
+        "opaqueFraction": 0.022528648376464844,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
+    },
+    {
+      "id": "FX_ink_feed_burst",
+      "path": "fx/FX_ink_feed_burst.png",
+      "errors": [],
+      "warnings": [],
+      "mode": "RGBA",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "alpha": {
+        "transparent": 969030,
+        "partial": 43572,
+        "opaque": 35974,
+        "opaqueFraction": 0.03430747985839844,
+        "cornerMax": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "requiresTransparentCorners": true
+      },
+      "greenPixels": 0
     }
   ],
   "backgrounds": [
@@ -1153,5 +1453,5 @@
     }
   ],
   "ok": true,
-  "assetCount": 43
+  "assetCount": 55
 }

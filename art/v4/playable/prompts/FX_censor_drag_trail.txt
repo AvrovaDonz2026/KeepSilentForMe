@@ -1,0 +1,13 @@
+Use case: illustration-story.
+Asset type: transparent horizontal drag-trail effect for a 2D game.
+Input image role: the supplied censor-growth strip and ink-mote sheet are
+material references only.
+Primary request: create a sparse matte-black smear that trails behind a moving
+censorship bar. The trail should be broken into short worn ink segments with a
+few abstract gray glyph scraps, tapering toward the release side. It must read
+as motion residue, never as a second bar.
+Composition: wide horizontal band, transparent padding, asymmetrical but
+controlled, suitable for stretching along a dialogue line.
+Avoid: readable letters, words, arrows, cursor, full solid bar, characters,
+faces, room, smoke cloud, bright sparks, neon, cast shadow, and green subject
+pixels.

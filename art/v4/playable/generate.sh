@@ -36,6 +36,7 @@ K8="$V4/frames-2k/K8-room-without-audience.png"
 K9="$V4/frames-2k/K9-you-are-the-unsaid.png"
 D0="$DEMO/D0-core-mechanic.png"
 D1="$DEMO/D1-interview.png"
+D2="$DEMO/D2-livestream.png"
 D4="$DEMO/D4-apology-stream.png"
 D6="$DEMO/D6-creature-stages.png"
 
@@ -49,6 +50,13 @@ INTERACTIVE_IDS=(
   FX_crt_glow_reflection FX_crt_screen_off UI_live_dot
   FX_comment_noise_stream FX_door_knock_ripple FX_door_lock_click
   UI_bar_locked UI_bar_cracked FX_censor_shatter FX_gray_letter_fall
+)
+
+FEEDBACK_IDS=(
+  UI_bar_hover UI_bar_active UI_bar_snap
+  FX_zone_hint FX_zone_snap_pulse FX_censor_drag_trail FX_censor_absorb
+  FX_dialog_refresh_glitch FX_bar_reject_shiver FX_text_fragment_burst
+  FX_letter_to_creature_arc FX_ink_feed_burst
 )
 
 log() {
@@ -308,8 +316,8 @@ render_interactive_layer() {
       # before reducing it to the compact runtime HUD asset.
       magick "$alpha" -trim +repage -resize '96x96' -background none -gravity center -extent "$final_size" "$ROOT/$destination/${id}.png"
       ;;
-    UI_bar_locked|UI_bar_cracked)
-      magick "$alpha" -trim +repage -resize "$final_size" "$ROOT/$destination/${id}.png"
+    UI_bar_locked|UI_bar_cracked|UI_bar_hover|UI_bar_active|UI_bar_snap)
+      magick "$alpha" -trim +repage -resize "${final_size}!" "$ROOT/$destination/${id}.png"
       ;;
     *)
       fit_canvas "$alpha" "$ROOT/$destination/${id}.png" "$final_size"
@@ -335,6 +343,21 @@ render_interactive() {
   render_interactive_layer UI_bar_cracked ui 1536x512 400x48 "$SOURCE/UI_bar.png"
   render_interactive_layer FX_censor_shatter fx 1024x1024 1024x1024 "$SOURCE/FX_censor_growth_strip.png"
   render_interactive_layer FX_gray_letter_fall fx 1024x1024 1024x1024 "$SOURCE/FX_ink_glyph_motes.png"
+}
+
+render_feedback() {
+  render_interactive_layer UI_bar_hover ui 1536x512 400x48 "$SOURCE/UI_bar.png" "$D0" "$D4"
+  render_interactive_layer UI_bar_active ui 1536x512 400x48 "$SOURCE/UI_bar.png" "$D0" "$D4"
+  render_interactive_layer UI_bar_snap ui 1536x512 400x48 "$SOURCE/UI_bar.png" "$D0" "$D4"
+  render_interactive_layer FX_zone_hint fx 1536x512 1024x256 "$SOURCE/FX_censor_growth_strip.png" "$D0"
+  render_interactive_layer FX_zone_snap_pulse fx 1536x512 1024x256 "$SOURCE/FX_censor_growth_strip.png" "$D0"
+  render_interactive_layer FX_censor_drag_trail fx 1536x512 1024x256 "$SOURCE/FX_censor_growth_strip.png" "$D0" "$D4"
+  render_interactive_layer FX_censor_absorb fx 1536x512 1024x256 "$SOURCE/FX_censor_growth_strip.png" "$D0" "$D4"
+  render_interactive_layer FX_dialog_refresh_glitch fx 1536x512 1024x256 "$SOURCE/FX_comment_noise_stream.png" "$D2"
+  render_interactive_layer FX_bar_reject_shiver fx 1536x512 1024x256 "$SOURCE/UI_bar_cracked.png" "$D4"
+  render_interactive_layer FX_text_fragment_burst fx 1024x1024 1024x1024 "$SOURCE/FX_censor_shatter.png" "$D0" "$D4"
+  render_interactive_layer FX_letter_to_creature_arc fx 1024x1024 1024x1024 "$SOURCE/FX_ink_glyph_motes.png" "$D6"
+  render_interactive_layer FX_ink_feed_burst fx 1024x1024 1024x1024 "$SOURCE/FX_ink_glyph_motes.png" "$D6"
 }
 
 render_motes() {
@@ -455,7 +478,7 @@ render_creatures() {
 
 usage() {
   cat <<'EOF'
-Usage: generate.sh [all|faces|characters|creatures|npcs|endings|narrative|fx|ui|interactive|ASSET_ID]
+Usage: generate.sh [all|faces|characters|creatures|npcs|endings|narrative|fx|ui|interactive|feedback|ASSET_ID]
 
 Environment:
   OPENAI_API_KEY      Required unless DRY_RUN=1.
@@ -490,6 +513,7 @@ main() {
       render_dialog
       render_bar
       render_interactive
+      render_feedback
       ;;
     faces) render_faces ;;
     characters) render_characters ;;
@@ -509,7 +533,11 @@ main() {
       render_dialog
       render_bar
       ;;
-    interactive) render_interactive ;;
+    interactive)
+      render_interactive
+      render_feedback
+      ;;
+    feedback) render_feedback ;;
     FACE_base) render_base ;;
     FACE_anxious|FACE_composed|FACE_fake_smile|FACE_cold|FACE_breaking|FACE_dependent|FACE_blank|FACE_pleasing|FACE_detached|FACE_resolved|FACE_downcast|FACE_camera)
       render_face "$target"
@@ -551,6 +579,18 @@ main() {
     UI_bar_cracked) render_interactive_layer UI_bar_cracked ui 1536x512 400x48 "$SOURCE/UI_bar.png" ;;
     FX_censor_shatter) render_interactive_layer FX_censor_shatter fx 1024x1024 1024x1024 "$SOURCE/FX_censor_growth_strip.png" ;;
     FX_gray_letter_fall) render_interactive_layer FX_gray_letter_fall fx 1024x1024 1024x1024 "$SOURCE/FX_ink_glyph_motes.png" ;;
+    UI_bar_hover) render_interactive_layer UI_bar_hover ui 1536x512 400x48 "$SOURCE/UI_bar.png" "$D0" "$D4" ;;
+    UI_bar_active) render_interactive_layer UI_bar_active ui 1536x512 400x48 "$SOURCE/UI_bar.png" "$D0" "$D4" ;;
+    UI_bar_snap) render_interactive_layer UI_bar_snap ui 1536x512 400x48 "$SOURCE/UI_bar.png" "$D0" "$D4" ;;
+    FX_zone_hint) render_interactive_layer FX_zone_hint fx 1536x512 1024x256 "$SOURCE/FX_censor_growth_strip.png" "$D0" ;;
+    FX_zone_snap_pulse) render_interactive_layer FX_zone_snap_pulse fx 1536x512 1024x256 "$SOURCE/FX_censor_growth_strip.png" "$D0" ;;
+    FX_censor_drag_trail) render_interactive_layer FX_censor_drag_trail fx 1536x512 1024x256 "$SOURCE/FX_censor_growth_strip.png" "$D0" "$D4" ;;
+    FX_censor_absorb) render_interactive_layer FX_censor_absorb fx 1536x512 1024x256 "$SOURCE/FX_censor_growth_strip.png" "$D0" "$D4" ;;
+    FX_dialog_refresh_glitch) render_interactive_layer FX_dialog_refresh_glitch fx 1536x512 1024x256 "$SOURCE/FX_comment_noise_stream.png" "$D2" ;;
+    FX_bar_reject_shiver) render_interactive_layer FX_bar_reject_shiver fx 1536x512 1024x256 "$SOURCE/UI_bar_cracked.png" "$D4" ;;
+    FX_text_fragment_burst) render_interactive_layer FX_text_fragment_burst fx 1024x1024 1024x1024 "$SOURCE/FX_censor_shatter.png" "$D0" "$D4" ;;
+    FX_letter_to_creature_arc) render_interactive_layer FX_letter_to_creature_arc fx 1024x1024 1024x1024 "$SOURCE/FX_ink_glyph_motes.png" "$D6" ;;
+    FX_ink_feed_burst) render_interactive_layer FX_ink_feed_burst fx 1024x1024 1024x1024 "$SOURCE/FX_ink_glyph_motes.png" "$D6" ;;
     -h|--help|help)
       usage
       ;;

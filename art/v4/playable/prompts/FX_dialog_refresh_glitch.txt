@@ -1,0 +1,13 @@
+Use case: illustration-story.
+Asset type: transparent dialogue-refresh effect for a 2D game.
+Input image role: the supplied comment-noise and ink-mote effects are texture
+references only.
+Primary request: create a restrained horizontal flicker of broken gray ink
+strokes and tiny rectangular paper-dark fragments that marks dialogue text
+refreshing after a phrase is eaten. Keep the effect extremely light and
+localized to the dialogue line; it must not contain any readable text.
+Composition: wide horizontal strip, transparent gaps, low opacity edges and a
+quiet central disturbance.
+Avoid: readable Chinese or Latin text, words, arrows, cursor, UI labels,
+characters, faces, room, scanline neon, bright sparks, cast shadow, and green
+subject pixels.

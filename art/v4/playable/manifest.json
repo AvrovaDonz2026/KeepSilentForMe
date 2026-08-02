@@ -67,7 +67,7 @@
       "replaceCreature": false,
       "replaceSceneLayers": false,
       "layers": [
-        { "asset": "CHAR_sleeve_press", "anchor": "scene.desk_chair" }
+        { "asset": "CHAR_desk", "anchor": "scene.desk_chair" }
       ]
     },
     "L1": {
@@ -162,15 +162,147 @@
   },
   "endingIds": ["A_separate", "B_alienate", "C_consume", "C_cold"],
   "interactiveBindings": {
+    "L0": {
+      "scene": "apartment_rain",
+      "replaceSceneLayers": false,
+      "states": {
+        "bar_hover": {
+          "group": "bar",
+          "trigger": "L0_S01",
+          "layers": [
+            { "asset": "UI_bar_hover", "anchor": "dialogue.zone_left_center", "layer": "blackBar" }
+          ]
+        },
+        "bar_active": {
+          "group": "bar",
+          "trigger": "L0_S01",
+          "layers": [
+            { "asset": "UI_bar_active", "anchor": "dialogue.zone_left_center", "layer": "blackBar" },
+            { "asset": "FX_censor_drag_trail", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        }
+      },
+      "events": {
+        "zone_hint": {
+          "trigger": "L0_S01",
+          "durationMs": 420,
+          "layers": [
+            { "asset": "FX_zone_hint", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "bar_snap": {
+          "trigger": "L0_S01",
+          "durationMs": 260,
+          "layers": [
+            { "asset": "UI_bar_snap", "anchor": "dialogue.zone_left_center", "layer": "blackBar" },
+            { "asset": "FX_zone_snap_pulse", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "censor_absorb": {
+          "trigger": "L0_S01",
+          "durationMs": 620,
+          "layers": [
+            { "asset": "FX_censor_absorb", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" },
+            { "asset": "FX_text_fragment_burst", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "ink_feed": {
+          "trigger": "L0_S01",
+          "durationMs": 840,
+          "layers": [
+            { "asset": "FX_letter_to_creature_arc", "anchor": "selectedDialogueZone->creatureAnchor", "layer": "interactiveFx" },
+            { "asset": "FX_ink_feed_burst", "anchor": "selectedDialogueZone->creatureAnchor", "layer": "interactiveFx" }
+          ]
+        },
+        "dialogue_refresh": {
+          "trigger": "L0_S01",
+          "durationMs": 300,
+          "layers": [
+            { "asset": "FX_dialog_refresh_glitch", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        }
+      }
+    },
     "L1": {
       "scene": "meeting_room",
       "replaceSceneLayers": false,
-      "states": {}
+      "states": {
+        "bar_hover": {
+          "group": "bar",
+          "trigger": "L1_S03",
+          "layers": [
+            { "asset": "UI_bar_hover", "anchor": "dialogue.zone_left_center", "layer": "blackBar" }
+          ]
+        },
+        "bar_active": {
+          "group": "bar",
+          "trigger": "L1_S03",
+          "layers": [
+            { "asset": "UI_bar_active", "anchor": "dialogue.zone_left_center", "layer": "blackBar" },
+            { "asset": "FX_censor_drag_trail", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        }
+      },
+      "events": {
+        "zone_hint": {
+          "trigger": "L1_S03",
+          "durationMs": 420,
+          "layers": [
+            { "asset": "FX_zone_hint", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "bar_snap": {
+          "trigger": "L1_S03",
+          "durationMs": 260,
+          "layers": [
+            { "asset": "UI_bar_snap", "anchor": "dialogue.zone_left_center", "layer": "blackBar" },
+            { "asset": "FX_zone_snap_pulse", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "censor_absorb": {
+          "trigger": "L1_S03",
+          "durationMs": 620,
+          "layers": [
+            { "asset": "FX_censor_absorb", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" },
+            { "asset": "FX_text_fragment_burst", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "ink_feed": {
+          "trigger": "L1_S03",
+          "durationMs": 840,
+          "layers": [
+            { "asset": "FX_letter_to_creature_arc", "anchor": "selectedDialogueZone->creatureAnchor", "layer": "interactiveFx" },
+            { "asset": "FX_ink_feed_burst", "anchor": "selectedDialogueZone->creatureAnchor", "layer": "interactiveFx" }
+          ]
+        },
+        "dialogue_refresh": {
+          "trigger": "L1_S03",
+          "durationMs": 300,
+          "layers": [
+            { "asset": "FX_dialog_refresh_glitch", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        }
+      }
     },
     "L2": {
       "scene": "apartment_desk_live",
       "replaceSceneLayers": false,
       "states": {
+        "bar_hover": {
+          "group": "bar",
+          "trigger": "L2_S04",
+          "layers": [
+            { "asset": "UI_bar_hover", "anchor": "dialogue.zone_left_center", "layer": "blackBar" }
+          ]
+        },
+        "bar_active": {
+          "group": "bar",
+          "trigger": "L2_S04",
+          "layers": [
+            { "asset": "UI_bar_active", "anchor": "dialogue.zone_left_center", "layer": "blackBar" },
+            { "asset": "FX_censor_drag_trail", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
         "live": {
           "group": "stream",
           "trigger": "L2_S01",
@@ -187,12 +319,84 @@
             { "asset": "FX_crt_screen_off", "anchor": "scene.desk_crt_screen", "layer": "interactiveFx" }
           ]
         }
+      },
+      "events": {
+        "bar_snap": {
+          "trigger": "L2_S04",
+          "durationMs": 260,
+          "layers": [
+            { "asset": "UI_bar_snap", "anchor": "dialogue.zone_left_center", "layer": "blackBar" },
+            { "asset": "FX_zone_snap_pulse", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "censor_absorb": {
+          "trigger": "L2_S04",
+          "durationMs": 620,
+          "layers": [
+            { "asset": "FX_censor_absorb", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" },
+            { "asset": "FX_text_fragment_burst", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "ink_feed": {
+          "trigger": "L2_S04",
+          "durationMs": 840,
+          "layers": [
+            { "asset": "FX_letter_to_creature_arc", "anchor": "selectedDialogueZone->creatureAnchor", "layer": "interactiveFx" },
+            { "asset": "FX_ink_feed_burst", "anchor": "selectedDialogueZone->creatureAnchor", "layer": "interactiveFx" }
+          ]
+        },
+        "dialogue_refresh": {
+          "trigger": "L2_S07",
+          "durationMs": 300,
+          "layers": [
+            { "asset": "FX_dialog_refresh_glitch", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        }
       }
     },
     "L3": {
       "scene": "apartment_door",
       "replaceSceneLayers": false,
+      "states": {
+        "bar_hover": {
+          "group": "bar",
+          "trigger": "L3_S02",
+          "layers": [
+            { "asset": "UI_bar_hover", "anchor": "dialogue.zone_left_center", "layer": "blackBar" }
+          ]
+        },
+        "bar_active": {
+          "group": "bar",
+          "trigger": "L3_S02",
+          "layers": [
+            { "asset": "UI_bar_active", "anchor": "dialogue.zone_left_center", "layer": "blackBar" },
+            { "asset": "FX_censor_drag_trail", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        }
+      },
       "events": {
+        "zone_hint": {
+          "trigger": "L3_S02",
+          "durationMs": 420,
+          "layers": [
+            { "asset": "FX_zone_hint", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "bar_snap": {
+          "trigger": "L3_S02",
+          "durationMs": 260,
+          "layers": [
+            { "asset": "UI_bar_snap", "anchor": "dialogue.zone_left_center", "layer": "blackBar" },
+            { "asset": "FX_zone_snap_pulse", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "bar_reject": {
+          "trigger": "L3_S06",
+          "durationMs": 320,
+          "layers": [
+            { "asset": "FX_bar_reject_shiver", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
         "door_knock": {
           "trigger": "L3_S01",
           "durationMs": 360,
@@ -213,6 +417,21 @@
       "scene": "apartment_desk_apology",
       "replaceSceneLayers": false,
       "states": {
+        "bar_hover": {
+          "group": "bar",
+          "trigger": "L4_S02",
+          "layers": [
+            { "asset": "UI_bar_hover", "anchor": "dialogue.zone_left_center", "layer": "blackBar" }
+          ]
+        },
+        "bar_active": {
+          "group": "bar",
+          "trigger": "L4_S02",
+          "layers": [
+            { "asset": "UI_bar_active", "anchor": "dialogue.zone_left_center", "layer": "blackBar" },
+            { "asset": "FX_censor_drag_trail", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
         "live": {
           "group": "stream",
           "trigger": "L4_S01",
@@ -237,6 +456,28 @@
         }
       },
       "events": {
+        "censor_absorb": {
+          "trigger": "L4_S02",
+          "durationMs": 620,
+          "layers": [
+            { "asset": "FX_censor_absorb", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" },
+            { "asset": "FX_text_fragment_burst", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "dialogue_refresh": {
+          "trigger": "L4_S07",
+          "durationMs": 300,
+          "layers": [
+            { "asset": "FX_dialog_refresh_glitch", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "bar_reject": {
+          "trigger": "L4_S07",
+          "durationMs": 320,
+          "layers": [
+            { "asset": "FX_bar_reject_shiver", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
         "bar_shatter": {
           "trigger": "L4_S07",
           "durationMs": 520,
@@ -249,7 +490,47 @@
     "L5": {
       "scene": "apartment_empty",
       "replaceSceneLayers": false,
+      "states": {
+        "bar_hover": {
+          "group": "bar",
+          "trigger": "L5_S03",
+          "layers": [
+            { "asset": "UI_bar_hover", "anchor": "dialogue.zone_left_center", "layer": "blackBar" }
+          ]
+        },
+        "bar_active": {
+          "group": "bar",
+          "trigger": "L5_S03",
+          "layers": [
+            { "asset": "UI_bar_active", "anchor": "dialogue.zone_left_center", "layer": "blackBar" },
+            { "asset": "FX_censor_drag_trail", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        }
+      },
       "events": {
+        "censor_absorb": {
+          "trigger": "L5_S03",
+          "durationMs": 620,
+          "layers": [
+            { "asset": "FX_censor_absorb", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" },
+            { "asset": "FX_text_fragment_burst", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
+        "ink_feed": {
+          "trigger": "L5_S03",
+          "durationMs": 840,
+          "layers": [
+            { "asset": "FX_letter_to_creature_arc", "anchor": "selectedDialogueZone->creatureAnchor", "layer": "interactiveFx" },
+            { "asset": "FX_ink_feed_burst", "anchor": "selectedDialogueZone->creatureAnchor", "layer": "interactiveFx" }
+          ]
+        },
+        "dialogue_refresh": {
+          "trigger": "L5_S06",
+          "durationMs": 300,
+          "layers": [
+            { "asset": "FX_dialog_refresh_glitch", "anchor": "dialogue.zone_left_center", "layer": "interactiveFx" }
+          ]
+        },
         "gray_letter_fall": {
           "trigger": "L5_S03",
           "durationMs": 1200,
@@ -905,6 +1186,111 @@
       "dimensions": [1024, 1024],
       "pivot": [0.5, 0.0],
       "anchor": "character.back_shoulder"
+    },
+    {
+      "id": "UI_bar_hover",
+      "path": "ui/UI_bar_hover.png",
+      "kind": "ui",
+      "dimensions": [400, 48],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "UI_bar_active",
+      "path": "ui/UI_bar_active.png",
+      "kind": "ui",
+      "dimensions": [400, 48],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "UI_bar_snap",
+      "path": "ui/UI_bar_snap.png",
+      "kind": "ui",
+      "dimensions": [400, 48],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "FX_zone_hint",
+      "path": "fx/FX_zone_hint.png",
+      "kind": "effect",
+      "dimensions": [1024, 256],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "FX_zone_snap_pulse",
+      "path": "fx/FX_zone_snap_pulse.png",
+      "kind": "effect",
+      "dimensions": [1024, 256],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "FX_censor_drag_trail",
+      "path": "fx/FX_censor_drag_trail.png",
+      "kind": "effect",
+      "dimensions": [1024, 256],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "FX_censor_absorb",
+      "path": "fx/FX_censor_absorb.png",
+      "kind": "effect",
+      "dimensions": [1024, 256],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "FX_dialog_refresh_glitch",
+      "path": "fx/FX_dialog_refresh_glitch.png",
+      "kind": "effect",
+      "dimensions": [1024, 256],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "FX_bar_reject_shiver",
+      "path": "fx/FX_bar_reject_shiver.png",
+      "kind": "effect",
+      "dimensions": [1024, 256],
+      "pivot": [0.0, 0.5],
+      "anchor": "dialogue.zone_left_center",
+      "stretch": "horizontal"
+    },
+    {
+      "id": "FX_text_fragment_burst",
+      "path": "fx/FX_text_fragment_burst.png",
+      "kind": "effect",
+      "dimensions": [1024, 1024],
+      "pivot": [0.5, 0.5],
+      "anchor": "dialogue.zone_left_center"
+    },
+    {
+      "id": "FX_letter_to_creature_arc",
+      "path": "fx/FX_letter_to_creature_arc.png",
+      "kind": "effect",
+      "dimensions": [1024, 1024],
+      "pivot": [0.5, 0.5],
+      "anchor": "selectedDialogueZone->creatureAnchor"
+    },
+    {
+      "id": "FX_ink_feed_burst",
+      "path": "fx/FX_ink_feed_burst.png",
+      "kind": "effect",
+      "dimensions": [1024, 1024],
+      "pivot": [0.5, 0.5],
+      "anchor": "selectedDialogueZone->creatureAnchor"
     }
   ],
   "creatureTransitions": {

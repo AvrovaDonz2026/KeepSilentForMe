@@ -1,0 +1,12 @@
+Use case: ui-mockup.
+Asset type: transparent censorship-bar snap-confirm state for a 2D game.
+Input image role: the supplied UI_bar sprite is the exact geometry and width
+reference; preserve its square ends and horizontal proportions.
+Primary request: edit the same matte-black censorship bar into a settled,
+snapped state. Keep the bar opaque and calm, with a very thin irregular gray
+compression seam near its lower edge and tiny attached ink flecks at both ends.
+The result must still read as one solid bar, not a crack or explosion.
+Composition: isolated horizontal bar, centered, generous transparent padding,
+geometry unchanged.
+Avoid: arrows, cursor, hand, padlock, icons, letters, labels, panel,
+background, bright sparks, neon, cast shadow, and green subject pixels.

@@ -1,0 +1,13 @@
+Use case: illustration-story.
+Asset type: transparent horizontal censor-absorption effect for a 2D game.
+Input image role: the supplied censor-growth strip and UI_bar are the exact
+black-material references; preserve the game's matte worn ink language.
+Primary request: create a short horizontal effect in which tiny unreadable gray
+glyph fragments bend inward and disappear beneath a matte-black censorship bar.
+The center should feel dense and sucked inward, while both ends remain sparse
+for compositing over dialogue.
+Composition: wide horizontal strip with clean transparent padding and a clear
+left-to-right flow; no solid replacement bar.
+Avoid: readable text, letters forming words, arrows, cursor, faces, people,
+background, monster anatomy, bright sparks, neon, cast shadow, and green
+subject pixels.

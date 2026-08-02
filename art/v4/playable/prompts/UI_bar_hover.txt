@@ -1,0 +1,12 @@
+Use case: ui-mockup.
+Asset type: transparent censorship-bar hover state for a 2D game.
+Input image role: the supplied UI_bar sprite is the exact geometry, width, and
+black material reference; preserve its square ends and horizontal proportions.
+Primary request: edit the same matte-black censorship bar into a barely
+highlighted hover state. Keep the body opaque near-black with one restrained
+dirty-gray edge lift and a slightly more readable worn rim, as if the pointer
+has found a legal dialogue zone.
+Composition: isolated horizontal bar, centered, generous transparent padding,
+geometry unchanged.
+Avoid: arrows, cursor, hand, padlock, icons, letters, labels, panel,
+background, glow, cast shadow, neon, and green subject pixels.

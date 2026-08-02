@@ -1,0 +1,13 @@
+Use case: illustration-story.
+Asset type: transparent horizontal interaction hint effect for a 2D game.
+Input image role: the supplied censor-growth strip and UI_bar are material and
+scale references only; do not copy their complete layout.
+Primary request: create a faint horizontal band of broken gray ink ticks and
+soft matte-black dust that briefly reveals a legal dialogue zone before the
+player drags. Keep the center readable and the edges sparse; the effect must
+feel like a quiet alignment hint, not an arrow or a UI icon.
+Composition: wide horizontal strip with transparent padding above and below,
+left-to-right balance suitable for horizontal stretching.
+Avoid: readable letters, words, arrows, cursor, numbers, icons, panel,
+characters, faces, room, bright glow, neon, cast shadow, and green subject
+pixels.

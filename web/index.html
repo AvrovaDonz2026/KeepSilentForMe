@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b0d0d" />
+    <title>请替我沉默 · 可玩 Demo</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <main id="app" class="app is-loading is-title-screen">
+      <section class="stage" aria-label="请替我沉默可玩场景">
+        <div class="scene-page-layer" aria-hidden="true">
+          <img id="scene-page" class="scene-page" alt="" />
+        </div>
+        <div class="stage-shade" aria-hidden="true"></div>
+        <div class="stage-grain" aria-hidden="true"></div>
+
+        <section id="title-screen" class="title-screen" aria-label="游戏开始" aria-busy="true">
+          <div class="title-screen-wash" aria-hidden="true"></div>
+          <div class="title-content">
+            <p class="title-kicker">K/S · 01</p>
+            <div class="title-rule" aria-hidden="true"></div>
+            <h1>请替我沉默</h1>
+            <p class="title-english">KEEP SILENT FOR ME</p>
+            <p class="title-tagline">她负责说谎，你负责活下来。</p>
+            <div class="title-actions">
+              <button id="title-primary" class="text-button title-primary" type="button" disabled>开始游戏</button>
+              <button id="title-new-game" class="title-secondary is-hidden" type="button">重新开始</button>
+            </div>
+            <p id="title-status" class="title-status" role="status" aria-live="polite">正在准备场景…</p>
+          </div>
+        </section>
+
+        <header class="topbar">
+          <div class="wordmark">
+            <span class="wordmark-mark">K/S</span>
+            <span class="wordmark-name">请替我沉默</span>
+          </div>
+          <div class="chapter-readout">
+            <span id="chapter-kicker">开场</span>
+            <span class="readout-divider">/</span>
+            <span id="chapter-title">雨窗里的第一句话</span>
+          </div>
+          <div class="topbar-actions">
+            <button id="restart-button" class="icon-button" type="button" aria-label="重新开始" title="重新开始">↺</button>
+            <button id="sound-button" class="icon-button" type="button" aria-label="切换提示音" title="切换提示音">◌</button>
+          </div>
+        </header>
+
+        <aside class="scene-status" aria-live="polite">
+          <div class="status-caption">当前状态</div>
+          <div id="status-copy" class="status-copy">等待她把一句话交给你。</div>
+          <div class="status-rule" aria-hidden="true"><span id="status-rule-fill"></span></div>
+          <div id="scene-caption" class="scene-caption">场景页 · 尚未载入</div>
+        </aside>
+
+        <section id="dialogue-frame" class="dialogue-frame" aria-label="台词">
+          <img class="dialogue-skin" src="../art/v4/playable/ui/UI_dialog.png" alt="" aria-hidden="true" />
+          <div class="dialogue-content">
+            <div class="dialogue-meta">
+              <span id="speaker-name">她</span>
+              <span id="line-id" class="line-id">L0_S01</span>
+            </div>
+            <div id="dialogue-text" class="dialogue-text" aria-live="polite"></div>
+            <div id="dialogue-zones" class="dialogue-zones" aria-hidden="true"></div>
+            <div class="dialogue-footer">
+              <span id="feedback-copy">黑条停在句子外。</span>
+              <span id="zone-count" class="zone-count">04</span>
+            </div>
+          </div>
+        </section>
+
+        <div id="drag-layer" class="drag-layer" aria-hidden="true">
+          <div id="zone-halo" class="zone-halo"></div>
+          <img id="black-bar" class="black-bar bar-hover" src="../art/v4/playable/ui/UI_bar_hover.png" alt="" draggable="false" />
+        </div>
+
+        <div id="fx-layer" class="fx-layer" aria-hidden="true"></div>
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+        <section id="chapter-overlay" class="chapter-overlay is-hidden" aria-live="polite">
+          <div class="overlay-rule" aria-hidden="true"></div>
+          <p id="overlay-eyebrow" class="overlay-eyebrow">段落结束</p>
+          <h1 id="overlay-title">雨声没有停</h1>
+          <p id="overlay-copy">她还在等下一句。</p>
+          <button id="overlay-action" class="text-button" type="button">继续</button>
+        </section>
+
+        <div id="error-panel" class="error-panel is-hidden" role="alert">
+          <strong>场景暂时无法载入。</strong>
+          <span id="error-copy">请通过本地服务器打开 Demo。</span>
+          <button id="retry-button" class="text-button" type="button">重试</button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

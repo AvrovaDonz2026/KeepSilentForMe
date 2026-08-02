@@ -1,0 +1,13 @@
+Use case: illustration-story.
+Asset type: transparent eaten-text fragment burst for a 2D game.
+Input image role: the supplied FX_censor_shatter and ink-mote sheet are texture
+and motion references only.
+Primary request: create a compact burst of torn gray subtitle-like fragments
+and matte-black paper shards at the moment a selected phrase is consumed. All
+marks must be abstract and unreadable; the burst should have a hollow center
+where the text was removed and a controlled outward spray.
+Composition: centered square effect sheet with generous transparent corners,
+usable as a short overlay above a dialogue zone.
+Avoid: readable Chinese or Latin text, words, letters forming language, arrows,
+cursor, faces, limbs, room, monster body, blood, bright sparks, neon, cast
+shadow, and green subject pixels.

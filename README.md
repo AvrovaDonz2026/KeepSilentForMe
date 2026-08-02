@@ -28,8 +28,10 @@
 - ✅ Web技术栈方案完成（DOM方案解决字符热区问题）
 - ✅ Day 1 demo模板已写入 `WEB_TECH_STACK.md` 与 `schedule.md §11.11`
 - ✅ 美术资产方案与可玩资产包已完成
-- ✅ **已生成43张可玩资产**（角色、NPC、消音体、UI、交互状态层）
+- ✅ **已生成55张可玩资产**（角色、NPC、消音体、UI、交互状态层）
+- ✅ Web 可玩 Demo 已接入 `web/`，覆盖 L0–L5 核心拖拽循环与整页翻页场景
 - ✅ V4可玩资产包已通过 manifest、尺寸与透明通道校验
+- ✅ **整页场景包已生成**：13 张 1536×1024 场景/结局页，按章节关键节点切换
 - ✅ 项目开发指南完善（CLAUDE.md）
 - 📝 **数据源统一**：台本.md为唯一完整内容源
 - 🎯 **资产状态**：可玩资产包已就绪，后续按开发需要补充 Web 原型、视频与音频
@@ -95,7 +97,8 @@
 - **[场景母版](./storyboard/masters/)** - 房间/街景/道具
 - **[迭代版本](./storyboard/)** - v1-dark → v4-prop-lock
 - **[效果演示](./请替我沉默-场景Demo与效果.docx)** - 视觉效果展示
-- **[V4可玩资产包](./art/v4/playable/README.md)** - 43件静态资产、生成入口与校验规则
+- **[V4可玩资产包](./art/v4/playable/README.md)** - 55件静态资产、生成入口与校验规则
+- **[整页场景包](./art/v4/scenes/README.md)** - 13张整页 PNG、页面绑定、生成入口与校验规则
 
 </td>
 </tr>
@@ -146,10 +149,10 @@
 - ✅ **跨平台**：PC/Mac/移动端统一代码
 - ✅ **快速开发**：F5刷新即测试，无构建流程
 - ✅ **易分发**：一个URL即可分享游戏
-- ✅ **字符热区方案已确定**：DOM + getBoundingClientRect() 精确定位，待 Web 原型实测
+- ✅ **字符热区方案已验证**：Web Demo 用单一文本节点 + Range.getClientRects() 生成重叠安全的命中层
 
 ### 核心技术
-- **DOM + CSS**：用 `<span class="zone">` 包裹可遮挡文字，浏览器自动计算位置
+- **DOM + CSS**：台词原文只渲染一次，使用 `Range.getClientRects()` 生成可换行、可重叠的命中层
 - **Pointer Events**：统一处理鼠标和触摸拖拽
 - **HTML5 Video**：原生视频播放，支持预加载
 - **localStorage**：本地存档（可导出/导入）
@@ -179,7 +182,7 @@
 
 以下三项是开发启动前的待办，不代表已经在仓库中完成：
 
-- [ ] 字符热区吸附：用 1 句话和 3 个 zone 验证 `getBoundingClientRect()`
+- [x] 字符热区吸附：Range 命中层已覆盖换行与重叠 zone，完成桌面/移动端拖动验证
 - [ ] AI 视频质量：用 D0 首帧生成 V0_out，检查脸部一致性、消音体形态和风格
 - [ ] 移动端兼容：测试触摸拖拽与视频自动播放
 
@@ -189,7 +192,8 @@
 |------|------|---------|------|
 | 台词脚本 | 6章35句（每句3-4 zones） | JSON | 🟢 完成 |
 | 场景BG | 5张1536×1024，运行时 fit/crop | PNG | 🟢 已生成 |
-| V4可玩静态资产 | 43件角色、NPC、消音体、UI与交互层 | RGBA PNG | 🟢 已生成并校验 |
+| 整页场景页 | 13张1536×1024，按 `pageBindings` 翻页 | PNG | 🟢 已生成并校验 |
+| V4可玩静态资产 | 55件角色、NPC、消音体、UI与交互层 | RGBA PNG | 🟢 已生成并校验 |
 | 关末视频 | 9-11条×6-15秒 | MP4 H.264 720p | 🟡 待制作 |
 | BGM | 3首 | MP3 128kbps | 🔴 待收集 |
 | SFX | 6-8个 | MP3/OGG | 🔴 待收集 |
@@ -221,31 +225,22 @@
 ### 快速启动（Web版）
 
 ```bash
-# 1. 克隆仓库
-git clone https://github.com/AvrovaDonz2026/KeepSilentForMe.git
-cd KeepSilentForMe
-
-# 2. 创建Web项目目录
-mkdir web
-cd web
-mkdir -p assets/{data,bg,char,creature,ui,video,audio/sfx,audio/bgm}
-mkdir -p css js
-
-# 3. 拷贝数据文件
-cp ../script/chapters.json assets/data/
-
-# 4. 创建index.html（使用schedule.md §11.11的demo）
-
-# 5. 本地运行（解决CORS）
-python3 -m http.server 8000
-# 访问 http://localhost:8000
+# 在仓库根目录运行，避免 fetch 章节 JSON 时触发 CORS
+python3 -m http.server 8765 --directory .
+# 访问 http://127.0.0.1:8765/web/
 ```
+
+当前 Demo 入口为 [`web/index.html`](./web/index.html)，使用
+[`art/v4/scenes/manifest.json`](./art/v4/scenes/manifest.json) 驱动整页场景图翻页；
+角色、朋友、消音体和结局均已绘制进整页图，运行时只保留台词、黑条、状态与 HTML
+交互 FX。正常打开会先显示由 `coverPage` 驱动的游戏封面；有存档时可继续或重新开始。
+视频和音频接口保留到媒体资产就绪后接入。
 
 ### Day 1 Demo 入口
 
-仓库当前还没有 `web/` 实现目录。请先阅读
+Demo 已位于 `web/`。如需了解原始 DOM 方案，再阅读
 [`WEB_TECH_STACK.md`](./WEB_TECH_STACK.md) 的 Day 1 Demo 和
-[`schedule.md`](./schedule.md) §11.11，再按快速启动步骤创建本地原型。
+[`schedule.md`](./schedule.md) §11.11；当前运行入口以 `web/` 与整页场景 manifest 为准。
 
 ### 部署到生产环境
 
@@ -288,11 +283,13 @@ KeepSilentForMe/
 │   ├── validate.py                     # 完整资产校验器
 │   └── [char/npc/ending/fx/ui/faces/]  # 各类资产
 ├── storyboard/                         # 🎬 分镜资产
-└── web/                                # 🌐 Web游戏目录（待创建）
+├── art/v4/scenes/                      # 🖼️ 13张整页场景图与 pageBindings
+└── web/                                # 🌐 Web游戏目录（整页翻页 Demo）
+    ├── README.md
     ├── index.html
     ├── css/
     ├── js/
-    └── assets/
+    └── (运行时从 art/ 与 script/ 读取资源)
 ```
 
 ## 🤝 团队协作
@@ -327,8 +324,8 @@ KeepSilentForMe/
 graph LR
     A[策划设计 ✅] --> B[分镜资产 ✅]
     B --> C[静态资产 ✅]
-    C --> D[技术验证 ⏳]
-    D --> E[核心原型 ⏳]
+    C --> D[技术验证 ✅]
+    D --> E[核心原型 ✅]
     E --> F[内容填充 ⏳]
     F --> G[视频音频 ⏳]
     G --> H[测试部署 ⏳]
@@ -342,9 +339,9 @@ graph LR
 | 🎨 视觉设计 | ✅ 完成 | 100% | Doomer风格锁定 |
 | 🎬 视频分镜 | ✅ 完成 | 100% | 9-11条分镜完成 |
 | 💻 技术选型 | ✅ 完成 | 100% | **Web (DOM+CSS)** |
-| 🧪 技术验证 | ⏳ 待开始 | 0% | Day 0: zone包裹+AI视频 |
-| 🎮 核心原型 | ⏳ 待开始 | 0% | Day 1: 拖拽吸附 |
-| 📦 静态资产 | ✅ 完成 | 43件 | V4 manifest 与透明通道已校验 |
+| 🧪 技术验证 | ✅ 完成 | 100% | manifest、尺寸、浏览器桌面/移动端回归 |
+| 🎮 核心原型 | ✅ 完成 | 100% | L0-L5 整页翻页 + 拖拽吸附 + 四结局 |
+| 📦 静态资产 | ✅ 完成 | 55件 | V4 manifest 与透明通道已校验 |
 | 🎞️ 视频制作 | ⏳ 待开始 | 0% | 9-11条关末视频 |
 | 🎵 音频集成 | ⏳ 待开始 | 0% | 免费资源收集 |
 | 🚀 部署上线 | ⏳ 待开始 | 0% | Vercel/Netlify |
@@ -362,22 +359,22 @@ graph LR
 
 ## 🎯 下一步行动
 
-### 立即可做（Day 0 验证）
-- [ ] **创建Day 1 HTML demo**（使用 `WEB_TECH_STACK.md` 与 `schedule.md §11.11`）
-- [ ] **测试 zone 包裹+拖拽**（验证 `getBoundingClientRect()` 可用）
+### 立即可做（整页 Demo 已完成）
+- [x] **创建 Day 1 HTML demo**（当前入口为 `web/`）
+- [x] **测试 Range 命中层+拖拽**（覆盖换行、重叠、桌面与移动端）
 - [ ] **生成 1 条 AI 视频测试**（V0_out，检查 doomer 风格）
-- [ ] **手机浏览器测试**（触摸拖拽+视频播放）
+- [x] **手机浏览器测试**（触摸拖拽与整页翻页）
 
 ### 第一周开发（D1-D7）
-- [ ] **Day 1**：JSON加载器 + 完整拖拽吸附 + flag系统
-- [ ] **Day 2**：L0+L1全流程 + 视频播放器
-- [ ] **Day 3-4**：L2-L5所有章节 + 结局分支
+- [x] **Day 1**：JSON加载器 + 完整拖拽吸附 + flag系统
+- [x] **Day 2**：L0+L1全流程（整页场景）
+- [x] **Day 3-4**：L2-L5所有章节 + 结局分支（整页场景）
 - [ ] **Day 5**：视频集成 + 反转效果 + UI抛光
 - [ ] **Day 6**：存档系统 + 音频接入 + 移动端优化
 - [ ] **Day 7**：测试修bug + 部署上线
 
 ### 美术资产（静态包已完成）
-- [x] **V4可玩资产**（43件）：角色、NPC、表情、消音体、UI与交互层
+- [x] **V4可玩资产**（55件）：角色、NPC、表情、消音体、UI与交互层
 - [ ] **关末视频**（9-11条）：基于台本.md视频分镜
 
 ### 音频资产（Day 6）

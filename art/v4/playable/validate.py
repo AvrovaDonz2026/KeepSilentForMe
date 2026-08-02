@@ -18,7 +18,7 @@ ALPHA_CORNER_LIMIT = 8
 OPAQUE_ALPHA = 245
 GREEN_ERROR = (4, 251, 4)
 EXPECTED_ENDING_IDS = {"A_separate", "B_alienate", "C_consume", "C_cold"}
-EXPECTED_INTERACTIVE_LEVELS = ("L1", "L2", "L3", "L4", "L5")
+EXPECTED_INTERACTIVE_LEVELS = ("L0", "L1", "L2", "L3", "L4", "L5")
 
 
 def is_within(path: Path, parent: Path) -> bool:
@@ -219,7 +219,7 @@ def validate_interactive_bindings(
                 trigger = entry.get("trigger")
                 if trigger is not None and (
                     not isinstance(trigger, str)
-                    or re.fullmatch(r"L[1-5]_S\d+[A-Za-z]*", trigger) is None
+                    or re.fullmatch(r"L[0-5]_S\d+[A-Za-z]*", trigger) is None
                 ):
                     add_error(report, f"interactiveBindings.{level}.{bucket}.{name}.trigger must be a chapter line ID")
                 if bucket == "states" and (

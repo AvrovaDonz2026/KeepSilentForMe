@@ -1,0 +1,11 @@
+Use case: illustration-story.
+Asset type: transparent horizontal censor-rejection effect for a 2D game.
+Input image role: the supplied UI_bar_cracked and UI_bar sprites are exact
+material and geometry references.
+Primary request: create a short unstable shiver around a censorship bar that
+has been rejected by the current dialogue rule. Show two or three offset matte
+black edge echoes and a few restrained gray fragments, but no second solid bar.
+Composition: wide horizontal strip, transparent padding, readable as a brief
+shake rather than a crack or explosion.
+Avoid: readable text, arrows, cursor, padlock, icons, characters, faces,
+background, bright sparks, neon, cast shadow, and green subject pixels.

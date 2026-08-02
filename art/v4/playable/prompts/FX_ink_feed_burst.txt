@@ -1,0 +1,13 @@
+Use case: illustration-story.
+Asset type: transparent creature-feed impact effect for a 2D game.
+Input image role: the supplied CREEP_1/CREEP_2/CREEP_3 and ink-mote assets are
+shape and material references only; do not copy creature anatomy.
+Primary request: create a dense but compact black-ink bloom where eaten glyph
+fragments finish joining the silence entity. Use a crooked central knot, a few
+gray paper-dark flecks, and short tendrils that stop before the frame edges.
+The effect must remain an abstract transfer impact, not a creature or face.
+Composition: centered square overlay with transparent corners and a clear
+central anchor for creature growth.
+Avoid: readable text, words, eyes, mouth, face, limbs, creature anatomy,
+characters, room, smoke, blood, bright sparks, neon, cast shadow, and green
+subject pixels.

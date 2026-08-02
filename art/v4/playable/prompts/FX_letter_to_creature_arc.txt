@@ -1,0 +1,13 @@
+Use case: illustration-story.
+Asset type: transparent letter-to-creature transfer effect for a 2D game.
+Input image role: the supplied FX_ink_glyph_motes and D6 creature-stage image
+are motion and destination references; do not include a creature or scene.
+Primary request: create a curved stream of broken gray glyph dust and matte
+black ink fragments traveling from a lower-left dialogue origin toward an
+upper-right creature anchor. The path must be legible as a single transfer
+arc with separated particles and a few darker fragments leading the flow.
+Composition: square effect sheet with open corners and transparent padding,
+diagonal motion path, no person or creature anatomy.
+Avoid: readable text, words, arrows, cursor, characters, faces, creature body,
+room, smoke cloud, fire, bright sparks, neon, cast shadow, and green subject
+pixels.

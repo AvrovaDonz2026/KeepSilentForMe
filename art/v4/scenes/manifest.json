@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "id": "keep-silent-for-me-v4-scene-pages",
+  "model": "gpt-image-2",
+  "canvas": [1536, 1024],
+  "scenePages": [
+    "PAGE_L0_desk",
+    "PAGE_L1_interview",
+    "PAGE_L2_live",
+    "PAGE_L2_fed",
+    "PAGE_L3_door_default",
+    "PAGE_L3_door_hesitant",
+    "PAGE_L4_apology",
+    "PAGE_L4_break",
+    "PAGE_L5_empty",
+    "PAGE_L5_poster",
+    "PAGE_END_A_separate",
+    "PAGE_END_B_alienate",
+    "PAGE_END_C_hollow"
+  ],
+  "coverPage": "PAGE_L5_poster",
+  "assets": [
+    { "id": "PAGE_L0_desk", "path": "pages/PAGE_L0_desk.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_L1_interview", "path": "pages/PAGE_L1_interview.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_L2_live", "path": "pages/PAGE_L2_live.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_L2_fed", "path": "pages/PAGE_L2_fed.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_L3_door_default", "path": "pages/PAGE_L3_door_default.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_L3_door_hesitant", "path": "pages/PAGE_L3_door_hesitant.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_L4_apology", "path": "pages/PAGE_L4_apology.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_L4_break", "path": "pages/PAGE_L4_break.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_L5_empty", "path": "pages/PAGE_L5_empty.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_L5_poster", "path": "pages/PAGE_L5_poster.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_END_A_separate", "path": "pages/PAGE_END_A_separate.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_END_B_alienate", "path": "pages/PAGE_END_B_alienate.png", "kind": "scenePage", "dimensions": [1536, 1024] },
+    { "id": "PAGE_END_C_hollow", "path": "pages/PAGE_END_C_hollow.png", "kind": "scenePage", "dimensions": [1536, 1024] }
+  ],
+  "pageBindings": {
+    "L0": { "default": "PAGE_L0_desk", "lines": { "L0_S01": "PAGE_L0_desk" } },
+    "L1": {
+      "default": "PAGE_L1_interview",
+      "lines": {
+        "L1_S01": "PAGE_L1_interview", "L1_S02": "PAGE_L1_interview", "L1_S03": "PAGE_L1_interview",
+        "L1_S04": "PAGE_L1_interview", "L1_S05": "PAGE_L1_interview", "L1_S06": "PAGE_L1_interview",
+        "L1_S07": "PAGE_L1_interview"
+      }
+    },
+    "L2": {
+      "default": "PAGE_L2_live",
+      "lines": {
+        "L2_S01": "PAGE_L2_live", "L2_S02": "PAGE_L2_live", "L2_S03": "PAGE_L2_live",
+        "L2_S04": "PAGE_L2_fed", "L2_S05": "PAGE_L2_fed", "L2_S06": "PAGE_L2_fed", "L2_S07": "PAGE_L2_fed"
+      }
+    },
+    "L3": {
+      "default": "PAGE_L3_door_default",
+      "lines": {
+        "L3_S01": "PAGE_L3_door_default", "L3_S02": "PAGE_L3_door_default", "L3_S03": "PAGE_L3_door_default",
+        "L3_S04b": "PAGE_L3_door_hesitant", "L3_S05": "PAGE_L3_door_hesitant", "L3_S06": "PAGE_L3_door_hesitant", "L3_S07": "PAGE_L3_door_hesitant"
+      }
+    },
+    "L4": {
+      "default": "PAGE_L4_apology",
+      "lines": {
+        "L4_S01": "PAGE_L4_apology", "L4_S02": "PAGE_L4_apology", "L4_S03": "PAGE_L4_apology",
+        "L4_S04": "PAGE_L4_apology", "L4_S05": "PAGE_L4_apology", "L4_S06": "PAGE_L4_apology", "L4_S07": "PAGE_L4_break"
+      }
+    },
+    "L5": {
+      "default": "PAGE_L5_empty",
+      "lines": {
+        "L5_S01": "PAGE_L5_empty", "L5_S02": "PAGE_L5_empty", "L5_S03": "PAGE_L5_poster",
+        "L5_S04": "PAGE_L5_poster", "L5_S05": "PAGE_L5_poster", "L5_S06": "PAGE_L5_poster"
+      }
+    }
+  },
+  "endingPages": {
+    "A_separate": "PAGE_END_A_separate",
+    "B_alienate": "PAGE_END_B_alienate",
+    "C_consume": "PAGE_END_C_hollow",
+    "C_cold": "PAGE_END_C_hollow"
+  }
+}

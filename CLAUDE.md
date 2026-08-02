@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 《请替我沉默 / Keep Silent For Me》is a 30-minute narrative puzzle game where players control a parasitic entity ("消音体") that feeds on unsaid words. The game uses a unique mechanic: drag a black bar to mask parts of dialogue, with masked text becoming the creature's body while remaining text is spoken aloud.
 
-**Current Status**: Pre-Production Complete, Ready for Development  
+**Current Status**: V4 full-page scene Demo implemented; interaction polish in progress
 **Tech Stack**: Web (HTML5 + CSS + JavaScript, no frameworks)  
 **Target**: 7-day development cycle for vertical slice
 
@@ -67,41 +67,37 @@ Complete sentence appears on screen
 
 ### Web Implementation Strategy
 
-**Key Technical Solution**: Use DOM `<span>` wrappers for zones, then `getBoundingClientRect()` to get precise screen positions. NO manual character bounding box calculation needed.
+**Key Technical Solution**: Render the dialogue once and use DOM `Range.getClientRects()` hit
+overlays for each zone. This preserves precise screen positions even when zones overlap or
+wrap across lines; no manual character bounding box calculation is needed.
 
 ```html
-<!-- Zone wrapping example -->
-<div id="dialogue-text">
-  我<span class="zone" data-id="0">其实没什么经验，而且我经常会说错话，</span>但我真的很需要这份工作。
-</div>
+<!-- The raw line is rendered once; hit rectangles live in a separate layer. -->
+<div id="dialogue-text">我其实没什么经验，而且我经常会说错话，但我真的很需要这份工作。</div>
+<div id="dialogue-zones" aria-hidden="true"></div>
 ```
 
 ```javascript
-// Get zone position
-const zone = document.querySelector('[data-id="0"]');
-const rect = zone.getBoundingClientRect(); // {x, y, width, height}
+const range = document.createRange();
+range.setStart(textNode, zone.start);
+range.setEnd(textNode, zone.end);
+const rects = [...range.getClientRects()]; // handles wrapping and overlap
 ```
 
-**Project Structure** (when creating web/ directory):
+**Project Structure**:
 ```
 web/
+├── README.md
 ├── index.html
-├── css/
-│   ├── style.css
-│   ├── dialogue.css
-│   └── animations.css
-├── js/
-│   ├── game.js           # Core game state machine
-│   ├── drag-handler.js   # Black bar drag + snap logic
-│   ├── video-player.js   # HTML5 video with preload
-│   └── save-manager.js   # localStorage save/load
-└── assets/
-    ├── data/chapters.json  # Copy from script/
-    ├── bg/                 # 4-5 scene backgrounds
-    ├── char/               # Character poses + expressions
-    ├── creature/           # 3 creature stages
-    ├── video/              # 9-11 outro videos
-    └── audio/              # SFX + BGM
+├── css/style.css
+└── js/main.js              # State machine, drag loop, page bindings and HTML FX
+
+art/v4/scenes/
+├── manifest.json            # 13 pages, line bindings and four ending pages
+├── pages/                   # 1536x1024 full-page PNGs
+├── prompts/                 # Generation prompts
+├── generate_pages.sh        # /images/edits generation entry point
+└── validate.py
 ```
 
 ## Development Workflow
@@ -109,8 +105,8 @@ web/
 ### Day 0: Technical Validation (MUST DO FIRST)
 
 ```bash
-# 1. Test zone wrapping (copy from WEB_TECH_STACK.md §Day 0)
-# Create test-zone.html and verify getBoundingClientRect() works
+# 1. Test the Range hit layer and overlap handling in the current web/ Demo
+# Open the local server and use the browser regression flow for L0-L5.
 
 # 2. Generate 1 test video (V0_out)
 # Use the current storyboard prompts under storyboard/demo-effects/prompts/
@@ -123,8 +119,8 @@ web/
 ### Day 1+: Start Development
 
 ```bash
-# Copy the Day 1 demo template from WEB_TECH_STACK.md §Quick Start
-# The repository has no web/ implementation yet; treat this as the first prototype.
+# The current page-turn Demo is already in web/; use the original Day 1 template
+# only as a reference for the underlying DOM interaction.
 
 # Local development server
 python3 -m http.server 8000

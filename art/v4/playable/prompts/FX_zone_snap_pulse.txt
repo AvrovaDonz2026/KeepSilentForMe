@@ -1,0 +1,12 @@
+Use case: illustration-story.
+Asset type: transparent horizontal snap-confirm pulse effect for a 2D game.
+Input image role: the supplied UI_bar and censor-growth strip are geometry and
+material references only.
+Primary request: create a compact matte-black and dirty-gray pulse that hugs a
+single selected dialogue zone at the instant the censor bar snaps into place.
+Use two or three thin uneven ink ripples and a few detached glyph dust flecks;
+the middle remains mostly empty so it can sit behind the bar.
+Composition: wide horizontal strip, transparent padding, controlled short-lived
+impact without a ring icon.
+Avoid: readable text, arrows, cursor, circles, icons, characters, faces,
+background, bright sparks, neon, cast shadow, and green subject pixels.
