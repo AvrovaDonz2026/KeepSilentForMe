@@ -192,7 +192,9 @@ vercel
 npm ci
 npm run tauri:build
 # GitHub Actions: .github/workflows/build-tauri.yml
-# main 推送后生成 Windows NSIS/MSI 与 Linux AppImage/deb artifacts
+# main 推送后生成 Windows NSIS 与 Linux AppImage/deb artifacts
+# MSI 需要额外的 WiX 工具链，可在 Windows 环境单独运行：
+# npm run tauri -- build --bundles msi
 ```
 
 ## Common Pitfalls

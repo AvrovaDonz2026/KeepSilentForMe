@@ -269,6 +269,8 @@ GitHub Pages 工作流位于
 [`.github/workflows/build-tauri.yml`](./.github/workflows/build-tauri.yml)。推送 `main`
 后会在 Windows 和 Linux runner 上分别生成安装包，并作为 Actions artifact 提供下载；
 首版不启用签名和自动更新。
+Windows CI 当前生成 NSIS 安装包；NSIS 不依赖 hosted runner 上易失的 WiX/MSI 工具链，
+需要 MSI 时可在具备 WiX 的 Windows 环境中单独运行 `tauri build --bundles msi`。
 
 ```bash
 npm ci

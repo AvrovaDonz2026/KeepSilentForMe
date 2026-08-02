@@ -23,8 +23,12 @@ jobs:
         include:
           - platform: linux
             runner: ubuntu-22.04
+            bundles: appimage,deb
           - platform: windows
             runner: windows-latest
+            # Keep the Windows artifact on the NSIS path. MSI uses the WiX
+            # toolchain and can fail independently on a hosted runner.
+            bundles: nsis
 
     steps:
       - name: Checkout
@@ -48,12 +52,22 @@ jobs:
       - name: Install frontend and Tauri dependencies
         run: npm ci
 
+      - name: Print Windows build tool versions
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: |
+          node --version
+          npm --version
+          rustc --version
+          cargo --version
+
       - name: Build desktop bundles
         uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tauriScript: npm run tauri
+          args: --bundles ${{ matrix.bundles }}
           uploadWorkflowArtifacts: true
           workflowArtifactNamePattern: keep-silent-for-me-${{ matrix.platform }}-[arch]-[bundle]
           uploadUpdaterJson: false
