@@ -253,10 +253,17 @@ vercel
 # 访问 https://app.netlify.com/drop
 # 拖入整个文件夹
 
-# GitHub Pages
+# GitHub Pages（GitHub Actions）
+# 首次使用：仓库 Settings → Pages → Source 选择 GitHub Actions
 git push origin main
-# 在仓库Settings → Pages启用
+# 工作流会自动组装并发布静态 Demo
+# 游戏地址：https://avrovadonz2026.github.io/KeepSilentForMe/web/
 ```
+
+GitHub Pages 工作流位于
+[`.github/workflows/deploy-pages.yml`](./.github/workflows/deploy-pages.yml)，支持推送
+`main` 自动发布，也支持在 Actions 页面手动运行。发布 artifact 保留 `web/`、`art/` 与
+`script/` 的运行时目录结构，因此 Pages 上的游戏入口仍为 `/web/`。
 
 ### 项目结构
 

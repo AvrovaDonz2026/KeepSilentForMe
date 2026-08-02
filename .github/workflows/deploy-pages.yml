@@ -1,0 +1,103 @@
+name: Deploy game to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Validate source assets
+        run: |
+          node --check web/js/main.js
+          python3 art/v4/scenes/validate.py
+
+      - name: Assemble Pages artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _site/web _site/art/v4/playable _site/art/v4/scenes _site/script
+          cp -a web/. _site/web/
+          cp -a art/v4/playable/. _site/art/v4/playable/
+          cp -a art/v4/scenes/. _site/art/v4/scenes/
+          cp script/chapters.json _site/script/chapters.json
+          touch _site/.nojekyll
+
+      - name: Verify Pages artifact
+        env:
+          SITE_ROOT: _site
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["SITE_ROOT"])
+          required = [
+              root / "web/index.html",
+              root / "web/js/main.js",
+              root / "art/v4/playable/manifest.json",
+              root / "art/v4/scenes/manifest.json",
+              root / "script/chapters.json",
+          ]
+          missing = [str(path) for path in required if not path.is_file()]
+          if missing:
+              raise SystemExit(f"missing required Pages files: {missing}")
+
+          playable = json.loads((root / "art/v4/playable/manifest.json").read_text())
+          playable_missing = [
+              asset["path"]
+              for asset in playable["assets"]
+              if not (root / "art/v4/playable" / asset["path"]).is_file()
+          ]
+          if playable_missing:
+              raise SystemExit(f"missing playable assets: {playable_missing}")
+
+          pages = json.loads((root / "art/v4/scenes/manifest.json").read_text())
+          page_missing = [
+              asset["path"]
+              for asset in pages["assets"]
+              if not (root / "art/v4/scenes" / asset["path"]).is_file()
+          ]
+          if page_missing:
+              raise SystemExit(f"missing scene pages: {page_missing}")
+
+          print(
+              f"Pages artifact OK: {len(playable['assets'])} playable assets, "
+              f"{len(pages['assets'])} scene pages"
+          )
+          PY
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

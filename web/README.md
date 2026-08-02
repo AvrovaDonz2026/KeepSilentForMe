@@ -12,6 +12,12 @@ python3 -m http.server 8765 --directory .
 
 Open `http://127.0.0.1:8765/web/`.
 
+GitHub Pages deployment is handled by
+`.github/workflows/deploy-pages.yml`. After the first Pages setup, pushes to `main`
+publish the game at:
+
+`https://avrovadonz2026.github.io/KeepSilentForMe/web/`
+
 Normal launches show the title cover first, using `coverPage` from
 `art/v4/scenes/manifest.json`. A saved run exposes Continue and New Game;
 chapter/line/ending query parameters remain direct debug entry points.
