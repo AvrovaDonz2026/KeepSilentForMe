@@ -265,6 +265,16 @@ GitHub Pages 工作流位于
 `main` 自动发布，也支持在 Actions 页面手动运行。发布 artifact 保留 `web/`、`art/` 与
 `script/` 的运行时目录结构，因此 Pages 上的游戏入口仍为 `/web/`。
 
+桌面版使用 Tauri 2 打包，工作流位于
+[`.github/workflows/build-tauri.yml`](./.github/workflows/build-tauri.yml)。推送 `main`
+后会在 Windows 和 Linux runner 上分别生成安装包，并作为 Actions artifact 提供下载；
+首版不启用签名和自动更新。
+
+```bash
+npm ci
+npm run tauri:build
+```
+
 ### 项目结构
 
 ```
@@ -291,6 +301,8 @@ KeepSilentForMe/
 │   └── [char/npc/ending/fx/ui/faces/]  # 各类资产
 ├── storyboard/                         # 🎬 分镜资产
 ├── art/v4/scenes/                      # 🖼️ 13张整页场景图与 pageBindings
+├── scripts/prepare-tauri.mjs           # Tauri 运行时资源组装与路径改写
+├── src-tauri/                           # Tauri 2 Rust 桌面壳与打包配置
 └── web/                                # 🌐 Web游戏目录（整页翻页 Demo）
     ├── README.md
     ├── index.html

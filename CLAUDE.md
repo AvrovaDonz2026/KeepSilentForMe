@@ -187,6 +187,12 @@ vercel
 
 # GitHub Pages
 # Settings → Pages → Deploy from main branch
+
+# Tauri desktop packages
+npm ci
+npm run tauri:build
+# GitHub Actions: .github/workflows/build-tauri.yml
+# main 推送后生成 Windows NSIS/MSI 与 Linux AppImage/deb artifacts
 ```
 
 ## Common Pitfalls
