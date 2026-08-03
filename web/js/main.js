@@ -1,11 +1,14 @@
 const DATA_URL = "../script/chapters.json";
 const PLAYABLE_MANIFEST_URL = "../art/v4/playable/manifest.json";
 const PAGE_MANIFEST_URL = "../art/v4/scenes/manifest.json";
+const AUDIO_MANIFEST_URL = "audio/manifest.json?v=audio-2";
 const PLAYABLE_ROOT = "../art/v4/playable/";
 const PAGE_ROOT = "../art/v4/scenes/";
+const AUDIO_ROOT = "audio/";
 const SAVE_KEY = "keep-silent-for-me-demo";
 const MEMORY_CHAPTER_IDS = new Set(["L1", "L2", "L3", "L4"]);
 const LIVE_CHAPTER_IDS = new Set(["L2", "L4"]);
+const BGM_FADE_MS = 650;
 
 const SCENE_META = {
   L0: { readout: "雨窗 · 书桌", status: "她坐在书桌前，把第一句话递了出来。", caption: "整页 · D0 书桌" },
@@ -54,6 +57,8 @@ const dom = {
   app: document.querySelector("#app"),
   stage: document.querySelector(".stage"),
   scenePage: document.querySelector("#scene-page"),
+  bgmA: document.querySelector("#bgm-a"),
+  bgmB: document.querySelector("#bgm-b"),
   titleScreen: document.querySelector("#title-screen"),
   titlePrimary: document.querySelector("#title-primary"),
   titleNewGame: document.querySelector("#title-new-game"),
@@ -102,6 +107,7 @@ const state = {
   data: null,
   playable: null,
   pages: null,
+  audio: null,
   assets: new Map(),
   pageAssets: new Map(),
   chapters: [],
@@ -129,6 +135,16 @@ const state = {
   dragOffsetY: 0,
   sound: true,
   audioContext: null,
+  bgm: {
+    activeSlot: 0,
+    activeTrackId: "",
+    desiredTrackId: "",
+    pendingTrackId: "",
+    desiredGain: 0,
+    fadeTimer: null,
+    transitionToken: 0,
+    started: false,
+  },
   overlayAction: null,
   toastTimer: null,
   pageToken: 0,
@@ -147,6 +163,137 @@ function assetUrl(id) {
 function pageUrl(id) {
   const asset = state.pageAssets.get(id);
   return asset ? `${PAGE_ROOT}${asset.path}` : "";
+}
+
+function audioTrack(trackId) {
+  const tracks = state.audio?.tracks;
+  if (Array.isArray(tracks)) return tracks.find((track) => track?.id === trackId) ?? null;
+  return tracks?.[trackId] ?? null;
+}
+
+function audioBinding(chapterId, endingId = null) {
+  const bindings = state.audio?.bindings ?? state.audio ?? {};
+  if (endingId) return bindings.endings?.[endingId] ?? null;
+  return bindings.chapters?.[chapterId] ?? null;
+}
+
+function normalizeAudioBinding(binding) {
+  if (typeof binding === "string") return { track: binding };
+  return binding && typeof binding === "object" ? binding : null;
+}
+
+function bgmSlot(index) {
+  return index === 0 ? dom.bgmA : dom.bgmB;
+}
+
+function bgmGain(binding, track) {
+  return Math.min(1, Math.max(0, Number(binding?.gain ?? track?.gain ?? track?.defaultGain ?? 0.1)));
+}
+
+function clearBgmFade() {
+  if (state.bgm.fadeTimer) {
+    window.clearInterval(state.bgm.fadeTimer);
+    state.bgm.fadeTimer = null;
+  }
+}
+
+function stopBgmSlots() {
+  clearBgmFade();
+  state.bgm.pendingTrackId = "";
+  for (let index = 0; index < 2; index += 1) {
+    const slot = bgmSlot(index);
+    slot.pause();
+    slot.volume = 0;
+  }
+}
+
+function transitionBgm(trackId, gain) {
+  const track = audioTrack(trackId);
+  if (!track || typeof track.path !== "string") return;
+  const current = bgmSlot(state.bgm.activeSlot);
+  const nextIndex = state.bgm.activeSlot === 0 ? 1 : 0;
+  const next = bgmSlot(nextIndex);
+  const token = ++state.bgm.transitionToken;
+  const currentVolume = current.src ? current.volume : 0;
+
+  clearBgmFade();
+  state.bgm.pendingTrackId = trackId;
+  next.pause();
+  next.src = `${AUDIO_ROOT}${track.path}`;
+  next.loop = track.loop !== false;
+  next.currentTime = 0;
+  next.volume = 0;
+
+  const playPromise = next.play();
+  if (playPromise?.catch) {
+    playPromise.catch(() => {
+      state.bgm.started = false;
+      state.bgm.pendingTrackId = "";
+    });
+  }
+
+  const startedAt = performance.now();
+  state.bgm.fadeTimer = window.setInterval(() => {
+    if (token !== state.bgm.transitionToken) {
+      clearBgmFade();
+      return;
+    }
+    const progress = Math.min(1, (performance.now() - startedAt) / BGM_FADE_MS);
+    const eased = progress * progress * (3 - 2 * progress);
+    current.volume = currentVolume * (1 - eased);
+    next.volume = gain * eased;
+    if (progress >= 1) {
+      clearBgmFade();
+      current.pause();
+      current.volume = 0;
+      state.bgm.activeSlot = nextIndex;
+      state.bgm.activeTrackId = trackId;
+      state.bgm.pendingTrackId = "";
+    }
+  }, 16);
+}
+
+function syncBgmForLocation(chapter = currentChapter(), endingId = null) {
+  const rawBinding = endingId
+    ? state.audio?.endings?.[endingId]
+    : state.audio?.chapters?.[chapter?.id] ?? audioBinding(chapter?.id);
+  const binding = normalizeAudioBinding(rawBinding);
+  const trackId = binding?.track ?? state.audio?.title ?? "";
+  const track = audioTrack(trackId);
+  if (!track) return;
+
+  state.bgm.desiredTrackId = trackId;
+  state.bgm.desiredGain = bgmGain(binding, track);
+  if (!state.sound || !state.bgm.started) return;
+  if (state.bgm.pendingTrackId === trackId) return;
+  if (!state.bgm.pendingTrackId && state.bgm.activeTrackId === trackId && bgmSlot(state.bgm.activeSlot).src) {
+    const activeSlot = bgmSlot(state.bgm.activeSlot);
+    activeSlot.volume = state.bgm.desiredGain;
+    const playPromise = activeSlot.play();
+    if (playPromise?.catch) playPromise.catch(() => { state.bgm.started = false; });
+    return;
+  }
+  transitionBgm(trackId, state.bgm.desiredGain);
+}
+
+function startBgm() {
+  if (!state.sound || !state.audio) return;
+  state.bgm.started = true;
+  syncBgmForLocation(state.endingId ? null : currentChapter(), state.endingId);
+}
+
+function toggleSound() {
+  state.sound = !state.sound;
+  dom.soundButton.textContent = state.sound ? "◌" : "·";
+  dom.soundButton.setAttribute("aria-label", state.sound ? "关闭提示音和配乐" : "打开提示音和配乐");
+  dom.soundButton.setAttribute("title", state.sound ? "关闭提示音和配乐" : "打开提示音和配乐");
+  if (state.sound) {
+    ping("snap");
+    startBgm();
+  } else {
+    state.bgm.started = false;
+    stopBgmSlots();
+  }
 }
 
 function currentChapter() {
@@ -363,6 +510,7 @@ function setScene(chapter, line = currentLine(), animate = false) {
   dom.statusCopy.textContent = meta.status;
   dom.sceneCaption.textContent = meta.caption;
   dom.statusFill.style.width = `${Math.max(18, ((state.chapterIndex + 1) / state.chapters.length) * 100)}%`;
+  syncBgmForLocation(chapter);
   if (line) setScenePage(pageForLine(chapter, line), animate);
 }
 
@@ -962,6 +1110,7 @@ async function finishEnding(endingId) {
   dom.stage.dataset.ending = endingId;
   state.endingId = endingId;
   state.locked = true;
+  syncBgmForLocation(null, endingId);
   saveState();
   const titles = {
     A_separate: "她把手收了回去",
@@ -1111,6 +1260,10 @@ async function startGame(mode = "continue") {
       : pageForLine(currentChapter(), currentLine()) ?? chapterDefaultPage(currentChapter());
     if (!pageId) throw new Error("当前游戏页面不存在");
 
+    // Start from the trusted button gesture before waiting on image decoding.
+    state.bgm.started = true;
+    syncBgmForLocation(endingId ? null : currentChapter(), endingId);
+
     if (endingId) {
       await finishEnding(endingId);
     } else {
@@ -1124,9 +1277,12 @@ async function startGame(mode = "continue") {
         renderLine();
       }
     }
+    startBgm();
     closeTitleScreen();
   } catch (error) {
     console.error(error);
+    state.bgm.started = false;
+    stopBgmSlots();
     dom.titleStatus.textContent = "场景暂时无法载入，请重试。";
     dom.titlePrimary.disabled = false;
     dom.titleNewGame.disabled = false;
@@ -1162,6 +1318,7 @@ function ping(kind) {
   if (!state.sound) return;
   try {
     const context = audioContext();
+    if (context.state === "suspended") void context.resume();
     const oscillator = context.createOscillator();
     const gain = context.createGain();
     oscillator.frequency.value = { pick: 152, snap: 218, reject: 78 }[kind] ?? 140;
@@ -1175,14 +1332,6 @@ function ping(kind) {
   } catch (error) {
     // Browsers can block audio until a gesture; the visual loop still works.
   }
-}
-
-function toggleSound() {
-  state.sound = !state.sound;
-  dom.soundButton.textContent = state.sound ? "◌" : "·";
-  dom.soundButton.setAttribute("aria-label", state.sound ? "关闭提示音" : "打开提示音");
-  dom.soundButton.setAttribute("title", state.sound ? "关闭提示音" : "打开提示音");
-  if (state.sound) ping("snap");
 }
 
 function bindEvents() {
@@ -1200,6 +1349,9 @@ function bindEvents() {
   dom.memoryOverlay.addEventListener("pointermove", onMemoryPointerMove);
   dom.memoryOverlay.addEventListener("pointerup", onMemoryPointerUp);
   dom.memoryOverlay.addEventListener("pointercancel", onMemoryPointerCancel);
+  document.addEventListener("pointerdown", () => {
+    if (state.debugMode && !state.bgm.started) startBgm();
+  }, { capture: true });
   window.addEventListener("resize", () => {
     if (state.dialogueLayout) layoutDialogueZones();
     if (!state.dragging && !state.locked) positionBarAtRest();
@@ -1259,6 +1411,31 @@ function validateBindings() {
   if (referencedEndings.size !== endingIds.size) throw new Error("章节台词没有覆盖全部结局 ID");
 }
 
+function validateAudioManifest() {
+  const tracks = Array.isArray(state.audio?.tracks) ? state.audio.tracks : [];
+  const trackIds = new Set(tracks.map((track) => track?.id).filter(Boolean));
+  if (!tracks.length || !state.audio?.title || !trackIds.has(state.audio.title)) {
+    throw new Error("配乐 manifest 缺少有效封面曲目");
+  }
+  for (const track of tracks) {
+    if (!track.id || typeof track.path !== "string" || !track.path || !trackIds.has(track.id)) {
+      throw new Error(`配乐条目无效: ${track.id ?? ""}`);
+    }
+  }
+  for (const chapter of state.chapters) {
+    const binding = normalizeAudioBinding(state.audio.chapters?.[chapter.id]);
+    if (!binding?.track || !trackIds.has(binding.track)) {
+      throw new Error(`${chapter.id} 缺少有效配乐绑定`);
+    }
+  }
+  for (const endingId of ["A_separate", "B_alienate", "C_consume", "C_cold"]) {
+    const binding = normalizeAudioBinding(state.audio.endings?.[endingId]);
+    if (!binding?.track || !trackIds.has(binding.track)) {
+      throw new Error(`${endingId} 缺少有效配乐绑定`);
+    }
+  }
+}
+
 function preloadPages(excludeId = "") {
   const pending = [...state.pageAssets.values()]
     .map((asset) => asset.id)
@@ -1285,16 +1462,19 @@ async function load() {
       fetch(DATA_URL, fetchOptions),
       fetch(PLAYABLE_MANIFEST_URL, fetchOptions),
       fetch(PAGE_MANIFEST_URL, fetchOptions),
+      fetch(AUDIO_MANIFEST_URL, fetchOptions),
     ]);
     if (responses.some((response) => !response.ok)) throw new Error("数据文件未找到");
     state.data = await responses[0].json();
     state.playable = await responses[1].json();
     state.pages = await responses[2].json();
+    state.audio = await responses[3].json();
     state.chapters = state.data.chapters ?? [];
     state.assets = new Map((state.playable.assets ?? []).map((asset) => [asset.id, asset]));
     state.pageAssets = new Map((state.pages.assets ?? []).map((asset) => [asset.id, asset]));
     if (!state.chapters.length || !state.assets.size || !state.pageAssets.size) throw new Error("章节或资产为空");
     validateBindings();
+    validateAudioManifest();
     restoreState();
     applyDebugLocation();
     state.debugMode = hasDebugLocation();
@@ -1303,6 +1483,7 @@ async function load() {
     if (!state.debugMode) {
       const coverPageId = state.pages.coverPage;
       await setScenePage(coverPageId, false);
+      syncBgmForLocation(null);
       preloadPages(coverPageId);
       dom.app.classList.remove("is-loading");
       configureTitleScreen();

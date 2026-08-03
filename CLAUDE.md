@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 《请替我沉默 / Keep Silent For Me》is a 30-minute narrative puzzle game where players control a parasitic entity ("消音体") that feeds on unsaid words. The game uses a unique mechanic: drag a black bar to mask parts of dialogue, with masked text becoming the creature's body while remaining text is spoken aloud.
 
-**Current Status**: Playable full-page scene Demo verified in Pages and Tauri CI; media and narrative polish pending
+**Current Status**: Playable full-page scene Demo with CC0 BGM verified in Pages and Tauri CI; video, SFX and narrative polish pending
 **Tech Stack**: Web (HTML5 + CSS + JavaScript, no frameworks) inside a Tauri 2 desktop shell
 **Target**: Web vertical slice plus Windows NSIS and Linux desktop artifacts
 
@@ -17,7 +17,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 1. **台本.md** - Authoritative source for all 35 dialogue sentences, 6 chapters, video storyboards
 2. **script/chapters.json** - Machine-readable runtime data (generated from 台本.md)
 3. **art/v4/scenes/manifest.json** - Full-page cover, chapter line bindings and ending page bindings
-4. **schedule.md** - Complete game design + Web implementation guide (§11 Program Assembly Manual)
+4. **web/audio/manifest.json** - Local CC0 BGM tracks and chapter/ending audio bindings
+5. **schedule.md** - Complete game design + Web implementation guide (§11 Program Assembly Manual)
 
 **Critical Rule**: When dialogue content conflicts between files, 台本.md 以丰富的为准 (use the richer source as standard).
 
@@ -201,7 +202,8 @@ Known rule and narrative mismatches are tracked in `issue.md`.
 | **art/v4/playable/README.md** | Current playable asset generation and runtime binding guide |
 | **schedule.md §11** | Program assembly manual (state machine, JSON contract) |
 | **schedule.md §12** | Art asset specs and file naming |
-| **schedule.md §13** | Audio resources (Freesound.org, Incompetech.com) |
+| **web/audio/SOURCES.md** | Packaged CC0 BGM sources, licenses, conversions and hashes |
+| **schedule.md §13** | Planned audio resources and media layer |
 
 ## Deployment
 

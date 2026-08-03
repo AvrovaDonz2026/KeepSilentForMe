@@ -120,7 +120,19 @@ bar.addEventListener('pointerup', (e) => {
 
 策划案中的 `V0_out`、`V1_pass`、`V_RV` 等视频仍是后续媒体层设计，当前 `web/`
 没有 `<video>` 播放器，也不会因为缺少视频文件而阻塞章节推进。当前章节切换使用整页
-场景图片的翻页/淡入动画；音效只使用 `main.js` 中的 Web Audio 提示音。
+场景图片的翻页/淡入动画；提示音继续使用 `main.js` 中的 Web Audio，BGM 使用
+`web/audio/manifest.json` 与两个隐藏的 HTMLAudioElement 播放槽。
+
+#### CC0 BGM 播放层
+
+音频 manifest 记录曲目路径、循环标记、默认增益、章节/结局绑定和来源信息。标题、
+L0/L1 使用 `rain-room`，L2/L4 使用 `live-pressure`，L3 使用 `door-tension`，L5 与四个结局使用
+`hollow-hope`。章节或结局变化时，当前槽淡出、备用槽淡入约 650ms；同一章节的台词
+切换不会重启音乐。素材全部存放在 `web/audio/bgm/`，不从第三方域名热链。
+
+浏览器自动播放被阻止时，运行时只记录待播放曲目，等待开始按钮或调试入口的第一次
+用户手势重试；右上角总开关会同时暂停/恢复 BGM 和 Web Audio 提示音。来源页、CC0
+记录、转码参数和 SHA-256 见 `web/audio/SOURCES.md`。
 
 ### 4. 关末回声：语言胃 / Echo Digest
 
@@ -455,7 +467,7 @@ function loadGame() {
 
 详见 `schedule.md` 第六章：七天制作排期（Web技术栈）
 
-当前已完成 Day 2/4 对应的核心 Demo 和整页场景实现；尚未完成的是视频、外部音频、
+当前已完成 Day 2/4 对应的核心 Demo、整页场景和 4 首 CC0 BGM 接入；尚未完成的是视频、外部 SFX、
 完整跨章节规则和设备 QA。具体问题见根目录 `issue.md`。
 
 ---
@@ -466,7 +478,7 @@ function loadGame() {
 **A**: 本游戏是状态机驱动，不需要复杂的响应式框架。纯JS更轻量，无构建流程。
 
 ### Q2: 当前 Demo 是否播放视频？
-**A**: 否。关末视频仍是规划中的媒体层；当前章节之间使用整页场景翻页/淡入，右上角只控制 Web Audio 提示音。
+**A**: 否。关末视频仍是规划中的媒体层；当前章节之间使用整页场景翻页/淡入，右上角控制 Web Audio 提示音和本地 CC0 BGM。
 
 ### Q3: localStorage存档会丢失吗？
 **A**: 是的，清除浏览器数据会丢失。当前 Demo 使用 `keep-silent-for-me-demo` 保存进度，尚未提供导出/导入。

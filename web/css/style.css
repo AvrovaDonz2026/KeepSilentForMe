@@ -42,8 +42,11 @@ button { font: inherit; }
 .scene-page-layer,
 .stage-shade,
 .stage-grain,
+.bgm-audio,
 .drag-layer,
 .fx-layer { position: absolute; inset: 0; }
+
+.bgm-audio { display: none; }
 
 .scene-page-layer {
   z-index: -5;

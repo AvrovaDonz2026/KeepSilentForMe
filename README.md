@@ -28,9 +28,10 @@
 - ✅ 已接入继续/重新开始、`localStorage` 存档、URL 调试入口和 Web Audio 提示音
 - ✅ 已接入“语言胃 / Echo Digest”：L1-L4 关末把本章吞下的字编排成私语，并在下一章首句旁回声显示；支持鼠标/触摸拖拽、重复碎片和刷新恢复
 - ✅ L2/L4 直播已加入独立滚屏评论：随台词切换观众文本、人数持续波动，吸附后的反馈会进入滚屏，桌面与移动端均适配
+- ✅ 已接入 4 首 CC0 本地 BGM：雨夜环境、直播压迫、门厅悬疑、终局余响；章节切换交叉淡化，右上角总开关同时控制提示音和配乐
 - ✅ V4 可玩资产包共 55 件，整页场景包共 13 件，manifest、尺寸和引用校验通过
 - ✅ GitHub Pages 最新部署成功；Tauri Windows/Linux 打包工作流最新运行成功
-- 🟡 关末视频、BGM、外部 SFX/配音和完整跨章节分支仍未接入
+- 🟡 关末视频、外部 SFX/配音和完整跨章节分支仍未接入
 - 🟡 当前原型中 L2/L3/L4 旗标主要用于记录，实际流程分支仍待规则对齐
 - 📝 **数据源统一**：`台本.md` 是完整内容源，`script/chapters.json` 是运行时数据源
 
@@ -44,6 +45,7 @@
 | 桌面打包验证 | [运行 30751537976](https://github.com/AvrovaDonz2026/KeepSilentForMe/actions/runs/30751537976) · 成功 |
 | Echo Digest 回归 | Chrome 桌面/390×844 移动视口；点击、鼠标拖拽、触摸拖拽、刷新恢复 · 通过 |
 | 直播滚屏回归 | L2/L4；Chrome 1280×900 / 390×844；动态人数、循环滚动、响应式尺寸 · 通过 |
+| BGM 回归 | 4 首 CC0 本地音频；标题、L0-L5、四结局绑定；章节交叉淡化和总开关 · 通过 |
 | Windows 产物 | `keep-silent-for-me-windows-x64-nsis` |
 | Linux 产物 | `keep-silent-for-me-linux-amd64-appimage`、`keep-silent-for-me-linux-amd64-deb` |
 | 签名/自动更新 | 未启用 |
@@ -215,11 +217,11 @@ L1-L4 完成后，玩家可以把本章吞下的所有字从碎片池拖进私�
 | 整页场景页 | 13张1536×1024，按 `pageBindings` 翻页 | PNG | 🟢 已生成并校验 |
 | V4可玩静态资产 | 55件角色、NPC、消音体、UI与交互层 | RGBA PNG | 🟢 已生成并校验 |
 | 关末视频 | 9-11条×6-15秒 | MP4 H.264 720p | 🟡 待制作 |
-| BGM | 3首 | MP3 128kbps | 🔴 待收集 |
+| BGM | 4首 | MP3 44.1kHz | 🟢 CC0 已接入 |
 | SFX | 6-8个 | MP3/OGG | 🔴 待收集 |
 
-**当前体积**：V4 运行时 PNG 约 24 MiB，`source/` 原始图约 72 MiB；视频和音频尚未计入。
-**首屏加载目标**：<5MB（L0 资产 + 核心代码）
+**当前体积**：V4 运行时 PNG 约 24 MiB，4 首本地 BGM 约 20 MiB，`source/` 原始图约 72 MiB；视频尚未计入。
+**首屏加载目标**：<5MB（L0 资产 + 核心代码；BGM 在用户手势后按需播放）
 
 ## 🎯 差异化定位
 
@@ -254,7 +256,8 @@ python3 -m http.server 8765 --directory .
 [`art/v4/scenes/manifest.json`](./art/v4/scenes/manifest.json) 驱动整页场景图翻页；
 角色、朋友、消音体和结局均已绘制进整页图，运行时只保留台词、黑条、状态与 HTML
 交互 FX。正常打开会先显示由 `coverPage` 驱动的游戏封面；有存档时可继续或重新开始。
-当前只生成 Web Audio 提示音，视频、BGM、外部 SFX 和配音接口保留到媒体资产就绪后接入。
+配乐由 [`web/audio/manifest.json`](./web/audio/manifest.json) 驱动，全部音频随 Web/Tauri
+产物本地打包；视频、外部 SFX 和配音仍保留到后续媒体层。
 
 ### Day 1 Demo 入口
 
@@ -392,7 +395,7 @@ graph LR
 | 🎮 核心原型 | ✅ 完成 | 100% | L0-L5 整页翻页 + 拖拽吸附 + 四结局 |
 | 📦 静态资产 | ✅ 完成 | 68件 | V4 55件 + 整页13件，manifest 已校验 |
 | 🎞️ 视频制作 | ⏳ 待开始 | 0% | 9-11条关末视频 |
-| 🎵 外部音频集成 | ⏳ 待开始 | 0% | BGM/SFX/配音；当前只有 Web Audio 提示音 |
+| 🎵 外部音频集成 | 🟡 部分完成 | 50% | 4 首 CC0 BGM + Web Audio 提示音；SFX/配音待接入 |
 | 🚀 Web 部署 | ✅ 已验证 | 100% | GitHub Pages Actions 成功 |
 | 🖥️ 桌面打包 | ✅ 已验证 | 100% | Windows NSIS + Linux AppImage/deb |
 
@@ -421,7 +424,8 @@ graph LR
 - [x] **核心 Demo**：L0-L5、整页翻页、四结局、标题封面、存档
 - [x] **CI 发布**：Pages、Windows NSIS、Linux AppImage/deb
 - [ ] **视频层**：制作并接入关末/结局/反转视频
-- [ ] **外部音频**：收集并接入 BGM、SFX、配音
+- [x] **BGM**：4 首 CC0 本地曲目，章节/结局绑定、交叉淡化和总开关
+- [ ] **外部音频**：收集并接入 SFX、配音
 - [ ] **规则对齐**：处理 `issue.md` 中 L4 结算、ending seed、多出现 zone 等问题
 - [ ] **设备 QA**：真实移动设备、横竖屏、低端设备和下载产物回归
 
@@ -431,8 +435,8 @@ graph LR
 
 ### 音频资产（Day 6）
 - [ ] **SFX收集**（freesound.org）：拖拽/吸附/吃字/生长
-- [ ] **BGM选择**（incompetech.com）：3首循环音乐
-- [ ] **署名文档**（Credits.txt）：CC-BY授权信息
+- [x] **BGM选择与接入**：4首 CC0 本地曲目，见 `web/audio/SOURCES.md`
+- [x] **来源文档**：作者、来源页、原始文件、转码参数与 SHA-256 已记录
 
 ### 发布准备
 - [x] **部署到 GitHub Pages**（Actions 自动发布）

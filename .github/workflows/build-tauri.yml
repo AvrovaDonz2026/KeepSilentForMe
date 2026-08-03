@@ -52,6 +52,9 @@ jobs:
       - name: Install frontend and Tauri dependencies
         run: npm ci
 
+      - name: Validate audio manifest
+        run: node scripts/validate-audio.mjs
+
       - name: Print Windows build tool versions
         if: matrix.platform == 'windows'
         shell: pwsh

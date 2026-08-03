@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0b0d0d" />
     <title>请替我沉默 · 可玩 Demo</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.css?v=audio-2" />
   </head>
   <body>
     <main id="app" class="app is-loading is-title-screen">
@@ -15,6 +15,10 @@
         </div>
         <div class="stage-shade" aria-hidden="true"></div>
         <div class="stage-grain" aria-hidden="true"></div>
+        <div class="bgm-audio" aria-hidden="true">
+          <audio id="bgm-a" preload="metadata"></audio>
+          <audio id="bgm-b" preload="metadata"></audio>
+        </div>
 
         <section id="title-screen" class="title-screen" aria-label="游戏开始" aria-busy="true">
           <div class="title-screen-wash" aria-hidden="true"></div>
@@ -44,7 +48,7 @@
           </div>
           <div class="topbar-actions">
             <button id="restart-button" class="icon-button" type="button" aria-label="重新开始" title="重新开始">↺</button>
-            <button id="sound-button" class="icon-button" type="button" aria-label="切换提示音" title="切换提示音">◌</button>
+            <button id="sound-button" class="icon-button" type="button" aria-label="切换提示音和配乐" title="切换提示音和配乐">◌</button>
           </div>
         </header>
 
@@ -123,6 +127,6 @@
         </div>
       </section>
     </main>
-    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/main.js?v=audio-2"></script>
   </body>
 </html>

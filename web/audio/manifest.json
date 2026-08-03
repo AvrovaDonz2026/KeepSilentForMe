@@ -1,0 +1,64 @@
+{
+  "version": 2,
+  "tracks": [
+    {
+      "id": "rain-room",
+      "path": "bgm/rain-room.mp3",
+      "loop": true,
+      "defaultGain": 0.1,
+      "sourcePage": "https://opengameart.org/content/horror-atmosphere",
+      "sourceFile": "Juhani Junkala - Post Apocalyptic Wastelands [Loop Ready].ogg",
+      "author": "SubspaceAudio (music by Juhani Junkala)",
+      "license": "CC0 1.0",
+      "duration": 323.892245
+    },
+    {
+      "id": "live-pressure",
+      "path": "bgm/live-pressure.mp3",
+      "loop": true,
+      "defaultGain": 0.14,
+      "sourcePage": "https://opengameart.org/content/space-graveyard-ambient-track",
+      "sourceFile": "space_graveyard.mp3",
+      "author": "TinyWorlds",
+      "license": "CC0 1.0",
+      "duration": 312.764082
+    },
+    {
+      "id": "hollow-hope",
+      "path": "bgm/hollow-hope.mp3",
+      "loop": false,
+      "defaultGain": 0.11,
+      "sourcePage": "https://opengameart.org/content/at-the-end-of-hope",
+      "sourceFile": "at the end of hope.mp3",
+      "author": "Emma_MA",
+      "license": "CC0 1.0",
+      "duration": 182.885900
+    },
+    {
+      "id": "door-tension",
+      "path": "bgm/door-tension.mp3",
+      "loop": true,
+      "defaultGain": 0.12,
+      "sourcePage": "https://opengameart.org/content/narrow-corridors",
+      "sourceFile": "narrow_corridors_short.mp3",
+      "author": "TinyWorlds",
+      "license": "CC0 1.0",
+      "duration": 181.394286
+    }
+  ],
+  "title": "rain-room",
+  "chapters": {
+    "L0": "rain-room",
+    "L1": "rain-room",
+    "L2": "live-pressure",
+    "L3": "door-tension",
+    "L4": "live-pressure",
+    "L5": "hollow-hope"
+  },
+  "endings": {
+    "A_separate": "hollow-hope",
+    "B_alienate": "hollow-hope",
+    "C_consume": "hollow-hope",
+    "C_cold": "hollow-hope"
+  }
+}

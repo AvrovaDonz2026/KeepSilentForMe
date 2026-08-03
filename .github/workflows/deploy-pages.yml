@@ -36,6 +36,7 @@ jobs:
       - name: Validate source assets
         run: |
           node --check web/js/main.js
+          node scripts/validate-audio.mjs
           python3 art/v4/scenes/validate.py
 
       - name: Assemble Pages artifact
@@ -62,6 +63,7 @@ jobs:
           required = [
               root / "web/index.html",
               root / "web/js/main.js",
+              root / "web/audio/manifest.json",
               root / "art/v4/playable/manifest.json",
               root / "art/v4/scenes/manifest.json",
               root / "script/chapters.json",
@@ -88,9 +90,18 @@ jobs:
           if page_missing:
               raise SystemExit(f"missing scene pages: {page_missing}")
 
+          audio = json.loads((root / "web/audio/manifest.json").read_text())
+          audio_missing = [
+              track["path"]
+              for track in audio["tracks"]
+              if not (root / "web/audio" / track["path"]).is_file()
+          ]
+          if audio_missing:
+              raise SystemExit(f"missing audio assets: {audio_missing}")
+
           print(
               f"Pages artifact OK: {len(playable['assets'])} playable assets, "
-              f"{len(pages['assets'])} scene pages"
+              f"{len(pages['assets'])} scene pages, {len(audio['tracks'])} audio tracks"
           )
           PY
 
