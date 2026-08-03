@@ -5,6 +5,7 @@ const PLAYABLE_ROOT = "../art/v4/playable/";
 const PAGE_ROOT = "../art/v4/scenes/";
 const SAVE_KEY = "keep-silent-for-me-demo";
 const MEMORY_CHAPTER_IDS = new Set(["L1", "L2", "L3", "L4"]);
+const LIVE_CHAPTER_IDS = new Set(["L2", "L4"]);
 
 const SCENE_META = {
   L0: { readout: "雨窗 · 书桌", status: "她坐在书桌前，把第一句话递了出来。", caption: "整页 · D0 书桌" },
@@ -13,6 +14,40 @@ const SCENE_META = {
   L3: { readout: "门厅", status: "门开着一条缝，朋友还没有进来。", caption: "整页 · 门口" },
   L4: { readout: "道歉直播", status: "她把表情交给了观众，黑条比她更早知道答案。", caption: "整页 · 道歉" },
   L5: { readout: "没有观众的房间", status: "没有观众。只有她，和你吞下去的字。", caption: "整页 · 终局" },
+};
+
+const LIVE_CHAT_COPY = {
+  L2_S01: ["来了来了", "新人？", "脸呢", "声音有点困", "主播看镜头"],
+  L2_S02: ["为什么直播", "说实话", "冷淡姐", "缺钱也正常", "好好说话哈哈"],
+  L2_S03: ["唱一首！", "心里在骂谁", "这主播好凶", "嘴硬", "点歌点歌"],
+  L2_S04: ["有你在？", "这句像告白", "主播你在看谁", "好像什么都能说", "突然认真"],
+  L2_S05: ["问问日常", "她笑了", "好温柔", "下播吧", "是不是不开心"],
+  L2_S06: ["房间好暗", "开灯看看", "后面有人吗", "有点吓人", "别关灯"],
+  L2_S07: ["晚安", "再播一会", "想你们？", "这句好假", "下次见"],
+  L4_S01: ["道歉", "别装死", "终于上线了", "先解释清楚", "表情呢"],
+  L4_S02: ["对不起就完了？", "终于道歉", "假道歉", "别念稿", "你觉得自己没错？"],
+  L4_S03: ["又在卖惨", "有担当？", "如果是什么意思", "说人话", "谁被伤害了"],
+  L4_S04: ["在跟谁说话", "少吃一点？", "什么暗号", "后半句呢", "她旁边有人"],
+  L4_S05: ["只说我们想听的", "威胁观众？", "好好反省", "她眼神不对", "别演了"],
+  L4_S06: ["还敢骂人", "互撕开始", "下播吧", "举报了", "这才是真话"],
+  L4_S07: ["还没道完", "谁留下来", "别走", "直播别关", "拜拜"],
+};
+
+const LIVE_VIEWERS = {
+  L2_S01: 1204,
+  L2_S02: 1238,
+  L2_S03: 1311,
+  L2_S04: 1486,
+  L2_S05: 1402,
+  L2_S06: 1198,
+  L2_S07: 1067,
+  L4_S01: 8842,
+  L4_S02: 9137,
+  L4_S03: 8871,
+  L4_S04: 8240,
+  L4_S05: 7788,
+  L4_S06: 10320,
+  L4_S07: 6140,
 };
 
 const dom = {
@@ -28,6 +63,9 @@ const dom = {
   statusCopy: document.querySelector("#status-copy"),
   statusFill: document.querySelector("#status-rule-fill"),
   sceneCaption: document.querySelector("#scene-caption"),
+  liveChat: document.querySelector("#live-chat"),
+  liveChatTrack: document.querySelector("#live-chat-track"),
+  liveChatViewers: document.querySelector("#live-chat-viewers"),
   fxLayer: document.querySelector("#fx-layer"),
   dialogueFrame: document.querySelector("#dialogue-frame"),
   dialogueContent: document.querySelector(".dialogue-content"),
@@ -75,6 +113,10 @@ const state = {
   memoryDraft: null,
   memoryDrag: null,
   suppressMemoryClick: false,
+  liveChatLineId: "",
+  liveChatMessages: [],
+  liveViewerCount: 0,
+  liveViewerTimer: null,
   endingId: null,
   selectedZone: null,
   hoverZone: null,
@@ -177,6 +219,70 @@ function renderMemoryEcho(chapter, line) {
   }
   dom.memoryEcho.textContent = fragments.join(" · ");
   dom.memoryEcho.classList.remove("is-hidden");
+}
+
+function updateLiveChatTrack(restart = true) {
+  const fragment = document.createDocumentFragment();
+  const scrollingMessages = [...state.liveChatMessages, ...state.liveChatMessages];
+  for (const message of scrollingMessages) {
+    const item = document.createElement("div");
+    item.className = "live-chat-item";
+    item.textContent = message;
+    fragment.append(item);
+  }
+  dom.liveChatTrack.replaceChildren(fragment);
+  if (!restart) return;
+  dom.liveChatTrack.classList.remove("is-scrolling");
+  void dom.liveChatTrack.offsetWidth;
+  dom.liveChatTrack.classList.add("is-scrolling");
+}
+
+function startLiveViewerCounter(lineId) {
+  window.clearInterval(state.liveViewerTimer);
+  state.liveViewerCount = LIVE_VIEWERS[lineId] ?? 1204;
+  dom.liveChatViewers.textContent = `观众 ${state.liveViewerCount.toLocaleString("zh-CN")}`;
+  const changes = [7, 4, -3, 11, -5, 6, -2, 9, -7, 3];
+  let tick = 0;
+  state.liveViewerTimer = window.setInterval(() => {
+    if (!LIVE_CHAPTER_IDS.has(currentChapter()?.id) || dom.liveChat.classList.contains("is-hidden")) {
+      window.clearInterval(state.liveViewerTimer);
+      state.liveViewerTimer = null;
+      return;
+    }
+    state.liveViewerCount = Math.max(0, state.liveViewerCount + changes[tick % changes.length]);
+    dom.liveChatViewers.textContent = `观众 ${state.liveViewerCount.toLocaleString("zh-CN")}`;
+    tick += 1;
+  }, 1800);
+}
+
+function renderLiveChat(chapter, line) {
+  if (!LIVE_CHAPTER_IDS.has(chapter?.id) || !line) {
+    hideLiveChat();
+    return;
+  }
+  const messages = LIVE_CHAT_COPY[line.id] ?? ["直播中", "有人吗", "听得见吗"];
+  state.liveChatLineId = line.id;
+  state.liveChatMessages = [...messages];
+  startLiveViewerCounter(line.id);
+  dom.liveChat.classList.remove("is-hidden");
+  updateLiveChatTrack();
+}
+
+function appendLiveChat(message) {
+  if (!LIVE_CHAPTER_IDS.has(currentChapter()?.id) || !message) return;
+  state.liveChatMessages = [...state.liveChatMessages.slice(-7), message];
+  updateLiveChatTrack();
+}
+
+function hideLiveChat() {
+  window.clearInterval(state.liveViewerTimer);
+  dom.liveChat.classList.add("is-hidden");
+  dom.liveChatTrack.replaceChildren();
+  dom.liveChatTrack.classList.remove("is-scrolling");
+  state.liveChatLineId = "";
+  state.liveChatMessages = [];
+  state.liveViewerCount = 0;
+  state.liveViewerTimer = null;
 }
 
 function showToast(text, duration = 2100) {
@@ -365,6 +471,7 @@ function renderLine() {
   dom.zoneCount.textContent = String(line.zones.length).padStart(2, "0");
   dom.feedbackCopy.textContent = state.chapterIndex === 0 ? "黑条在句子外等着。" : "她还没有把这句话说完。";
   renderMemoryEcho(chapter, line);
+  renderLiveChat(chapter, line);
   buildDialogue(line.raw, line.zones);
   setScene(chapter, line, true);
   clearNearestZone();
@@ -524,6 +631,7 @@ function applySelection(index) {
   state.eatLog.push({ chapterId: currentChapter().id, text: zone.eat || zone.text });
   dom.feedbackCopy.textContent = zone.npc || "字在黑条下安静下来。";
   dom.statusCopy.textContent = zone.eat ? `已吞下「${zone.eat}」。` : "字被收进了黑条里。";
+  appendLiveChat(zone.npc || "字被收进去了");
   showToast(zone.npc || "字被吃掉了。", 2500);
   triggerFeedback("snap", index);
   triggerManifestEvent("censor_absorb", index);
@@ -797,6 +905,7 @@ function confirmMemory() {
 
 function finishChapter() {
   const chapter = currentChapter();
+  if (LIVE_CHAPTER_IDS.has(chapter?.id)) hideLiveChat();
   if (chapter.id === "L1" && chapterResult(chapter) === "fail") {
     showOverlay("面试结束", "她没有被录用。", "把这一章重新说一遍", () => restartChapter(), "重试面试");
     return;

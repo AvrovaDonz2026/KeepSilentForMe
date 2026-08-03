@@ -132,6 +132,16 @@ L1-L4 完成后，运行时会把本章所有已吞下的文字转成碎片池�
 `main.js` 会在整个私语层监听 `pointermove` / `pointerup`，兼容部分浏览器不把
 Pointer Capture 的结束事件送回原按钮的情况。
 
+#### L2/L4 直播滚屏
+
+L2 与 L4 使用独立的 `#live-chat` DOM 层和 `LIVE_CHAT_COPY` 文本表。每句直播台词
+切换一组评论，CSS 轨道从首条评论立即开始向上循环；吸附后的 `zone.npc` 反馈通过
+`appendLiveChat()` 追加。观众人数从每句的 `LIVE_VIEWERS` 基准开始，以 1.8 秒间隔
+小幅波动。该层不写入存档，离开直播章节时清空计时器，`prefers-reduced-motion` 会关闭
+滚动和红点脉冲。布局在桌面端使用 `min(480px, 42vw)` × `min(420px, 48vh)`，移动端
+使用 `min(280px, 72vw)` 且最高 `270px`；已在 Chrome 的 1280×900 和 390×844 视口
+验证滚屏不会遮挡底部台词框。
+
 ### 5. localStorage存档
 
 ```javascript

@@ -120,6 +120,7 @@ button { font: inherit; }
 
 .app.is-title-screen .topbar,
 .app.is-title-screen .scene-status,
+.app.is-title-screen .live-chat,
 .app.is-title-screen .dialogue-frame,
 .app.is-title-screen .drag-layer,
 .app.is-title-screen .fx-layer,
@@ -190,6 +191,17 @@ button { font: inherit; }
 .status-rule { position: relative; width: 100%; height: 1px; margin-top: 18px; background: rgba(200, 208, 199, 0.18); overflow: hidden; }
 .status-rule span { display: block; width: 22%; height: 100%; background: var(--signal); transition: width 500ms ease; }
 .scene-caption { margin-top: 8px; color: rgba(205, 212, 203, 0.46); font-size: 10px; letter-spacing: 0.08em; }
+
+.live-chat { position: absolute; z-index: 18; top: 104px; right: 30px; width: min(480px, 42vw); color: var(--paper-dim); pointer-events: none; }
+.live-chat.is-hidden { display: none; }
+.live-chat-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 11px; border-bottom: 1px solid rgba(196, 203, 193, 0.18); color: rgba(214, 221, 211, 0.5); font: 600 12px/1 var(--display-font); letter-spacing: 0.16em; }
+.live-chat-live { display: inline-flex; align-items: center; gap: 6px; color: rgba(214, 150, 134, 0.82); }
+.live-chat-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 0 3px rgba(163, 111, 97, 0.12); animation: live-pulse 1.6s ease-in-out infinite; }
+.live-chat-viewport { position: relative; height: min(420px, 48vh); overflow: hidden; border-left: 1px solid rgba(163, 111, 97, 0.46); mask-image: linear-gradient(to bottom, transparent 0%, #000 9%, #000 90%, transparent 100%); }
+.live-chat-track { display: flex; flex-direction: column; gap: 14px; padding: 26px 0 30px 18px; will-change: transform; }
+.live-chat-track.is-scrolling { animation: live-scroll 18s linear infinite; }
+.live-chat-item { color: rgba(224, 226, 218, 0.76); font-size: 14px; line-height: 1.65; letter-spacing: 0.04em; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7); }
+.live-chat-item::before { margin-right: 7px; color: rgba(163, 111, 97, 0.72); content: "//"; font: 600 10px/1 var(--display-font); letter-spacing: 0.06em; }
 
 .dialogue-frame {
   position: absolute;
@@ -293,13 +305,16 @@ button { font: inherit; }
 .app.is-loading .scene-page-layer,
 .app.is-loading .dialogue-frame,
 .app.is-loading .drag-layer,
-.app.is-loading .scene-status { opacity: 0; }
+.app.is-loading .scene-status,
+.app.is-loading .live-chat { opacity: 0; }
 .app.is-loading .scene-page { transition: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .title-screen,
   .title-secondary,
   .text-button { transition: none; }
+  .live-chat-track.is-scrolling,
+  .live-chat-dot { animation: none; }
 }
 
 @keyframes page-turn {
@@ -307,6 +322,8 @@ button { font: inherit; }
   55% { opacity: 1; transform: scale(1.03) translate3d(-0.3vw, 0, 0); }
   100% { opacity: 1; transform: scale(1.025) translate3d(0, 0, 0); filter: saturate(0.78) contrast(1.04); }
 }
+@keyframes live-scroll { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -50%, 0); } }
+@keyframes live-pulse { 0%, 100% { opacity: 0.55; transform: scale(0.88); } 50% { opacity: 1; transform: scale(1.08); } }
 @keyframes grain-shift { 0% { transform: translate3d(0, 0, 0); } 25% { transform: translate3d(-1%, 1%, 0); } 50% { transform: translate3d(1%, -1%, 0); } 75% { transform: translate3d(1%, 1%, 0); } 100% { transform: translate3d(0, 0, 0); } }
 @keyframes fx-enter { from { opacity: 0; transform: translate3d(0, 12px, 0) scale(0.96); } to { opacity: 0.92; transform: translate3d(0, 0, 0) scale(1); } }
 @keyframes fx-leave { from { opacity: 0.92; } to { opacity: 0; } }
@@ -319,6 +336,8 @@ button { font: inherit; }
   .chapter-readout { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; min-height: 20px; padding-top: 2px; font-size: 10px; }
   .topbar-actions { grid-column: 2; grid-row: 1; }
   .scene-status { top: 110px; left: 18px; width: min(260px, 58vw); }
+  .live-chat { top: 110px; right: 18px; width: min(380px, 48vw); }
+  .live-chat-viewport { height: min(340px, 42vh); }
   .dialogue-content { width: calc(100% - 36px); padding-top: 26px; }
   .memory-echo { max-width: 100%; margin-top: 9px; padding-left: 9px; font-size: 11px; }
   .dialogue-text { font-size: clamp(18px, 4.6vw, 25px); line-height: 1.75; }
@@ -335,6 +354,9 @@ button { font: inherit; }
   .title-actions { gap: 16px; }
   .wordmark-name { display: none; }
   .scene-status { top: 102px; }
+  .live-chat { top: 190px; right: 14px; width: min(280px, 72vw); }
+  .live-chat-viewport { height: min(270px, calc(100dvh - 450px)); min-height: 160px; }
+  .live-chat-item { font-size: 13px; }
   .status-copy { font-size: 12px; }
   .dialogue-content { width: calc(100% - 28px); }
   .memory-overlay { padding: 14px; }

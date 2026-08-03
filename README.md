@@ -27,6 +27,7 @@
 - ✅ 运行时改为整页场景翻页：13张 `1536×1024` 页面由 `pageBindings` 驱动
 - ✅ 已接入继续/重新开始、`localStorage` 存档、URL 调试入口和 Web Audio 提示音
 - ✅ 已接入“语言胃 / Echo Digest”：L1-L4 关末把本章吞下的字编排成私语，并在下一章首句旁回声显示；支持鼠标/触摸拖拽、重复碎片和刷新恢复
+- ✅ L2/L4 直播已加入独立滚屏评论：随台词切换观众文本、人数持续波动，吸附后的反馈会进入滚屏，桌面与移动端均适配
 - ✅ V4 可玩资产包共 55 件，整页场景包共 13 件，manifest、尺寸和引用校验通过
 - ✅ GitHub Pages 最新部署成功；Tauri Windows/Linux 打包工作流最新运行成功
 - 🟡 关末视频、BGM、外部 SFX/配音和完整跨章节分支仍未接入
@@ -42,6 +43,7 @@
 | Pages 验证 | [运行 30751537982](https://github.com/AvrovaDonz2026/KeepSilentForMe/actions/runs/30751537982) · 成功 |
 | 桌面打包验证 | [运行 30751537976](https://github.com/AvrovaDonz2026/KeepSilentForMe/actions/runs/30751537976) · 成功 |
 | Echo Digest 回归 | Chrome 桌面/390×844 移动视口；点击、鼠标拖拽、触摸拖拽、刷新恢复 · 通过 |
+| 直播滚屏回归 | L2/L4；Chrome 1280×900 / 390×844；动态人数、循环滚动、响应式尺寸 · 通过 |
 | Windows 产物 | `keep-silent-for-me-windows-x64-nsis` |
 | Linux 产物 | `keep-silent-for-me-linux-amd64-appimage`、`keep-silent-for-me-linux-amd64-deb` |
 | 签名/自动更新 | 未启用 |
