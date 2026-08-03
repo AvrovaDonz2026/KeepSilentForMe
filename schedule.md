@@ -421,14 +421,20 @@
 
 **已确定方案：Web (DOM + CSS)**
 
+> **当前实现快照（2026-08-03）**：`web/` 已完成 L0-L5 的可玩整页 Demo；运行时使用
+> `art/v4/scenes/manifest.json` 的 13 张整页 PNG 和 `pageBindings`，不再叠加角色、NPC、
+> 消音体或结局透明叙事层。`script/chapters.json`、场景 manifest 和 V4 UI/反馈资产已接入，
+> Tauri 2 的 Windows NSIS 与 Linux AppImage/deb 已在 GitHub Actions 通过。本文后续关于
+> 视频、外部音频、透明叙事层和完整路线结算的内容仍是目标设计或待办，不代表当前 Demo 已实现。
+
 | 方案 | 选择 |
 | --- | --- |
-| **引擎** | **Web (HTML5 + CSS + JavaScript)** - 跨平台、零安装、易分发 |
+| **引擎** | **Web (HTML5 + CSS + JavaScript)**；桌面发行由 Tauri 2 包装 |
 | 文本 | 不跑 NLP；JSON/表格驱动预设遮挡（`script/chapters.json`） |
-| 交互 | **DOM span 包裹 zone → getBoundingClientRect() 精确定位** → 拖拽黑条吸附 |
-| **关末** | 结算 flag → 选 `outro_video` id → HTML5 `<video>` 播放 → 加载下一章 BG |
-| 视频资产 | `video/V*.mp4`；关键视频预加载（preload="auto"）避免卡顿 |
-| 存档 | **localStorage** 存储关卡进度 + 结局 flag + 已看视频标记 |
+| 交互 | 当前为单一文本节点 + `Range.getClientRects()` 命中层 → 拖拽黑条吸附 |
+| **当前章节切换** | `pageBindings` 选择整页 PNG，HTML overlay 显示段落结束和结局 |
+| 关末视频 | 目标设计仍为 `video/V*.mp4`；当前 Demo 尚未接入播放器 |
+| 存档 | **localStorage** 保存章节、台词、旗标、吃字记录和结局 ID；暂无视频已看标记 |
 | 部署 | 静态托管（Vercel / Netlify / GitHub Pages）一键发布 |
 | 本地化 | 首发中文；英文需重做 zone（按短语而非按字）；视频旁白用 UI 本地化更省 |
 
@@ -985,6 +991,11 @@ function snapToZone(bar, targetRect, callback) {
 
 ### 11.8 各章结算（抄这张表写 if）
 
+> **实现状态说明**：下表是目标设计表，不是当前 Demo 的完整运行契约。当前代码实际只
+> 对 L1 执行 `pass >= 4 && fail < 2`，失败显示重试层；L2/L3/L4 旗标会累加但不会改变
+> 当前章节推进；L5_S06 的 zone 直接映射四个结局 ID。规则冲突见根目录 `issue.md`，
+> 在数据规则统一前不要据此新增视频或分支逻辑。
+
 | 章 | 通过/走向 | 条件（读 flags） | 视频 |
 | --- | --- | --- | --- |
 | L0 | 必过 | 任意选完 L0_S01 | `V0_out` |
@@ -1308,9 +1319,10 @@ function validateChaptersData(data) {
 | 12 | UI 运行时层 | 5 张透明 RGBA 层 | D0 / 直播 / 黑条状态 | `art/v4/playable/ui/` |
 | 13 | 关末视频 | 9–11 条，16:9 MP4，6–12s | 台本 V* | `video/V*.mp4`（待制作） |
 
-**当前状态**：序号 6–12 已在 V4 可玩资产包中完成并通过校验；序号 1–5 由
-V4 manifest 通过兼容入口引用 `art/bg/`，视频仍按台本分镜待制作。
-竖切可以先加载 manifest 中的 L0/L1 绑定，视频用黑场占位。
+**当前状态**：13 张整页场景/结局页已完成并通过校验，运行时入口为
+`art/v4/scenes/manifest.json`；V4 可玩包的 55 件透明/反馈资产仍保留，其中透明叙事层
+仅作源文件和未来变体，当前 Demo 不叠加它们。旧 `art/bg/` 继续作为生成与回溯素材。
+关末视频、BGM、外部 SFX 和配音仍待制作，当前章节切换使用整页翻页/淡入动画。
 
 ### 12.2 画风铁律（违反即返工）
 
@@ -1626,9 +1638,13 @@ git commit -m "feat: Web版游戏完成"
 git push origin main
 
 # 2. 在仓库设置中启用GitHub Pages
-# Settings → Pages → Source: main branch
-# URL: https://username.github.io/KeepSilentForMe
+# Settings → Pages → Source: GitHub Actions
+# URL: https://avrovadonz2026.github.io/KeepSilentForMe/web/
 ```
+
+仓库当前已由 `.github/workflows/deploy-pages.yml` 自动发布到上述地址；Tauri 桌面打包由
+`.github/workflows/build-tauri.yml` 负责，Windows CI 产出 NSIS，Linux CI 产出 AppImage/deb，
+均作为 Actions artifact 提供下载，未启用签名和自动更新。
 
 ### 16.3 性能优化清单
 
@@ -1656,14 +1672,18 @@ git push origin main
 ✅ 跨平台：PC/Mac/iOS/Android统一  
 ✅ 快速迭代：F5刷新即测试  
 ✅ 易分发：一个URL即可分享  
-✅ 字符热区方案已确定：DOM自动计算，待 Day 0 原型实测
+✅ 字符热区方案已落地：单一文本节点 + `Range.getClientRects()`，已用于当前 Demo
 
-### 挑战
-⚠️ 移动端视频自动播放限制（已有解决方案）  
-⚠️ 存档依赖localStorage（可导出/导入）  
-⚠️ 性能优化需手动调整  
+### 当前交付状态
+- ✅ Web Demo：标题封面、L0-L5、整页翻页、拖拽遮字、localStorage、四结局
+- ✅ 场景与运行时资产：13 张整页页图 + 55 件 V4 UI/反馈和源资产
+- ✅ CI：GitHub Pages、Windows NSIS、Linux AppImage/deb
+- ⏳ 视频、BGM、外部 SFX/配音、完整跨章节分支和真实设备 QA
 
-### 最终交付物
+### 最终交付物（目标设计结构）
+
+当前仓库的实际入口集中在 `web/`、`art/v4/playable/`、`art/v4/scenes/` 和 `src-tauri/`；
+下面的 `production/` 树保留为未来媒体层接入时的目标结构。
 ```
 production/
 ├── index.html              # 单页应用入口

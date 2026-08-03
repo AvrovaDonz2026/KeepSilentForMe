@@ -1,6 +1,6 @@
 # Web技术栈实现指南
 
-> **技术选型确认**：《请替我沉默》采用 **Web (HTML5 + CSS + JavaScript)** 技术栈开发
+> **当前实现**：《请替我沉默》使用 **Web (HTML5 + CSS + JavaScript)** 作为运行时，并由 **Tauri 2** 提供桌面壳。本文保留早期技术验证和视频方案，当前运行入口以 `web/`、两个 manifest 和 `src-tauri/` 为准。
 
 ---
 
@@ -8,7 +8,7 @@
 
 1. [技术选型理由](#技术选型理由)
 2. [核心技术解决方案](#核心技术解决方案)
-3. [Day 0 技术验证](#day-0-技术验证)
+3. [历史 Day 0 验证](#历史-day-0-技术验证与参考模板)
 4. [快速启动模板](#快速启动模板)
 5. [开发路线图](#开发路线图)
 6. [常见问题FAQ](#常见问题faq)
@@ -21,7 +21,7 @@
 
 | 优势 | 说明 |
 |------|------|
-| **字符热区方案已确定** | DOM `getBoundingClientRect()` 自动计算中文字符包围盒，需在 Day 0 原型中实测 |
+| **字符热区方案已验证** | 单一文本节点 + `Range.getClientRects()` 自动处理换行、重叠和响应式字体 |
 | **零构建流程** | 无需Webpack/Vite，F5刷新即可测试 |
 | **跨平台原生** | 同一份代码运行在PC/Mac/iOS/Android |
 | **部署简单** | 静态托管，一键发布到Vercel/Netlify |
@@ -45,7 +45,7 @@
 
 **问题**：如何精确获取"很容易把事情搞砸"这段文字的屏幕位置？
 
-**解决方案**：用 `<span>` 包裹每个zone
+**当前解决方案**：原句只渲染一次，再用 `Range` 生成独立的透明命中矩形。下面的 `<span>` 代码仅保留为早期概念示例，不能作为当前实现的 DOM 结构依据。
 
 ```html
 <!-- 原始句子 -->
@@ -116,76 +116,47 @@ bar.addEventListener('pointerup', (e) => {
 });
 ```
 
-### 3. 视频播放与预加载
+### 3. 媒体层（规划，不属于当前 Demo）
 
-```javascript
-// 视频播放器（支持移动端自动播放fallback）
-async function playVideo(videoId) {
-  const video = document.createElement('video');
-  video.src = `assets/video/${videoId}.mp4`;
-  
-  try {
-    await video.play();
-  } catch (err) {
-    // 移动端自动播放失败，显示播放按钮
-    if (err.name === 'NotAllowedError') {
-      showPlayButton(() => video.play());
-    }
-  }
-}
-
-// 预加载关键视频
-function preloadCriticalVideos() {
-  const videos = ['V0_out', 'V1_pass', 'V_RV'];
-  videos.forEach(id => {
-    const video = document.createElement('video');
-    video.src = `assets/video/${id}.mp4`;
-    video.preload = 'auto';
-  });
-}
-```
+策划案中的 `V0_out`、`V1_pass`、`V_RV` 等视频仍是后续媒体层设计，当前 `web/`
+没有 `<video>` 播放器，也不会因为缺少视频文件而阻塞章节推进。当前章节切换使用整页
+场景图片的翻页/淡入动画；音效只使用 `main.js` 中的 Web Audio 提示音。
 
 ### 4. localStorage存档
 
 ```javascript
-// 游戏状态
+// 当前 Demo 的存档形状（键名：keep-silent-for-me-demo）
 const gameState = {
-  chapter: 2,
+  chapterIndex: 2,
+  lineIndex: 1,
   flags: { pass: 5, fail: 1 },
   eatLog: ["不能说的话", "很容易把事情搞砸"],
-  seenVideos: ["V0_out", "V1_pass"]
+  endingId: null
 };
 
 // 存档
 function saveGame() {
-  localStorage.setItem('keepsilent_save', JSON.stringify(gameState));
+  localStorage.setItem('keep-silent-for-me-demo', JSON.stringify(gameState));
 }
 
 // 读档
 function loadGame() {
-  const saved = localStorage.getItem('keepsilent_save');
+  const saved = localStorage.getItem('keep-silent-for-me-demo');
   if (saved) {
     return JSON.parse(saved);
   }
   return null;
 }
 
-// 导出存档（下载JSON文件）
-function exportSave() {
-  const blob = new Blob([JSON.stringify(gameState)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'keepsilent_save.json';
-  a.click();
-}
+// 当前 Demo 暂未提供导出/导入存档 UI；清除浏览器数据会清除进度。
 ```
 
 ---
 
-## Day 0 技术验证（开发启动前待办）
+## 历史 Day 0 技术验证与参考模板
 
-以下 3 项必须在 Day 1 开发前完成；当前仓库尚未包含 `web/` 原型，因此这里的勾选状态仍由开发验收填写。
+以下内容记录最初的验证思路。当前仓库已经包含完整 `web/` Demo，日常开发应直接运行
+根目录静态服务器；视频质量和真实移动设备回归仍是未完成项。
 
 ### 验证1：字符热区吸附（2小时）
 
@@ -238,7 +209,7 @@ function exportSave() {
 - ✅ 中文、英文、标点符号都能正确包裹
 - ✅ 改变字体大小后位置自动更新
 
-### 验证2：AI视频质量（3小时）
+### 验证2：AI视频质量（后续媒体任务）
 
 1. 用D0首帧生成V0_out测试片（6-8秒）
 2. 检查清单：
@@ -249,11 +220,11 @@ function exportSave() {
 
 **若失败率>50%**：切换到备用方案（静帧 + CSS Ken Burns效果）
 
-### 验证3：移动端兼容（1小时）
+### 验证3：移动端兼容（后续设备 QA）
 
 在手机浏览器测试：
 - [ ] 触摸拖拽是否流畅
-- [ ] 视频能否播放（自动播放+手动播放）
+- [ ] 横竖屏、触摸拖拽和低端设备表现
 - [ ] localStorage是否可用
 - [ ] 字体渲染是否正常
 
@@ -261,7 +232,7 @@ function exportSave() {
 
 ## 快速启动模板
 
-### Day 1 最小可运行Demo
+### Day 1 最小可运行 Demo（历史参考）
 
 创建 `index.html`：
 
@@ -452,15 +423,12 @@ function exportSave() {
 
 ---
 
-## 开发路线图
+## 开发路线图（目标设计）
 
 详见 `schedule.md` 第六章：七天制作排期（Web技术栈）
 
-**核心里程碑**：
-- Day 0: 技术验证通过
-- Day 2: L0+L1可玩
-- Day 4: 全章节完成
-- Day 7: 公开发布
+当前已完成 Day 2/4 对应的核心 Demo 和整页场景实现；尚未完成的是视频、外部音频、
+完整跨章节规则和设备 QA。具体问题见根目录 `issue.md`。
 
 ---
 
@@ -469,18 +437,18 @@ function exportSave() {
 ### Q1: 为什么不用React/Vue？
 **A**: 本游戏是状态机驱动，不需要复杂的响应式框架。纯JS更轻量，无构建流程。
 
-### Q2: 移动端视频自动播放被禁用怎么办？
-**A**: 在首次用户交互（点击"开始游戏"）后初始化音频上下文，失败时显示播放按钮。
+### Q2: 当前 Demo 是否播放视频？
+**A**: 否。关末视频仍是规划中的媒体层；当前章节之间使用整页场景翻页/淡入，右上角只控制 Web Audio 提示音。
 
 ### Q3: localStorage存档会丢失吗？
-**A**: 是的，清除浏览器数据会丢失。建议实现"导出/导入存档"功能（下载JSON文件）。
+**A**: 是的，清除浏览器数据会丢失。当前 Demo 使用 `keep-silent-for-me-demo` 保存进度，尚未提供导出/导入。
 
 ### Q4: 如何优化性能？
 **A**: 
 - 使用 `transform` 代替 `left/top`
 - `requestAnimationFrame` 节流拖拽事件
 - `will-change` 提示浏览器优化
-- 场景 BG 可转 WebP，透明运行时层保留 manifest 规定的 RGBA PNG；视频使用 720p
+- 页面 PNG 是完整场景图；透明 V4 资产仅作为源文件和 UI/反馈层，不再作为角色场景叠加层
 
 ### Q5: 如何部署到生产环境？
 **A**: 
@@ -493,7 +461,7 @@ vercel
 # 访问 app.netlify.com/drop
 
 # GitHub Pages
-# Settings → Pages → Deploy from main branch
+# Settings → Pages → Source: GitHub Actions
 ```
 
 ---
@@ -508,4 +476,4 @@ vercel
 
 ---
 
-*文档版本：v1.1 · 最后更新：2026-08-01*
+*文档版本：v1.2 · 最后更新：2026-08-03*

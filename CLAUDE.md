@@ -6,17 +6,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 《请替我沉默 / Keep Silent For Me》is a 30-minute narrative puzzle game where players control a parasitic entity ("消音体") that feeds on unsaid words. The game uses a unique mechanic: drag a black bar to mask parts of dialogue, with masked text becoming the creature's body while remaining text is spoken aloud.
 
-**Current Status**: V4 full-page scene Demo implemented; interaction polish in progress
-**Tech Stack**: Web (HTML5 + CSS + JavaScript, no frameworks)  
-**Target**: 7-day development cycle for vertical slice
+**Current Status**: Playable full-page scene Demo verified in Pages and Tauri CI; media and narrative polish pending
+**Tech Stack**: Web (HTML5 + CSS + JavaScript, no frameworks) inside a Tauri 2 desktop shell
+**Target**: Web vertical slice plus Windows NSIS and Linux desktop artifacts
 
 ## Architecture
 
 ### Document Hierarchy (Single Source of Truth)
 
 1. **台本.md** - Authoritative source for all 35 dialogue sentences, 6 chapters, video storyboards
-2. **script/chapters.json** - Machine-readable game data (generated from 台本.md)
-3. **schedule.md** - Complete game design + Web implementation guide (§11 Program Assembly Manual)
+2. **script/chapters.json** - Machine-readable runtime data (generated from 台本.md)
+3. **art/v4/scenes/manifest.json** - Full-page cover, chapter line bindings and ending page bindings
+4. **schedule.md** - Complete game design + Web implementation guide (§11 Program Assembly Manual)
 
 **Critical Rule**: When dialogue content conflicts between files, 台本.md 以丰富的为准 (use the richer source as standard).
 
@@ -31,7 +32,7 @@ Complete sentence appears on screen
 → Next sentence or chapter settlement
 ```
 
-**Constraint**: Player can ONLY mask 3-4 pre-defined continuous zones per sentence, no free-form text editing.
+**Constraint**: Player can ONLY mask 3-4 pre-defined continuous zones per sentence, no free-form text editing. The current Demo renders the raw sentence once and places transparent hit rectangles from `Range.getClientRects()` over it.
 
 ### Data Structure (script/chapters.json)
 
@@ -63,7 +64,7 @@ Complete sentence appears on screen
 }
 ```
 
-**Critical**: `zone.text` must be an exact continuous substring of `line.raw`. Web implementation uses `raw.indexOf(zone.text)` to locate zones.
+**Critical**: `zone.text` must be an exact continuous substring of `line.raw`. The runtime supports an optional explicit `start` or `occurrence` when repeated text needs a deterministic match; do not add manual screen coordinates.
 
 ### Web Implementation Strategy
 
@@ -84,6 +85,8 @@ range.setEnd(textNode, zone.end);
 const rects = [...range.getClientRects()]; // handles wrapping and overlap
 ```
 
+The runtime does not composite the narrative character, NPC, creature, or ending layers. Those identities are baked into the 13 full-page scene images; transparent V4 assets remain source material and provide UI/feedback layers.
+
 **Project Structure**:
 ```
 web/
@@ -93,28 +96,42 @@ web/
 └── js/main.js              # State machine, drag loop, page bindings and HTML FX
 
 art/v4/scenes/
-├── manifest.json            # 13 pages, line bindings and four ending pages
+├── manifest.json            # cover, 13 pages, line bindings and four ending pages
 ├── pages/                   # 1536x1024 full-page PNGs
 ├── prompts/                 # Generation prompts
 ├── generate_pages.sh        # /images/edits generation entry point
 └── validate.py
+
+src-tauri/
+├── tauri.conf.json          # shared Tauri 2 shell configuration
+├── tauri.windows.conf.json  # NSIS target used by CI
+└── tauri.linux.conf.json    # AppImage/deb targets used by CI
 ```
 
 ## Development Workflow
 
-### Day 0: Technical Validation (MUST DO FIRST)
+### Current verification status
 
 ```bash
-# 1. Test the Range hit layer and overlap handling in the current web/ Demo
-# Open the local server and use the browser regression flow for L0-L5.
+# Local web runtime
+python3 -m http.server 8765 --directory .
+# Open http://127.0.0.1:8765/web/
 
-# 2. Generate 1 test video (V0_out)
-# Use the current storyboard prompts under storyboard/demo-effects/prompts/
-# Verify doomer style consistency
+# Static and JavaScript validation
+python3 art/v4/scenes/validate.py
+node --check web/js/main.js
+node --check scripts/prepare-tauri.mjs
 
-# 3. Test mobile browser
-# Touch drag, video autoplay, localStorage
+# Desktop preparation (full Rust build requires the Tauri toolchain)
+npm ci
+npm run tauri:prepare
+npm run tauri:icons
+npm run tauri:build
 ```
+
+The latest Pages and Tauri CI runs are recorded in the root README. The local
+environment must provide Rust, Cargo and platform WebView dependencies before
+`npm run tauri:build` can produce a native binary.
 
 ### Day 1+: Start Development
 
@@ -123,8 +140,8 @@ art/v4/scenes/
 # only as a reference for the underlying DOM interaction.
 
 # Local development server
-python3 -m http.server 8000
-# Visit http://localhost:8000
+python3 -m http.server 8765 --directory .
+# Visit http://127.0.0.1:8765/web/
 ```
 
 ### Asset Generation
@@ -159,10 +176,14 @@ From art-style.md:
 ### Flag System
 
 Flags are counters tracked in `gameState.flags`:
-- `pass`/`fail` - Chapter 1 settlement (need pass≥4 && fail<2)
-- `hate_leak` - Chapter 2 settlement
-- `apology_perform`/`apology_refuse` - Chapter 4 branching
-- `mask`, `truth`, `bond`, `crack`, `control` - Optional for easter eggs/reversal
+- `pass`/`fail` - L1 settlement (need `pass >= 4 && fail < 2`; otherwise the chapter retry overlay appears)
+- `hate_leak` - Recorded during L2; current Demo continues without a separate L2 retry branch
+- `apology_perform`/`apology_refuse` - Recorded during L4; current Demo does not yet select a separate video route
+- `mask`, `truth`, `bond`, `crack`, `control`, `trust`, `distance`, `secret_risk` - Recorded for narrative/debug use, not currently consumed by chapter progression
+
+The four ending IDs are selected directly by the zones on `L5_S06`. `C_consume`
+and `C_cold` have separate logical IDs but share `PAGE_END_C_hollow`.
+Known rule and narrative mismatches are tracked in `issue.md`.
 
 ## Key Documents Quick Reference
 
@@ -186,7 +207,7 @@ vercel
 # Visit app.netlify.com/drop
 
 # GitHub Pages
-# Settings → Pages → Deploy from main branch
+# Settings → Pages → Source: GitHub Actions
 
 # Tauri desktop packages
 npm ci
@@ -196,6 +217,9 @@ npm run tauri:build
 # MSI 需要额外的 WiX 工具链，可在 Windows 环境单独运行：
 # npm run tauri -- build --bundles msi
 ```
+
+CI currently publishes workflow artifacts only; signing, releases, updater JSON
+and automatic updates are disabled.
 
 ## Common Pitfalls
 

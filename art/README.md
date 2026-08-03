@@ -1,8 +1,8 @@
 # 美术资产目录
 
-本目录保留早期竖切资产；当前运行时资产以
-[`v4/playable/`](v4/playable/) 为唯一入口。不要把新章节层或交互状态混回
-根目录的旧批次。
+本目录保留早期竖切资产；当前运行时资产由 [`v4/playable/`](v4/playable/)
+和 [`v4/scenes/`](v4/scenes/) 两个 manifest 入口共同管理。不要把新章节层或交互
+状态混回根目录的旧批次。
 
 ## 目录职责
 
@@ -12,7 +12,8 @@
 | `char/`、`creature/`、`ui/` | 旧基础输出，仅供回溯或重新生成使用 |
 | `_json/` | 旧批次的生成响应与元数据 |
 | `prompts/` | 旧基础批次提示词 |
-| `v4/playable/` | 当前 43 件可玩资产、原始参考图、生成脚本和运行时 manifest |
+| `v4/playable/` | 当前 55 件 UI/反馈与源资产、生成脚本和运行时 manifest |
+| `v4/scenes/` | 当前 13 张 1536×1024 整页场景/结局页、页面绑定和校验器 |
 | `gen_art.sh` | 旧基础批次生成入口；新资产使用 `v4/playable/generate.sh` |
 
 从仓库根目录运行旧批次：`./art/gen_art.sh all|bg|char|creature|face|ui`
@@ -40,6 +41,8 @@
 ## 当前补充
 
 - 章节动作、NPC、结局层和交互 FX/UI 均在 `v4/playable/` 中维护。
+- Web Demo 运行时使用 `v4/scenes/pages/` 的整页 PNG 绘制角色、朋友、消音体和结局；
+  `v4/playable/` 中的透明叙事层保留作源文件和未来变体，不在当前 Demo 中叠加。
 - 关末视频 `video/V*.mp4` 和音频仍属于后续开发资产，不放入本目录的静态图批次。
 - 旧基础图可能带场景底色；需要透明运行时层时使用 V4 pack 中的 RGBA 输出。
 

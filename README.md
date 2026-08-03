@@ -5,8 +5,8 @@
 ### *你是她没有说出口的那个人。*
 
 [![Game Jam](https://img.shields.io/badge/NetEase-Leihuo%20Game%20Jam-orange?style=for-the-badge)](https://leihuo.163.com/)
-[![Development Status](https://img.shields.io/badge/status-Ready_for_Development-brightgreen?style=for-the-badge)](https://github.com/AvrovaDonz2026/KeepSilentForMe)
-[![Platform](https://img.shields.io/badge/platform-PC%20%7C%20Web%20%7C%20Mobile-blue?style=for-the-badge)](https://github.com/AvrovaDonz2026/KeepSilentForMe)
+[![Development Status](https://img.shields.io/badge/status-Playable_Demo-brightgreen?style=for-the-badge)](https://github.com/AvrovaDonz2026/KeepSilentForMe)
+[![Platform](https://img.shields.io/badge/platform-Web%20%7C%20Windows%20%7C%20Linux-blue?style=for-the-badge)](https://github.com/AvrovaDonz2026/KeepSilentForMe)
 
 **一款约30分钟的语言寄生解谜游戏**
 
@@ -22,19 +22,27 @@
 
 被遮掉的文字不会消失，而是被你"吃掉"，逐渐在她身边长成你的身体。她靠你的沉默活在社会里，你靠她没说出口的真实想法活下来。
 
-**最新进展** (2026-08-01更新)：
-- ✅ **Pre-Production 100%完成** - 项目处于 Ready for Development 状态
-- ✅ 完整台词脚本已完成（6章 + 35句台词，台本.md为准）
-- ✅ Web技术栈方案完成（DOM方案解决字符热区问题）
-- ✅ Day 1 demo模板已写入 `WEB_TECH_STACK.md` 与 `schedule.md §11.11`
-- ✅ 美术资产方案与可玩资产包已完成
-- ✅ **已生成55张可玩资产**（角色、NPC、消音体、UI、交互状态层）
-- ✅ Web 可玩 Demo 已接入 `web/`，覆盖 L0–L5 核心拖拽循环与整页翻页场景
-- ✅ V4可玩资产包已通过 manifest、尺寸与透明通道校验
-- ✅ **整页场景包已生成**：13 张 1536×1024 场景/结局页，按章节关键节点切换
-- ✅ 项目开发指南完善（CLAUDE.md）
-- 📝 **数据源统一**：台本.md为唯一完整内容源
-- 🎯 **资产状态**：可玩资产包已就绪，后续按开发需要补充 Web 原型、视频与音频
+**最新进展** (2026-08-03更新)：
+- ✅ **可玩竖切 Demo 已完成**：标题封面、L0-L5、35句台词、拖拽遮字和四个结局均可运行
+- ✅ 运行时改为整页场景翻页：13张 `1536×1024` 页面由 `pageBindings` 驱动
+- ✅ 已接入继续/重新开始、`localStorage` 存档、URL 调试入口和 Web Audio 提示音
+- ✅ V4 可玩资产包共 55 件，整页场景包共 13 件，manifest、尺寸和引用校验通过
+- ✅ GitHub Pages 最新部署成功；Tauri Windows/Linux 打包工作流最新运行成功
+- 🟡 关末视频、BGM、外部 SFX/配音和完整跨章节分支仍未接入
+- 🟡 当前原型中 L2/L3/L4 旗标主要用于记录，实际流程分支仍待规则对齐
+- 📝 **数据源统一**：`台本.md` 是完整内容源，`script/chapters.json` 是运行时数据源
+
+### 当前状态快照
+
+| 项目 | 当前状态 |
+|------|----------|
+| `main` 验证提交 | `a01040a` |
+| Web Demo | [GitHub Pages 在线版](https://avrovadonz2026.github.io/KeepSilentForMe/web/) |
+| Pages 验证 | [运行 30751537982](https://github.com/AvrovaDonz2026/KeepSilentForMe/actions/runs/30751537982) · 成功 |
+| 桌面打包验证 | [运行 30751537976](https://github.com/AvrovaDonz2026/KeepSilentForMe/actions/runs/30751537976) · 成功 |
+| Windows 产物 | `keep-silent-for-me-windows-x64-nsis` |
+| Linux 产物 | `keep-silent-for-me-linux-amd64-appimage`、`keep-silent-for-me-linux-amd64-deb` |
+| 签名/自动更新 | 未启用 |
 
 ### 核心特色
 
@@ -49,8 +57,8 @@
 | 项目 | 内容 |
 |------|------|
 | **游戏类型** | 叙事解谜 / 语言操作 / 共生关系 |
-| **目标平台** | PC (优先) / Web / 移动端 |
-| **预计时长** | 约30-36分钟单周目（含关末视频） |
+| **目标平台** | Web / Windows NSIS / Linux AppImage+deb；移动端为浏览器适配目标 |
+| **预计时长** | 设计目标约30-36分钟；当前 Demo 不含关末视频 |
 | **目标受众** | 喜欢《主播女孩重度依赖》式角色关系、短叙事实验的玩家 |
 | **开发周期** | 7天竖切版 / 2-3周完整版 |
 | **语言** | 中文首发（英文需重做语义设计） |
@@ -115,7 +123,7 @@
 4. **道歉直播** - 舆论压力，消音体开始主动遮挡部分词
 5. **没有观众的房间（终局）** - 最后一次遮字即是结局选择
 
-**计划特性**：每章结束后播放 AI 生成的转场视频（约30秒），展现消音体成长、她的日常与内心状态；视频资产仍待制作。
+**计划特性**：每章结束后播放 AI 生成的转场视频，展现消音体成长、她的日常与内心状态；该媒体层仍是后续开发项，当前 Demo 使用 HTML 段落覆盖层和整页淡入/翻页过渡。
 
 ### 消音体成长
 
@@ -154,9 +162,11 @@
 ### 核心技术
 - **DOM + CSS**：台词原文只渲染一次，使用 `Range.getClientRects()` 生成可换行、可重叠的命中层
 - **Pointer Events**：统一处理鼠标和触摸拖拽
-- **HTML5 Video**：原生视频播放，支持预加载
-- **localStorage**：本地存档（可导出/导入）
+- **localStorage**：本地存档，标题页提供继续/重新开始；暂未实现导出/导入
+- **Web Audio**：用户交互后生成轻量提示音，可在右上角关闭
 - **纯原生JS**：无框架依赖，总代码量约1500-2000行
+
+桌面版在同一 Web 运行时外包裹 Tauri 2 壳；Tauri 构建前会把 `web/`、章节 JSON 和两套 manifest 组装到 `dist/tauri/`。
 
 ### 部署方案
 - Vercel / Netlify / GitHub Pages（静态托管，免费）
@@ -165,7 +175,9 @@
 
 ## 📅 开发计划
 
-### 7天竖切版（Web技术栈）
+### 7天竖切版（历史排期）
+
+以下表格保留原始排期；当前完成情况以“项目进度”和“当前状态快照”为准。
 
 | 天数 | 程序任务 | 美术任务 | 验收标准 |
 |------|---------|---------|---------|
@@ -180,11 +192,11 @@
 
 ### Day 0 技术验证（开发启动前）
 
-以下三项是开发启动前的待办，不代表已经在仓库中完成：
+以下是最初的 Day 0 验证项；视频质量仍未执行，拖拽运行时已落地：
 
-- [x] 字符热区吸附：Range 命中层已覆盖换行与重叠 zone，完成桌面/移动端拖动验证
+- [x] 字符热区吸附：Range 命中层已覆盖换行与重叠 zone
 - [ ] AI 视频质量：用 D0 首帧生成 V0_out，检查脸部一致性、消音体形态和风格
-- [ ] 移动端兼容：测试触摸拖拽与视频自动播放
+- [ ] 移动端设备回归：需要在真实设备继续检查触摸拖拽和横竖屏表现
 
 ### 资产清单（Web优化）
 
@@ -234,7 +246,7 @@ python3 -m http.server 8765 --directory .
 [`art/v4/scenes/manifest.json`](./art/v4/scenes/manifest.json) 驱动整页场景图翻页；
 角色、朋友、消音体和结局均已绘制进整页图，运行时只保留台词、黑条、状态与 HTML
 交互 FX。正常打开会先显示由 `coverPage` 驱动的游戏封面；有存档时可继续或重新开始。
-视频和音频接口保留到媒体资产就绪后接入。
+当前只生成 Web Audio 提示音，视频、BGM、外部 SFX 和配音接口保留到媒体资产就绪后接入。
 
 ### Day 1 Demo 入口
 
@@ -265,12 +277,20 @@ GitHub Pages 工作流位于
 `main` 自动发布，也支持在 Actions 页面手动运行。发布 artifact 保留 `web/`、`art/` 与
 `script/` 的运行时目录结构，因此 Pages 上的游戏入口仍为 `/web/`。
 
+最新 Pages 运行已通过，在线入口为
+[`https://avrovadonz2026.github.io/KeepSilentForMe/web/`](https://avrovadonz2026.github.io/KeepSilentForMe/web/)。
+
 桌面版使用 Tauri 2 打包，工作流位于
 [`.github/workflows/build-tauri.yml`](./.github/workflows/build-tauri.yml)。推送 `main`
 后会在 Windows 和 Linux runner 上分别生成安装包，并作为 Actions artifact 提供下载；
 首版不启用签名和自动更新。
 Windows CI 当前生成 NSIS 安装包；NSIS 不依赖 hosted runner 上易失的 WiX/MSI 工具链，
 需要 MSI 时可在具备 WiX 的 Windows 环境中单独运行 `tauri build --bundles msi`。
+
+最新 Tauri 运行已通过，产物名称为：
+
+- Windows x64：`keep-silent-for-me-windows-x64-nsis`
+- Linux amd64：`keep-silent-for-me-linux-amd64-appimage`、`keep-silent-for-me-linux-amd64-deb`
 
 ```bash
 npm ci
@@ -317,9 +337,9 @@ KeepSilentForMe/
 
 ### 开发角色需求
 
-- [ ] **程序** - 拖拽交互、文本系统、状态机
-- [ ] **美术** - 场景绘制、角色立绘、消音体设计
-- [ ] **策划** - 台词撰写、分支设计、节奏调优
+- [x] **程序** - 拖拽交互、文本系统、状态机、Pages/Tauri CI
+- [x] **美术** - 场景绘制、整页页面、可玩 UI/反馈资产
+- [x] **策划** - 台词撰写、页面绑定、当前分支数据
 - [ ] **音频** - BGM、音效、可选配音
 
 ### 协作规范
@@ -347,25 +367,34 @@ graph LR
     B --> C[静态资产 ✅]
     C --> D[技术验证 ✅]
     D --> E[核心原型 ✅]
-    E --> F[内容填充 ⏳]
+    E --> F[整页 Demo ✅]
     F --> G[视频音频 ⏳]
-    G --> H[测试部署 ⏳]
+    G --> H[持续 QA / 发布 ⏳]
 ```
 
 | 阶段 | 状态 | 完成度 | Web技术栈进展 |
 |------|------|--------|-------------|
 | 📝 策划文档 | ✅ 完成 | 100% | Web开发指南已整合 |
 | 📜 台词脚本 | ✅ 完成 | 100% | 35句完整数据 |
-| 💾 JSON数据 | ✅ 完成 | 100% | 框架+L0/L1示例完成 |
+| 💾 JSON数据 | ✅ 完成 | 100% | 6章35句，运行时数据已接入 |
 | 🎨 视觉设计 | ✅ 完成 | 100% | Doomer风格锁定 |
 | 🎬 视频分镜 | ✅ 完成 | 100% | 9-11条分镜完成 |
-| 💻 技术选型 | ✅ 完成 | 100% | **Web (DOM+CSS)** |
-| 🧪 技术验证 | ✅ 完成 | 100% | manifest、尺寸、浏览器桌面/移动端回归 |
+| 💻 技术选型 | ✅ 完成 | 100% | Web (DOM+CSS) + Tauri 2 |
+| 🧪 技术验证 | ✅ 完成 | 100% | manifest、尺寸、引用、Node 检查和 CI 构建 |
 | 🎮 核心原型 | ✅ 完成 | 100% | L0-L5 整页翻页 + 拖拽吸附 + 四结局 |
-| 📦 静态资产 | ✅ 完成 | 55件 | V4 manifest 与透明通道已校验 |
+| 📦 静态资产 | ✅ 完成 | 68件 | V4 55件 + 整页13件，manifest 已校验 |
 | 🎞️ 视频制作 | ⏳ 待开始 | 0% | 9-11条关末视频 |
-| 🎵 音频集成 | ⏳ 待开始 | 0% | 免费资源收集 |
-| 🚀 部署上线 | ⏳ 待开始 | 0% | Vercel/Netlify |
+| 🎵 外部音频集成 | ⏳ 待开始 | 0% | BGM/SFX/配音；当前只有 Web Audio 提示音 |
+| 🚀 Web 部署 | ✅ 已验证 | 100% | GitHub Pages Actions 成功 |
+| 🖥️ 桌面打包 | ✅ 已验证 | 100% | Windows NSIS + Linux AppImage/deb |
+
+### 当前原型的流程边界
+
+- **L1**：读取 `pass/fail`，未达到条件时显示面试重试层。
+- **L2/L3/L4**：按台词累加旗标并继续推进；当前 Demo 不用这些旗标切换章节流程。
+- **L5**：`L5_S06` 的 zone 直接映射到 `A_separate`、`B_alienate`、`C_consume` 或 `C_cold`。
+- **C_consume/C_cold**：逻辑结局 ID 不同，但共用 `PAGE_END_C_hollow` 整页图。
+- 规则冲突和叙事待对齐项集中记录在 [`issue.md`](./issue.md)，本轮不修改游戏数据。
 
 ## 🎯 关键里程碑
 
@@ -380,19 +409,13 @@ graph LR
 
 ## 🎯 下一步行动
 
-### 立即可做（整页 Demo 已完成）
-- [x] **创建 Day 1 HTML demo**（当前入口为 `web/`）
-- [x] **测试 Range 命中层+拖拽**（覆盖换行、重叠、桌面与移动端）
-- [ ] **生成 1 条 AI 视频测试**（V0_out，检查 doomer 风格）
-- [x] **手机浏览器测试**（触摸拖拽与整页翻页）
-
-### 第一周开发（D1-D7）
-- [x] **Day 1**：JSON加载器 + 完整拖拽吸附 + flag系统
-- [x] **Day 2**：L0+L1全流程（整页场景）
-- [x] **Day 3-4**：L2-L5所有章节 + 结局分支（整页场景）
-- [ ] **Day 5**：视频集成 + 反转效果 + UI抛光
-- [ ] **Day 6**：存档系统 + 音频接入 + 移动端优化
-- [ ] **Day 7**：测试修bug + 部署上线
+### 当前下一步
+- [x] **核心 Demo**：L0-L5、整页翻页、四结局、标题封面、存档
+- [x] **CI 发布**：Pages、Windows NSIS、Linux AppImage/deb
+- [ ] **视频层**：制作并接入关末/结局/反转视频
+- [ ] **外部音频**：收集并接入 BGM、SFX、配音
+- [ ] **规则对齐**：处理 `issue.md` 中 L4 结算、ending seed、多出现 zone 等问题
+- [ ] **设备 QA**：真实移动设备、横竖屏、低端设备和下载产物回归
 
 ### 美术资产（静态包已完成）
 - [x] **V4可玩资产**（55件）：角色、NPC、表情、消音体、UI与交互层
@@ -404,7 +427,8 @@ graph LR
 - [ ] **署名文档**（Credits.txt）：CC-BY授权信息
 
 ### 发布准备
-- [ ] **部署到Vercel/Netlify**（一键部署）
+- [x] **部署到 GitHub Pages**（Actions 自动发布）
+- [ ] **部署到Vercel/Netlify**（可选镜像）
 - [ ] **生成预告视频**（10秒，剪辑关末视频）
 - [ ] **准备宣传素材**（截图+GIF+slogan）
 - [ ] **提交网易雷火比赛**
