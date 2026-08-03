@@ -1,14 +1,22 @@
 const DATA_URL = "../script/chapters.json";
 const PLAYABLE_MANIFEST_URL = "../art/v4/playable/manifest.json";
 const PAGE_MANIFEST_URL = "../art/v4/scenes/manifest.json";
-const AUDIO_MANIFEST_URL = "audio/manifest.json?v=audio-2";
+const AUDIO_MANIFEST_URL = "audio/manifest.json?v=audio-3";
 const PLAYABLE_ROOT = "../art/v4/playable/";
 const PAGE_ROOT = "../art/v4/scenes/";
 const AUDIO_ROOT = "audio/";
 const SAVE_KEY = "keep-silent-for-me-demo";
+const AUDIO_SETTINGS_KEY = "keep-silent-for-me-audio-settings";
 const MEMORY_CHAPTER_IDS = new Set(["L1", "L2", "L3", "L4"]);
 const LIVE_CHAPTER_IDS = new Set(["L2", "L4"]);
 const BGM_FADE_MS = 650;
+
+const AUDIO_TRACK_LABELS = {
+  "rain-room": "雨夜环境",
+  "live-pressure": "直播压迫",
+  "door-tension": "门厅悬疑",
+  "hollow-hope": "终局余响",
+};
 
 const SCENE_META = {
   L0: { readout: "雨窗 · 书桌", status: "她坐在书桌前，把第一句话递了出来。", caption: "整页 · D0 书桌" },
@@ -100,6 +108,16 @@ const dom = {
   errorCopy: document.querySelector("#error-copy"),
   restartButton: document.querySelector("#restart-button"),
   soundButton: document.querySelector("#sound-button"),
+  audioSettingsButton: document.querySelector("#audio-settings-button"),
+  audioSettings: document.querySelector("#audio-settings"),
+  audioSettingsClose: document.querySelector("#audio-settings-close"),
+  audioEnabled: document.querySelector("#audio-enabled"),
+  audioEnabledStatus: document.querySelector("#audio-enabled-status"),
+  musicVolume: document.querySelector("#music-volume"),
+  musicVolumeValue: document.querySelector("#music-volume-value"),
+  sfxVolume: document.querySelector("#sfx-volume"),
+  sfxVolumeValue: document.querySelector("#sfx-volume-value"),
+  audioSettingsStatus: document.querySelector("#audio-settings-status"),
   retryButton: document.querySelector("#retry-button"),
 };
 
@@ -134,12 +152,18 @@ const state = {
   dragOffsetX: 0,
   dragOffsetY: 0,
   sound: true,
+  audioSettings: {
+    enabled: true,
+    musicVolume: 1,
+    sfxVolume: 1,
+  },
   audioContext: null,
   bgm: {
     activeSlot: 0,
     activeTrackId: "",
     desiredTrackId: "",
     pendingTrackId: "",
+    baseGain: 0,
     desiredGain: 0,
     fadeTimer: null,
     transitionToken: 0,
@@ -180,6 +204,123 @@ function audioBinding(chapterId, endingId = null) {
 function normalizeAudioBinding(binding) {
   if (typeof binding === "string") return { track: binding };
   return binding && typeof binding === "object" ? binding : null;
+}
+
+function clampAudioValue(value, fallback = 1) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return Math.min(1, Math.max(0, number));
+}
+
+function saveAudioSettings() {
+  try {
+    localStorage.setItem(AUDIO_SETTINGS_KEY, JSON.stringify(state.audioSettings));
+  } catch (error) {
+    console.warn("audio settings unavailable", error);
+  }
+}
+
+function restoreAudioSettings() {
+  state.audioSettings = { enabled: true, musicVolume: 1, sfxVolume: 1 };
+  try {
+    const raw = localStorage.getItem(AUDIO_SETTINGS_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      if (saved && typeof saved === "object") {
+        state.audioSettings.enabled = saved.enabled !== false;
+        state.audioSettings.musicVolume = clampAudioValue(saved.musicVolume);
+        state.audioSettings.sfxVolume = clampAudioValue(saved.sfxVolume);
+      }
+    }
+  } catch (error) {
+    localStorage.removeItem(AUDIO_SETTINGS_KEY);
+  }
+  state.sound = state.audioSettings.enabled;
+  updateAudioSettingsUI();
+}
+
+function audioTrackLabel(trackId) {
+  return AUDIO_TRACK_LABELS[trackId] ?? trackId ?? "等待载入";
+}
+
+function setRangeProgress(input, value) {
+  if (!input) return;
+  input.style.setProperty("--range-progress", `${Math.round(value * 100)}%`);
+}
+
+function updateSoundButton() {
+  if (!dom.soundButton) return;
+  dom.soundButton.textContent = state.sound ? "◌" : "·";
+  dom.soundButton.setAttribute("aria-label", state.sound ? "关闭提示音和配乐" : "打开提示音和配乐");
+  dom.soundButton.setAttribute("title", state.sound ? "关闭提示音和配乐" : "打开提示音和配乐");
+  dom.soundButton.setAttribute("aria-pressed", String(state.sound));
+}
+
+function updateAudioSettingsUI() {
+  const settings = state.audioSettings;
+  if (!settings || !dom.audioEnabled) return;
+  const musicPercent = Math.round(settings.musicVolume * 100);
+  const sfxPercent = Math.round(settings.sfxVolume * 100);
+  dom.audioEnabled.checked = state.sound;
+  dom.audioEnabledStatus.textContent = state.sound ? "配乐与提示音开启" : "配乐与提示音已静音";
+  dom.musicVolume.value = String(musicPercent);
+  dom.musicVolumeValue.textContent = `${musicPercent}%`;
+  dom.sfxVolume.value = String(sfxPercent);
+  dom.sfxVolumeValue.textContent = `${sfxPercent}%`;
+  setRangeProgress(dom.musicVolume, settings.musicVolume);
+  setRangeProgress(dom.sfxVolume, settings.sfxVolume);
+  const trackId = state.bgm.desiredTrackId || state.bgm.activeTrackId || state.audio?.title;
+  dom.audioSettingsStatus.textContent = state.sound
+    ? `当前配乐 · ${audioTrackLabel(trackId)}`
+    : "当前配乐 · 已静音";
+  updateSoundButton();
+}
+
+function setAudioEnabled(enabled, playFeedback = false) {
+  state.sound = Boolean(enabled);
+  state.audioSettings.enabled = state.sound;
+  saveAudioSettings();
+  updateAudioSettingsUI();
+  if (state.sound) {
+    startBgm();
+    if (playFeedback) ping("snap");
+  } else {
+    state.bgm.started = false;
+    stopBgmSlots();
+  }
+}
+
+function setMusicVolume(value) {
+  state.audioSettings.musicVolume = clampAudioValue(Number(value) / 100);
+  state.bgm.desiredGain = Math.min(1, state.bgm.baseGain * state.audioSettings.musicVolume);
+  if (state.bgm.activeTrackId && !state.bgm.pendingTrackId) {
+    const active = bgmSlot(state.bgm.activeSlot);
+    if (active.src) active.volume = state.bgm.desiredGain;
+  }
+  saveAudioSettings();
+  updateAudioSettingsUI();
+}
+
+function setSfxVolume(value) {
+  state.audioSettings.sfxVolume = clampAudioValue(Number(value) / 100);
+  saveAudioSettings();
+  updateAudioSettingsUI();
+}
+
+function openAudioSettings() {
+  dom.audioSettings.classList.remove("is-hidden");
+  dom.audioSettingsButton.setAttribute("aria-expanded", "true");
+  updateAudioSettingsUI();
+}
+
+function closeAudioSettings() {
+  dom.audioSettings.classList.add("is-hidden");
+  dom.audioSettingsButton.setAttribute("aria-expanded", "false");
+}
+
+function toggleAudioSettings() {
+  if (dom.audioSettings.classList.contains("is-hidden")) openAudioSettings();
+  else closeAudioSettings();
 }
 
 function bgmSlot(index) {
@@ -241,7 +382,8 @@ function transitionBgm(trackId, gain) {
     const progress = Math.min(1, (performance.now() - startedAt) / BGM_FADE_MS);
     const eased = progress * progress * (3 - 2 * progress);
     current.volume = currentVolume * (1 - eased);
-    next.volume = gain * eased;
+    const targetGain = state.bgm.desiredTrackId === trackId ? state.bgm.desiredGain : gain;
+    next.volume = targetGain * eased;
     if (progress >= 1) {
       clearBgmFade();
       current.pause();
@@ -263,7 +405,9 @@ function syncBgmForLocation(chapter = currentChapter(), endingId = null) {
   if (!track) return;
 
   state.bgm.desiredTrackId = trackId;
-  state.bgm.desiredGain = bgmGain(binding, track);
+  state.bgm.baseGain = bgmGain(binding, track);
+  state.bgm.desiredGain = Math.min(1, state.bgm.baseGain * state.audioSettings.musicVolume);
+  updateAudioSettingsUI();
   if (!state.sound || !state.bgm.started) return;
   if (state.bgm.pendingTrackId === trackId) return;
   if (!state.bgm.pendingTrackId && state.bgm.activeTrackId === trackId && bgmSlot(state.bgm.activeSlot).src) {
@@ -283,17 +427,7 @@ function startBgm() {
 }
 
 function toggleSound() {
-  state.sound = !state.sound;
-  dom.soundButton.textContent = state.sound ? "◌" : "·";
-  dom.soundButton.setAttribute("aria-label", state.sound ? "关闭提示音和配乐" : "打开提示音和配乐");
-  dom.soundButton.setAttribute("title", state.sound ? "关闭提示音和配乐" : "打开提示音和配乐");
-  if (state.sound) {
-    ping("snap");
-    startBgm();
-  } else {
-    state.bgm.started = false;
-    stopBgmSlots();
-  }
+  setAudioEnabled(!state.sound, true);
 }
 
 function currentChapter() {
@@ -1315,16 +1449,17 @@ function audioContext() {
 }
 
 function ping(kind) {
-  if (!state.sound) return;
+  if (!state.sound || state.audioSettings.sfxVolume <= 0) return;
   try {
     const context = audioContext();
     if (context.state === "suspended") void context.resume();
     const oscillator = context.createOscillator();
     const gain = context.createGain();
+    const peak = 0.035 * state.audioSettings.sfxVolume;
     oscillator.frequency.value = { pick: 152, snap: 218, reject: 78 }[kind] ?? 140;
     oscillator.type = kind === "reject" ? "sawtooth" : "sine";
     gain.gain.setValueAtTime(0.0001, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.035, context.currentTime + 0.012);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, peak), context.currentTime + 0.012);
     gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.16);
     oscillator.connect(gain).connect(context.destination);
     oscillator.start();
@@ -1346,11 +1481,20 @@ function bindEvents() {
   dom.titleNewGame.addEventListener("click", () => startGame("new"));
   dom.overlayAction.addEventListener("click", () => state.overlayAction?.());
   dom.memoryConfirm.addEventListener("click", confirmMemory);
+  dom.audioSettingsButton.addEventListener("click", toggleAudioSettings);
+  dom.audioSettingsClose.addEventListener("click", closeAudioSettings);
+  dom.audioEnabled.addEventListener("change", () => setAudioEnabled(dom.audioEnabled.checked));
+  dom.musicVolume.addEventListener("input", (event) => setMusicVolume(event.target.value));
+  dom.sfxVolume.addEventListener("input", (event) => setSfxVolume(event.target.value));
   dom.memoryOverlay.addEventListener("pointermove", onMemoryPointerMove);
   dom.memoryOverlay.addEventListener("pointerup", onMemoryPointerUp);
   dom.memoryOverlay.addEventListener("pointercancel", onMemoryPointerCancel);
   document.addEventListener("pointerdown", () => {
     if (state.debugMode && !state.bgm.started) startBgm();
+  }, { capture: true });
+  document.addEventListener("pointerdown", (event) => {
+    if (dom.audioSettings.classList.contains("is-hidden")) return;
+    if (!dom.audioSettings.contains(event.target) && event.target !== dom.audioSettingsButton) closeAudioSettings();
   }, { capture: true });
   window.addEventListener("resize", () => {
     if (state.dialogueLayout) layoutDialogueZones();
@@ -1359,6 +1503,10 @@ function bindEvents() {
   });
   window.addEventListener("keydown", (event) => {
     if (event.key.toLowerCase() === "r" && dom.titleScreen.classList.contains("is-hidden")) restartGame();
+    if (event.key === "Escape" && !dom.audioSettings.classList.contains("is-hidden")) {
+      closeAudioSettings();
+      return;
+    }
     if (event.key === "Escape" && !dom.memoryOverlay.classList.contains("is-hidden")) return;
     if (event.key === "Escape" && !dom.overlay.classList.contains("is-hidden")) hideOverlay();
   });
@@ -1469,6 +1617,7 @@ async function load() {
     state.playable = await responses[1].json();
     state.pages = await responses[2].json();
     state.audio = await responses[3].json();
+    restoreAudioSettings();
     state.chapters = state.data.chapters ?? [];
     state.assets = new Map((state.playable.assets ?? []).map((asset) => [asset.id, asset]));
     state.pageAssets = new Map((state.pages.assets ?? []).map((asset) => [asset.id, asset]));

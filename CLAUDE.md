@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 《请替我沉默 / Keep Silent For Me》is a 30-minute narrative puzzle game where players control a parasitic entity ("消音体") that feeds on unsaid words. The game uses a unique mechanic: drag a black bar to mask parts of dialogue, with masked text becoming the creature's body while remaining text is spoken aloud.
 
-**Current Status**: Playable full-page scene Demo with CC0 BGM verified in Pages and Tauri CI; video, SFX and narrative polish pending
+**Current Status**: Playable full-page scene Demo with CC0 BGM and persistent audio controls verified in Pages and Tauri CI; video, SFX and narrative polish pending
 **Tech Stack**: Web (HTML5 + CSS + JavaScript, no frameworks) inside a Tauri 2 desktop shell
 **Target**: Web vertical slice plus Windows NSIS and Linux desktop artifacts
 

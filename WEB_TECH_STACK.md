@@ -131,7 +131,8 @@ L0/L1 使用 `rain-room`，L2/L4 使用 `live-pressure`，L3 使用 `door-tensio
 切换不会重启音乐。素材全部存放在 `web/audio/bgm/`，不从第三方域名热链。
 
 浏览器自动播放被阻止时，运行时只记录待播放曲目，等待开始按钮或调试入口的第一次
-用户手势重试；右上角总开关会同时暂停/恢复 BGM 和 Web Audio 提示音。来源页、CC0
+用户手势重试；右上角总开关会同时暂停/恢复 BGM 和 Web Audio 提示音，齿轮面板可以
+分别调整两者音量并持久化到 `localStorage`。来源页、CC0
 记录、转码参数和 SHA-256 见 `web/audio/SOURCES.md`。
 
 ### 4. 关末回声：语言胃 / Echo Digest

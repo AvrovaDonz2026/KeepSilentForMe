@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0b0d0d" />
     <title>请替我沉默 · 可玩 Demo</title>
-    <link rel="stylesheet" href="css/style.css?v=audio-2" />
+    <link rel="stylesheet" href="css/style.css?v=audio-3" />
   </head>
   <body>
     <main id="app" class="app is-loading is-title-screen">
@@ -48,9 +48,42 @@
           </div>
           <div class="topbar-actions">
             <button id="restart-button" class="icon-button" type="button" aria-label="重新开始" title="重新开始">↺</button>
+            <button id="audio-settings-button" class="icon-button" type="button" aria-label="打开音乐调节" title="音乐调节" aria-controls="audio-settings" aria-expanded="false">⚙</button>
             <button id="sound-button" class="icon-button" type="button" aria-label="切换提示音和配乐" title="切换提示音和配乐">◌</button>
           </div>
         </header>
+
+        <aside id="audio-settings" class="audio-settings is-hidden" role="dialog" aria-labelledby="audio-settings-title" aria-describedby="audio-settings-status">
+          <div class="audio-settings-head">
+            <div>
+              <p class="audio-settings-eyebrow">声音设置</p>
+              <h2 id="audio-settings-title">音乐调节</h2>
+            </div>
+            <button id="audio-settings-close" class="icon-button audio-settings-close" type="button" aria-label="关闭音乐调节" title="关闭音乐调节">×</button>
+          </div>
+          <label class="audio-enabled-row" for="audio-enabled">
+            <span class="audio-enabled-copy">
+              <span class="audio-control-label">声音</span>
+              <span id="audio-enabled-status" class="audio-control-note">配乐与提示音开启</span>
+            </span>
+            <input id="audio-enabled" class="audio-switch" type="checkbox" checked />
+          </label>
+          <div class="audio-range-control">
+            <div class="audio-range-head">
+              <label for="music-volume">配乐</label>
+              <output id="music-volume-value" for="music-volume">100%</output>
+            </div>
+            <input id="music-volume" type="range" min="0" max="100" step="1" value="100" />
+          </div>
+          <div class="audio-range-control">
+            <div class="audio-range-head">
+              <label for="sfx-volume">提示音</label>
+              <output id="sfx-volume-value" for="sfx-volume">100%</output>
+            </div>
+            <input id="sfx-volume" type="range" min="0" max="100" step="1" value="100" />
+          </div>
+          <p id="audio-settings-status" class="audio-settings-status">当前配乐 · 等待载入</p>
+        </aside>
 
         <aside class="scene-status" aria-live="polite">
           <div class="status-caption">当前状态</div>
@@ -127,6 +160,6 @@
         </div>
       </section>
     </main>
-    <script type="module" src="js/main.js?v=audio-2"></script>
+    <script type="module" src="js/main.js?v=audio-3"></script>
   </body>
 </html>
