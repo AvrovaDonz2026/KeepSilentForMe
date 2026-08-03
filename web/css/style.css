@@ -209,6 +209,8 @@ button { font: inherit; }
 .dialogue-meta { color: var(--paper-dim); font-size: 11px; letter-spacing: 0.16em; }
 .dialogue-meta #speaker-name { color: var(--paper); }
 .line-id { color: rgba(210, 218, 207, 0.42); font: 600 10px/1 var(--display-font); letter-spacing: 0.12em; }
+.memory-echo { max-width: 820px; margin: 11px 0 0; padding-left: 12px; border-left: 1px solid rgba(163, 111, 97, 0.72); color: rgba(224, 220, 207, 0.74); font-size: 12px; line-height: 1.7; letter-spacing: 0.08em; text-wrap: balance; }
+.memory-echo.is-hidden { display: none; }
 .dialogue-text { position: relative; z-index: 1; max-width: 1040px; margin: auto 0; color: #e1e3dc; font-size: clamp(20px, 2.2vw, 34px); font-weight: 400; line-height: 1.75; letter-spacing: 0.04em; text-wrap: balance; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); }
 .dialogue-zones { position: absolute; z-index: 2; inset: 0; pointer-events: none; }
 .dialogue-zones .zone { position: absolute; display: block; padding: 0.06em 0.04em 0.11em; border: 1px dotted rgba(205, 212, 202, 0.2); border-top-color: transparent; border-right-color: transparent; border-left-color: transparent; pointer-events: auto; transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease; }
@@ -263,6 +265,27 @@ button { font: inherit; }
 .text-button:hover,
 .text-button:focus-visible { border-color: rgba(214, 221, 211, 0.7); background: rgba(34, 41, 39, 0.9); outline: none; }
 .text-button:active { transform: scale(0.97); }
+.memory-overlay { position: absolute; z-index: 42; inset: 0; display: grid; place-items: center; padding: clamp(20px, 5vw, 72px); background: rgba(7, 10, 10, 0.88); }
+.memory-overlay.is-hidden { display: none; }
+.memory-panel { width: min(760px, 100%); max-height: min(760px, calc(100dvh - 40px)); overflow: auto; padding: clamp(24px, 4vw, 48px); border: 1px solid rgba(196, 203, 193, 0.2); background: rgba(14, 18, 17, 0.96); box-shadow: 0 20px 70px rgba(0, 0, 0, 0.42); }
+.memory-panel .overlay-rule { margin-bottom: 18px; }
+.memory-panel h1 { max-width: 620px; margin: 0; color: var(--paper); font-size: clamp(24px, 3.2vw, 42px); font-weight: 400; letter-spacing: 0.07em; line-height: 1.3; }
+.memory-copy { max-width: 560px; margin: 14px 0 25px; color: var(--paper-dim); font-size: 13px; line-height: 1.75; }
+.memory-section + .memory-section { margin-top: 16px; }
+.memory-label { margin-bottom: 7px; color: rgba(214, 221, 211, 0.52); font-size: 10px; letter-spacing: 0.18em; }
+.memory-pool,
+.memory-lane { display: flex; align-content: flex-start; flex-wrap: wrap; gap: 9px; min-height: 70px; padding: 12px; border: 1px solid rgba(196, 203, 193, 0.2); background: rgba(8, 11, 11, 0.66); }
+.memory-lane { min-height: 92px; border-color: rgba(163, 111, 97, 0.42); background: rgba(29, 22, 20, 0.4); }
+.memory-pool:empty::before,
+.memory-lane:empty::before { color: rgba(205, 212, 203, 0.3); font-size: 11px; letter-spacing: 0.08em; content: "—"; }
+.memory-fragment { min-height: 34px; max-width: 100%; padding: 7px 11px; border: 1px solid rgba(214, 221, 211, 0.28); border-radius: 2px; background: rgba(25, 31, 29, 0.94); color: var(--paper); cursor: grab; font-size: 13px; line-height: 1.45; text-align: left; touch-action: none; transition: border-color 150ms ease, background 150ms ease, opacity 150ms ease, transform 150ms ease; }
+.memory-fragment:hover,
+.memory-fragment:focus-visible { border-color: rgba(214, 221, 211, 0.72); background: rgba(43, 51, 47, 0.96); outline: none; }
+.memory-fragment:active,
+.memory-fragment.is-dragging { cursor: grabbing; transform: scale(0.97); }
+.memory-fragment.is-dragging { opacity: 0.36; }
+.memory-confirm { display: block; margin: 24px 0 0 auto; }
+.memory-confirm:disabled { cursor: not-allowed; opacity: 0.42; }
 .error-panel { gap: 12px; color: var(--paper); }
 .error-panel strong { font-size: 18px; font-weight: 500; }
 .error-panel span { max-width: 520px; color: var(--paper-dim); font-size: 13px; line-height: 1.7; }
@@ -297,6 +320,7 @@ button { font: inherit; }
   .topbar-actions { grid-column: 2; grid-row: 1; }
   .scene-status { top: 110px; left: 18px; width: min(260px, 58vw); }
   .dialogue-content { width: calc(100% - 36px); padding-top: 26px; }
+  .memory-echo { max-width: 100%; margin-top: 9px; padding-left: 9px; font-size: 11px; }
   .dialogue-text { font-size: clamp(18px, 4.6vw, 25px); line-height: 1.75; }
   .dialogue-frame { min-height: 246px; }
   .black-bar { width: min(60vw, 340px); }
@@ -313,6 +337,14 @@ button { font: inherit; }
   .scene-status { top: 102px; }
   .status-copy { font-size: 12px; }
   .dialogue-content { width: calc(100% - 28px); }
+  .memory-overlay { padding: 14px; }
+  .memory-panel { max-height: calc(100dvh - 28px); padding: 23px 18px 20px; }
+  .memory-panel h1 { font-size: clamp(22px, 7vw, 32px); }
+  .memory-copy { margin: 12px 0 20px; font-size: 12px; }
+  .memory-pool,
+  .memory-lane { min-height: 64px; padding: 9px; gap: 7px; }
+  .memory-lane { min-height: 80px; }
+  .memory-fragment { padding: 7px 9px; font-size: 12px; }
   .dialogue-text { font-size: 18px; letter-spacing: 0.025em; }
   .dialogue-footer { font-size: 10px; }
 }

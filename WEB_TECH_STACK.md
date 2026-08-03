@@ -122,7 +122,17 @@ bar.addEventListener('pointerup', (e) => {
 没有 `<video>` 播放器，也不会因为缺少视频文件而阻塞章节推进。当前章节切换使用整页
 场景图片的翻页/淡入动画；音效只使用 `main.js` 中的 Web Audio 提示音。
 
-### 4. localStorage存档
+### 4. 关末回声：语言胃 / Echo Digest
+
+L1-L4 完成后，运行时会把本章所有已吞下的文字转成碎片池。玩家可以通过点击、鼠标
+拖拽或触摸拖拽把碎片放进私语 lane；没有正确顺序，也没有失败分支。确认后，私语只
+作为下一章第一句旁的叙事回声和视觉反馈，不会修改 flags、章节绑定或结局判定。
+
+碎片在进入池子时保留重复项，并以章节 ID 归属，避免不同章节的同名文字混在一起。
+`main.js` 会在整个私语层监听 `pointermove` / `pointerup`，兼容部分浏览器不把
+Pointer Capture 的结束事件送回原按钮的情况。
+
+### 5. localStorage存档
 
 ```javascript
 // 当前 Demo 的存档形状（键名：keep-silent-for-me-demo）
@@ -130,7 +140,14 @@ const gameState = {
   chapterIndex: 2,
   lineIndex: 1,
   flags: { pass: 5, fail: 1 },
-  eatLog: ["不能说的话", "很容易把事情搞砸"],
+  eatLog: [
+    { chapterId: "L1", text: "不能说的话" },
+    { chapterId: "L1", text: "很容易把事情搞砸" }
+  ],
+  memoryByChapter: {
+    L1: ["不能说的话", "很容易把事情搞砸"]
+  },
+  memoryDraft: null,
   endingId: null
 };
 
@@ -149,6 +166,7 @@ function loadGame() {
 }
 
 // 当前 Demo 暂未提供导出/导入存档 UI；清除浏览器数据会清除进度。
+// 旧版 eatLog 字符串数组会在读档时按当前章节转换为 { chapterId, text }。
 ```
 
 ---

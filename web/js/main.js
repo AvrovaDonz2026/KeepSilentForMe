@@ -4,6 +4,7 @@ const PAGE_MANIFEST_URL = "../art/v4/scenes/manifest.json";
 const PLAYABLE_ROOT = "../art/v4/playable/";
 const PAGE_ROOT = "../art/v4/scenes/";
 const SAVE_KEY = "keep-silent-for-me-demo";
+const MEMORY_CHAPTER_IDS = new Set(["L1", "L2", "L3", "L4"]);
 
 const SCENE_META = {
   L0: { readout: "雨窗 · 书桌", status: "她坐在书桌前，把第一句话递了出来。", caption: "整页 · D0 书桌" },
@@ -30,6 +31,7 @@ const dom = {
   fxLayer: document.querySelector("#fx-layer"),
   dialogueFrame: document.querySelector("#dialogue-frame"),
   dialogueContent: document.querySelector(".dialogue-content"),
+  memoryEcho: document.querySelector("#memory-echo"),
   dialogueText: document.querySelector("#dialogue-text"),
   dialogueZones: document.querySelector("#dialogue-zones"),
   speakerName: document.querySelector("#speaker-name"),
@@ -44,6 +46,13 @@ const dom = {
   overlayTitle: document.querySelector("#overlay-title"),
   overlayCopy: document.querySelector("#overlay-copy"),
   overlayAction: document.querySelector("#overlay-action"),
+  memoryOverlay: document.querySelector("#memory-overlay"),
+  memoryEyebrow: document.querySelector("#memory-eyebrow"),
+  memoryTitle: document.querySelector("#memory-title"),
+  memoryCopy: document.querySelector("#memory-copy"),
+  memoryPool: document.querySelector("#memory-pool"),
+  memoryLane: document.querySelector("#memory-lane"),
+  memoryConfirm: document.querySelector("#memory-confirm"),
   errorPanel: document.querySelector("#error-panel"),
   errorCopy: document.querySelector("#error-copy"),
   restartButton: document.querySelector("#restart-button"),
@@ -62,6 +71,10 @@ const state = {
   lineIndex: 0,
   flags: {},
   eatLog: [],
+  memoryByChapter: {},
+  memoryDraft: null,
+  memoryDrag: null,
+  suppressMemoryClick: false,
   endingId: null,
   selectedZone: null,
   hoverZone: null,
@@ -100,6 +113,70 @@ function currentChapter() {
 
 function currentLine() {
   return currentChapter()?.lines?.[state.lineIndex] ?? null;
+}
+
+function chapterDefaultPage(chapter) {
+  return state.pages?.pageBindings?.[chapter?.id]?.default ?? null;
+}
+
+function normalizeEatLog(raw, fallbackChapterId = "L0") {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((entry) => {
+      if (typeof entry === "string" && entry.trim()) return { chapterId: fallbackChapterId, text: entry };
+      if (!entry || typeof entry !== "object" || typeof entry.text !== "string" || !entry.text.trim()) return null;
+      return {
+        chapterId: typeof entry.chapterId === "string" && entry.chapterId ? entry.chapterId : fallbackChapterId,
+        text: entry.text,
+      };
+    })
+    .filter(Boolean);
+}
+
+function normalizeMemoryByChapter(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  return Object.fromEntries(Object.entries(raw).map(([chapterId, fragments]) => [
+    chapterId,
+    Array.isArray(fragments) ? fragments.filter((fragment) => typeof fragment === "string" && fragment.trim()) : [],
+  ]));
+}
+
+function normalizeMemoryDraft(raw) {
+  if (!raw || typeof raw !== "object" || typeof raw.chapterId !== "string" || !Array.isArray(raw.fragments)) return null;
+  const fragments = raw.fragments
+    .map((fragment, index) => {
+      if (!fragment || typeof fragment.text !== "string" || !fragment.text.trim()) return null;
+      return { id: typeof fragment.id === "string" && fragment.id ? fragment.id : `${raw.chapterId}-${index}`, text: fragment.text };
+    })
+    .filter(Boolean);
+  const ids = new Set(fragments.map((fragment) => fragment.id));
+  const order = Array.isArray(raw.order) ? raw.order.filter((id) => typeof id === "string" && ids.has(id)) : [];
+  return { chapterId: raw.chapterId, fragments, order: [...new Set(order)] };
+}
+
+function memoryFragmentsForChapter(chapterId) {
+  return state.eatLog
+    .filter((entry) => entry.chapterId === chapterId)
+    .map((entry, index) => ({ id: `${chapterId}-${index}`, text: entry.text }));
+}
+
+function memoryDraftMatches(draft, chapterId, fragments) {
+  if (!draft || draft.chapterId !== chapterId || !Array.isArray(draft.fragments)) return false;
+  return draft.fragments.length === fragments.length
+    && draft.fragments.every((fragment, index) => fragment?.id === fragments[index].id && fragment?.text === fragments[index].text);
+}
+
+function renderMemoryEcho(chapter, line) {
+  const previousChapter = state.chapters[state.chapterIndex - 1];
+  const fragments = previousChapter ? state.memoryByChapter[previousChapter.id] : null;
+  const isFirstLine = line?.id === chapter?.lines?.[0]?.id;
+  if (!isFirstLine || !fragments?.length) {
+    dom.memoryEcho.textContent = "";
+    dom.memoryEcho.classList.add("is-hidden");
+    return;
+  }
+  dom.memoryEcho.textContent = fragments.join(" · ");
+  dom.memoryEcho.classList.remove("is-hidden");
 }
 
 function showToast(text, duration = 2100) {
@@ -287,6 +364,7 @@ function renderLine() {
   dom.lineId.textContent = line.id;
   dom.zoneCount.textContent = String(line.zones.length).padStart(2, "0");
   dom.feedbackCopy.textContent = state.chapterIndex === 0 ? "黑条在句子外等着。" : "她还没有把这句话说完。";
+  renderMemoryEcho(chapter, line);
   buildDialogue(line.raw, line.zones);
   setScene(chapter, line, true);
   clearNearestZone();
@@ -443,7 +521,7 @@ function applySelection(index) {
     .filter((item) => Number(item.dataset.zoneIndex) === index)
     .forEach((item) => item.classList.add("is-eaten"));
   applyFlags(zone.flags);
-  state.eatLog.push(zone.eat || zone.text);
+  state.eatLog.push({ chapterId: currentChapter().id, text: zone.eat || zone.text });
   dom.feedbackCopy.textContent = zone.npc || "字在黑条下安静下来。";
   dom.statusCopy.textContent = zone.eat ? `已吞下「${zone.eat}」。` : "字被收进了黑条里。";
   showToast(zone.npc || "字被吃掉了。", 2500);
@@ -542,6 +620,181 @@ function chapterResult(chapter) {
   return "pass";
 }
 
+function memoryFragmentById(id) {
+  return state.memoryDraft?.fragments?.find((fragment) => fragment.id === id) ?? null;
+}
+
+function setMemoryOrder(nextOrder) {
+  if (!state.memoryDraft) return;
+  const validIds = new Set(state.memoryDraft.fragments.map((fragment) => fragment.id));
+  const seen = new Set();
+  state.memoryDraft.order = nextOrder.filter((id) => validIds.has(id) && !seen.has(id) && seen.add(id));
+}
+
+function moveMemoryFragment(id, beforeId = null) {
+  if (!state.memoryDraft || !memoryFragmentById(id)) return;
+  const order = state.memoryDraft.order.filter((item) => item !== id);
+  const targetIndex = beforeId ? order.indexOf(beforeId) : -1;
+  if (targetIndex >= 0) order.splice(targetIndex, 0, id);
+  else order.push(id);
+  setMemoryOrder(order);
+  renderMemoryDraft();
+  saveState();
+}
+
+function removeMemoryFragment(id) {
+  if (!state.memoryDraft) return;
+  setMemoryOrder(state.memoryDraft.order.filter((item) => item !== id));
+  renderMemoryDraft();
+  saveState();
+}
+
+function toggleMemoryFragment(id) {
+  if (!state.memoryDraft) return;
+  if (state.memoryDraft.order.includes(id)) removeMemoryFragment(id);
+  else moveMemoryFragment(id);
+}
+
+function createMemoryFragment(fragment) {
+  const chip = document.createElement("button");
+  chip.type = "button";
+  chip.className = "memory-fragment";
+  chip.dataset.memoryId = fragment.id;
+  chip.textContent = fragment.text;
+  chip.setAttribute("aria-label", fragment.text);
+  chip.addEventListener("pointerdown", onMemoryPointerDown);
+  chip.addEventListener("click", () => {
+    if (state.suppressMemoryClick) {
+      state.suppressMemoryClick = false;
+      return;
+    }
+    toggleMemoryFragment(fragment.id);
+  });
+  return chip;
+}
+
+function renderMemoryDraft() {
+  const draft = state.memoryDraft;
+  if (!draft) return;
+  setMemoryOrder(draft.order);
+  const fragmentMap = new Map(draft.fragments.map((fragment) => [fragment.id, fragment]));
+  const orderedIds = new Set(draft.order);
+  const poolFragmentNodes = draft.fragments
+    .filter((fragment) => !orderedIds.has(fragment.id))
+    .map(createMemoryFragment);
+  const laneFragmentNodes = draft.order
+    .map((id) => fragmentMap.get(id))
+    .filter(Boolean)
+    .map(createMemoryFragment);
+  dom.memoryPool.replaceChildren(...poolFragmentNodes);
+  dom.memoryLane.replaceChildren(...laneFragmentNodes);
+  dom.memoryConfirm.disabled = draft.order.length !== draft.fragments.length;
+  dom.memoryConfirm.setAttribute("aria-disabled", String(dom.memoryConfirm.disabled));
+}
+
+function onMemoryPointerDown(event) {
+  if (event.button !== undefined && event.button > 0) return;
+  const chip = event.currentTarget;
+  event.preventDefault();
+  state.memoryDrag = {
+    id: chip.dataset.memoryId,
+    source: chip.parentElement?.id ?? "",
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    moved: false,
+    element: chip,
+  };
+  chip.classList.add("is-dragging");
+  chip.setPointerCapture(event.pointerId);
+}
+
+function onMemoryPointerMove(event) {
+  const drag = state.memoryDrag;
+  if (!drag || event.pointerId !== drag.pointerId) return;
+  const distance = Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY);
+  if (distance > 6) {
+    drag.moved = true;
+    event.preventDefault();
+  }
+}
+
+function clearMemoryDrag(event) {
+  const drag = state.memoryDrag;
+  if (!drag) return null;
+  drag.element?.classList.remove("is-dragging");
+  if (event && drag.element?.hasPointerCapture?.(event.pointerId)) {
+    drag.element.releasePointerCapture(event.pointerId);
+  }
+  state.memoryDrag = null;
+  return drag;
+}
+
+function onMemoryPointerUp(event) {
+  const drag = state.memoryDrag;
+  if (!drag || event.pointerId !== drag.pointerId) return;
+  const targetElement = document.elementFromPoint(event.clientX, event.clientY);
+  const targetFragment = targetElement?.closest?.(".memory-fragment");
+  const targetLane = targetElement?.closest?.("#memory-lane");
+  const targetPool = targetElement?.closest?.("#memory-pool");
+  const targetId = targetFragment?.dataset.memoryId ?? null;
+  if (drag.moved) {
+    if (targetLane) moveMemoryFragment(drag.id, targetId);
+    else if (drag.source === "memory-lane" && targetPool) removeMemoryFragment(drag.id);
+    state.suppressMemoryClick = true;
+    window.setTimeout(() => { state.suppressMemoryClick = false; }, 0);
+  }
+  clearMemoryDrag(event);
+}
+
+function onMemoryPointerCancel(event) {
+  clearMemoryDrag(event);
+}
+
+function openMemoryOverlay(chapter) {
+  if (!chapter || !MEMORY_CHAPTER_IDS.has(chapter.id)) {
+    nextChapter();
+    return;
+  }
+  const fragments = memoryFragmentsForChapter(chapter.id);
+  if (!fragments.length) {
+    state.memoryByChapter[chapter.id] = [];
+    state.memoryDraft = null;
+    saveState();
+    nextChapter();
+    return;
+  }
+  if (!memoryDraftMatches(state.memoryDraft, chapter.id, fragments)) {
+    state.memoryDraft = { chapterId: chapter.id, fragments, order: [] };
+  }
+  hideOverlay();
+  state.locked = true;
+  dom.memoryEyebrow.textContent = `${chapter.id} · 语言胃`;
+  dom.memoryTitle.textContent = "你吞下的字还没有沉下去";
+  dom.memoryCopy.textContent = "把它们收拢成一句只留给自己的私语。";
+  renderMemoryDraft();
+  dom.memoryOverlay.classList.remove("is-hidden");
+  saveState();
+}
+
+function hideMemoryOverlay() {
+  dom.memoryOverlay.classList.add("is-hidden");
+  state.memoryDrag = null;
+  state.suppressMemoryClick = false;
+}
+
+function confirmMemory() {
+  const draft = state.memoryDraft;
+  if (!draft || draft.order.length !== draft.fragments.length) return;
+  const fragments = new Map(draft.fragments.map((fragment) => [fragment.id, fragment.text]));
+  state.memoryByChapter[draft.chapterId] = draft.order.map((id) => fragments.get(id)).filter(Boolean);
+  state.memoryDraft = null;
+  ping("snap");
+  saveState();
+  hideMemoryOverlay();
+  nextChapter();
+}
+
 function finishChapter() {
   const chapter = currentChapter();
   if (chapter.id === "L1" && chapterResult(chapter) === "fail") {
@@ -557,11 +810,13 @@ function finishChapter() {
     L4: ["道歉结束", "刚才有一条，不是她拖的。"],
   };
   const [title, copy] = titles[chapter.id] ?? ["下一段", "她还在等下一句。"];
-  showOverlay("段落结束", title, copy, () => nextChapter());
+  const action = MEMORY_CHAPTER_IDS.has(chapter.id) ? () => openMemoryOverlay(chapter) : () => nextChapter();
+  showOverlay("段落结束", title, copy, action);
 }
 
 function nextChapter() {
   hideOverlay();
+  hideMemoryOverlay();
   state.endingId = null;
   state.chapterIndex += 1;
   state.lineIndex = 0;
@@ -574,6 +829,11 @@ function nextChapter() {
 
 function restartChapter() {
   hideOverlay();
+  hideMemoryOverlay();
+  const chapter = currentChapter();
+  state.eatLog = state.eatLog.filter((entry) => entry.chapterId !== chapter?.id);
+  if (chapter?.id) delete state.memoryByChapter[chapter.id];
+  state.memoryDraft = null;
   state.endingId = null;
   state.lineIndex = 0;
   state.flags.pass = 0;
@@ -625,6 +885,8 @@ function resetRun() {
   state.lineIndex = 0;
   state.flags = {};
   state.eatLog = [];
+  state.memoryByChapter = {};
+  state.memoryDraft = null;
   state.endingId = null;
   state.hasSave = false;
   state.locked = false;
@@ -637,6 +899,7 @@ function resetRun() {
 function restartGame() {
   resetRun();
   hideOverlay();
+  hideMemoryOverlay();
   setScene(currentChapter(), currentLine(), true);
   renderLine();
 }
@@ -647,7 +910,9 @@ function saveState() {
       chapterIndex: state.chapterIndex,
       lineIndex: state.lineIndex,
       flags: state.flags,
-      eatLog: state.eatLog.slice(-24),
+      eatLog: state.eatLog,
+      memoryByChapter: state.memoryByChapter,
+      memoryDraft: state.memoryDraft,
       endingId: state.endingId,
     }));
     state.hasSave = true;
@@ -667,9 +932,11 @@ function restoreState() {
     state.chapterIndex = Math.min(Number(saved.chapterIndex) || 0, state.chapters.length - 1);
     state.lineIndex = Math.max(0, Number(saved.lineIndex) || 0);
     const lines = state.chapters[state.chapterIndex]?.lines ?? [];
-    if (state.lineIndex >= lines.length) state.lineIndex = Math.max(0, lines.length - 1);
+    if (state.lineIndex > lines.length) state.lineIndex = lines.length;
     state.flags = saved.flags && typeof saved.flags === "object" ? saved.flags : {};
-    state.eatLog = Array.isArray(saved.eatLog) ? saved.eatLog : [];
+    state.eatLog = normalizeEatLog(saved.eatLog, state.chapters[state.chapterIndex]?.id ?? "L0");
+    state.memoryByChapter = normalizeMemoryByChapter(saved.memoryByChapter);
+    state.memoryDraft = normalizeMemoryDraft(saved.memoryDraft);
     state.endingId = typeof saved.endingId === "string" ? saved.endingId : null;
   } catch (error) {
     localStorage.removeItem(SAVE_KEY);
@@ -729,9 +996,10 @@ async function startGame(mode = "continue") {
 
   try {
     const endingId = mode === "continue" ? state.endingId : null;
+    const pendingMemory = state.memoryDraft?.chapterId === currentChapter()?.id;
     const pageId = endingId
       ? state.pages.endingPages[endingId]
-      : pageForLine(currentChapter(), currentLine());
+      : pageForLine(currentChapter(), currentLine()) ?? chapterDefaultPage(currentChapter());
     if (!pageId) throw new Error("当前游戏页面不存在");
 
     if (endingId) {
@@ -739,8 +1007,13 @@ async function startGame(mode = "continue") {
     } else {
       await setScenePage(pageId, true);
       state.endingId = null;
-      setScene(currentChapter(), currentLine(), false);
-      renderLine();
+      if (pendingMemory) {
+        setScene(currentChapter(), null, false);
+        openMemoryOverlay(currentChapter());
+      } else {
+        setScene(currentChapter(), currentLine(), false);
+        renderLine();
+      }
     }
     closeTitleScreen();
   } catch (error) {
@@ -814,6 +1087,10 @@ function bindEvents() {
   dom.titlePrimary.addEventListener("click", () => startGame(state.hasSave ? "continue" : "new"));
   dom.titleNewGame.addEventListener("click", () => startGame("new"));
   dom.overlayAction.addEventListener("click", () => state.overlayAction?.());
+  dom.memoryConfirm.addEventListener("click", confirmMemory);
+  dom.memoryOverlay.addEventListener("pointermove", onMemoryPointerMove);
+  dom.memoryOverlay.addEventListener("pointerup", onMemoryPointerUp);
+  dom.memoryOverlay.addEventListener("pointercancel", onMemoryPointerCancel);
   window.addEventListener("resize", () => {
     if (state.dialogueLayout) layoutDialogueZones();
     if (!state.dragging && !state.locked) positionBarAtRest();
@@ -821,6 +1098,7 @@ function bindEvents() {
   });
   window.addEventListener("keydown", (event) => {
     if (event.key.toLowerCase() === "r" && dom.titleScreen.classList.contains("is-hidden")) restartGame();
+    if (event.key === "Escape" && !dom.memoryOverlay.classList.contains("is-hidden")) return;
     if (event.key === "Escape" && !dom.overlay.classList.contains("is-hidden")) hideOverlay();
   });
 }
@@ -924,10 +1202,14 @@ async function load() {
 
     const initialPageId = savedEnding
       ? state.pages.endingPages[savedEnding]
-      : pageForLine(currentChapter(), currentLine());
+      : pageForLine(currentChapter(), currentLine()) ?? chapterDefaultPage(currentChapter());
     await setScenePage(initialPageId, false);
     if (state.endingId && state.pages.endingPages?.[state.endingId]) {
       await finishEnding(state.endingId);
+    } else if (state.memoryDraft?.chapterId === currentChapter()?.id) {
+      state.endingId = null;
+      setScene(currentChapter(), null, false);
+      openMemoryOverlay(currentChapter());
     } else {
       state.endingId = null;
       setScene(currentChapter(), currentLine(), false);

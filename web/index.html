@@ -62,6 +62,7 @@
               <span id="speaker-name">她</span>
               <span id="line-id" class="line-id">L0_S01</span>
             </div>
+            <div id="memory-echo" class="memory-echo is-hidden" aria-live="polite"></div>
             <div id="dialogue-text" class="dialogue-text" aria-live="polite"></div>
             <div id="dialogue-zones" class="dialogue-zones" aria-hidden="true"></div>
             <div class="dialogue-footer">
@@ -85,6 +86,24 @@
           <h1 id="overlay-title">雨声没有停</h1>
           <p id="overlay-copy">她还在等下一句。</p>
           <button id="overlay-action" class="text-button" type="button">继续</button>
+        </section>
+
+        <section id="memory-overlay" class="memory-overlay is-hidden" role="dialog" aria-live="polite" aria-modal="true" aria-labelledby="memory-title" aria-describedby="memory-copy">
+          <div class="memory-panel">
+            <div class="overlay-rule" aria-hidden="true"></div>
+            <p id="memory-eyebrow" class="overlay-eyebrow">语言胃</p>
+            <h1 id="memory-title">你吞下的字还没有沉下去</h1>
+            <p id="memory-copy" class="memory-copy">把它们收拢成一句只留给自己的私语。</p>
+            <div class="memory-section">
+              <div class="memory-label">碎片</div>
+              <div id="memory-pool" class="memory-pool" aria-label="私语碎片"></div>
+            </div>
+            <div class="memory-section">
+              <div class="memory-label">私语</div>
+              <div id="memory-lane" class="memory-lane" aria-label="排列后的私语"></div>
+            </div>
+            <button id="memory-confirm" class="text-button memory-confirm" type="button" disabled>收好这句私语</button>
+          </div>
         </section>
 
         <div id="error-panel" class="error-panel is-hidden" role="alert">

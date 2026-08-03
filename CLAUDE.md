@@ -30,9 +30,16 @@ Complete sentence appears on screen
 → Remaining text is spoken aloud
 → NPC/audience reacts
 → Next sentence or chapter settlement
+→ L1-L4: arrange the chapter's eaten fragments into a private whisper
+→ Next chapter first line may echo that whisper (narrative/visual only)
 ```
 
 **Constraint**: Player can ONLY mask 3-4 pre-defined continuous zones per sentence, no free-form text editing. The current Demo renders the raw sentence once and places transparent hit rectangles from `Range.getClientRects()` over it.
+
+**Echo Digest**: The end-of-chapter memory layer appears only after L1-L4. It preserves every
+eaten fragment, including duplicates, and stores `eatLog` entries as `{ chapterId, text }`.
+`memoryByChapter` stores confirmed whisper order; `memoryDraft` makes an in-progress arrangement
+reload-safe. This layer never changes flags, page bindings, or ending logic.
 
 ### Data Structure (script/chapters.json)
 
