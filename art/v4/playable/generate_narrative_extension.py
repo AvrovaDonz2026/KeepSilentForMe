@@ -8,6 +8,7 @@ import os
 import json
 import requests
 import base64
+from pathlib import Path
 from PIL import Image
 import io
 
@@ -16,7 +17,7 @@ API_BASE = "https://api.qingyuntop.top/v1"
 API_KEY = os.environ.get("OPENAI_API_KEY", "")
 
 # 项目路径
-PROJECT_ROOT = "/home/donz/KeepSilentForMe/art/v4/playable"
+PROJECT_ROOT = str(Path(__file__).resolve().parent)
 SOURCE_DIR = f"{PROJECT_ROOT}/source"
 OUTPUT_DIR = f"{PROJECT_ROOT}"
 
@@ -70,7 +71,7 @@ NEW_ASSETS = {
             "id": "NPC_friend_door_silhouette",
             "name": "朋友门口剪影",
             "chapter": "L3",
-            "source": "../../../storyboard/frames/K6-friend-at-door.png",  # 使用K6关键帧作为场景参考
+            "source": "../../../storyboard/v4-prop-lock/frames/K6-friend-at-door.png",  # 使用V4关键帧作为场景参考
             "prompt": "Male silhouette standing at door threshold, backlit from exterior, completely dark shape with no facial features visible. Casual clothing (jacket or shirt), average build, hands in pockets or at sides. Friend waiting at apartment entrance. Doomer aesthetic, high contrast, grey exterior light behind. NO facial details, NO interior scene, transparent PNG. 1024x1024, bottom-center anchor.",
             "output_path": "npc/NPC_friend_door_silhouette.png"
         },
@@ -78,7 +79,7 @@ NEW_ASSETS = {
             "id": "NPC_friend_hesitant_silhouette",
             "name": "朋友犹豫剪影",
             "chapter": "L3",
-            "source": "../../../storyboard/frames/K6-friend-at-door.png",
+            "source": "../../../storyboard/v4-prop-lock/frames/K6-friend-at-door.png",
             "prompt": "Same male silhouette but body language shifted: one hand reaching toward door frame or scratching head, weight on one leg, hesitant posture. Still completely dark silhouette, no facial features. Uncertainty visible in stance. Doomer aesthetic, backlit. NO face, NO interior, transparent PNG. 1024x1024, bottom-center anchor.",
             "output_path": "npc/NPC_friend_hesitant_silhouette.png"
         },
@@ -86,7 +87,7 @@ NEW_ASSETS = {
             "id": "NPC_interviewer_a",
             "name": "面试官A",
             "chapter": "L1",
-            "source": "../../../storyboard/frames/K3-interview.png",
+            "source": "../../../storyboard/v4-prop-lock/frames/K3-interview.png",
             "prompt": "Professional interviewer half-body, sitting behind table (table edge at bottom of frame), business attire, intentionally blurred/soft focus, not main subject. Left side positioning. Neutral professional posture, holding paper or tablet. Doomer aesthetic, cold fluorescent lighting, low detail. NO sharp facial features, NO background beyond implied table, transparent PNG. 1024x1024, bottom-center anchor.",
             "output_path": "npc/NPC_interviewer_a.png"
         },
@@ -94,7 +95,7 @@ NEW_ASSETS = {
             "id": "NPC_interviewer_b",
             "name": "面试官B",
             "chapter": "L1",
-            "source": "../../../storyboard/frames/K3-interview.png",
+            "source": "../../../storyboard/v4-prop-lock/frames/K3-interview.png",
             "prompt": "Second professional interviewer, same style as interviewer_a but right side positioning, slightly different posture (leaning back or arms crossed). Also blurred/background figure. Business attire, holding pen or resting hands on table. Doomer aesthetic, cold office lighting. NO detailed face, NO background, transparent PNG. 1024x1024, bottom-center anchor.",
             "output_path": "npc/NPC_interviewer_b.png"
         }

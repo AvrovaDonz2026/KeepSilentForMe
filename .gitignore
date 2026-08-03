@@ -101,4 +101,5 @@ __pycache__/
 .~lock.*
 # Local generation logs and caches
 /art/gen/
+/archive/art-v1/gen/
 .venv/

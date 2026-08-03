@@ -650,9 +650,9 @@ KeepSilentForMe/
 ├── art-style.md             ← 画风锁
 ├── selling-points.md        ← 对外怎么说
 ├── storyboard/
-│   ├── demo-effects/frames/ ← D0–D6 玩法效果参考（最重要）
-│   ├── v4-prop-lock/        ← 公寓道具锁 R0
-│   └── ...
+│   └── v4-prop-lock/        ← 公寓道具锁 R0（当前）
+├── archive/storyboard/demo-effects/frames/ ← D0–D6 玩法效果参考（历史）
+└── ...
 └── [Web项目目录结构见 §11.3]
 ```
 
@@ -1309,7 +1309,7 @@ function validateChaptersData(data) {
 
 | 序号 | 资产 | 规格 | 参考 | 当前入口 |
 | --- | --- | --- | --- | --- |
-| 1–5 | 场景 BG | 5 张旧批次 PNG，1536×1024；运行时 fit/crop 到 1920×1080 逻辑画布 | R0 / D0–D5 | `art/bg/BG_*.png`，由 manifest `backgrounds` 引用 |
+| 1–5 | 场景 BG | 5 张旧批次 PNG，1536×1024；运行时 fit/crop 到 1920×1080 逻辑画布 | R0 / D0–D5 | `art/bg/BG_*.png`，由旧版 manifest `backgrounds` 引用 |
 | 6 | 少女叙事姿势 | 8 张透明 RGBA 层 | D0–D5 | `art/v4/playable/char/` |
 | 7 | 对话表情 | 10 个基础表情 + 2 个变体 | face 枚举 | `art/v4/playable/faces/`，由 `faceMap` 映射 |
 | 8 | 消音体 Stage1/2/3 | 3 张透明 RGBA 层 | D6 | `art/v4/playable/creature/` |
@@ -1321,7 +1321,7 @@ function validateChaptersData(data) {
 
 **当前状态**：13 张整页场景/结局页已完成并通过校验，运行时入口为
 `art/v4/scenes/manifest.json`；V4 可玩包的 55 件透明/反馈资产仍保留，其中透明叙事层
-仅作源文件和未来变体，当前 Demo 不叠加它们。旧 `art/bg/` 继续作为生成与回溯素材。
+仅作源文件和未来变体，当前 Demo 不叠加它们。旧 `art/bg/` 继续作为生成与回溯素材和 V4 兼容入口。
 关末视频、BGM、外部 SFX 和配音仍待制作，当前章节切换使用整页翻页/淡入动画。
 
 ### 12.2 画风铁律（违反即返工）
@@ -1331,7 +1331,7 @@ function validateChaptersData(data) {
 3. 消音体 = **哑光黑条 + 碎字**，禁止五官、发光眼、长发厉鬼。  
 4. 信号红 ≤ 画面约 2%（直播点除外）。  
 5. 场景图 **不要** 写满可读长文；字留给 UI。  
-6. 详规：`art-style.md`；效果样张：`storyboard/demo-effects/frames/`。
+6. 详规：`art-style.md`；效果样张：`archive/storyboard/demo-effects/frames/`。
 
 ### 12.3 表情枚举（与 JSON `face` 一一对应）
 

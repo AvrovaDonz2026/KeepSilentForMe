@@ -6,10 +6,11 @@ V4 叙事角色扩展包 - 使用本地Stable Diffusion生成
 
 import os
 import json
+from pathlib import Path
 from PIL import Image
 import subprocess
 
-PROJECT_ROOT = "/home/donz/KeepSilentForMe/art/v4/playable"
+PROJECT_ROOT = str(Path(__file__).resolve().parent)
 
 # 新增资产定义（与原版相同）
 NEW_ASSETS = {

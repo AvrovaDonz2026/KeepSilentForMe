@@ -1,5 +1,5 @@
 {
-  "manifest": "/home/donz/KeepSilentForMe/art/v4/playable/manifest.json",
+  "manifest": "art/v4/playable/manifest.json",
   "errors": [],
   "warnings": [
     "background apartment_rain: does not match logical canvas [1920, 1080]; runtime must fit or crop it",

@@ -155,7 +155,7 @@ python3 -m http.server 8765 --directory .
 ### Asset Generation
 
 ```bash
-# Base prompts live under art/prompts/; the current playable pack uses
+# Base prompts for the archived batch live under archive/art-v1/prompts/; the current playable pack uses
 # art/v4/playable/prompts/ and generate.sh. Use the edit endpoint with the
 # canonical reference image for identity-sensitive layers.
 # Model: gpt-image-2

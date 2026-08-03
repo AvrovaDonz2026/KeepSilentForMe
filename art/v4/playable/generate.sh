@@ -23,7 +23,7 @@ FACE_MASK="$SOURCE/FACE_expression-mask.png"
 TMP_ROOT="${TMP_ROOT:-$REPO/tmp/imagegen/v4-playable}"
 
 V4="$REPO/storyboard/v4-prop-lock"
-DEMO="$REPO/storyboard/demo-effects/frames"
+DEMO="$REPO/archive/storyboard/demo-effects/frames"
 R0="$V4/masters/R0-master-room.png"
 R0C="$V4/masters/R0c-desk-props.png"
 K1="$V4/frames-2k/K1-she-needs-silence.png"

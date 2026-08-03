@@ -111,9 +111,9 @@ L1-L4 完成后，玩家可以把本章吞下的所有字从碎片池拖进私�
 <td width="50%">
 
 ### 🎨 视觉资产
-- **[分镜关键帧](./storyboard/frames/)** - 9张关键帧（K1-K9）
-- **[场景母版](./storyboard/masters/)** - 房间/街景/道具
-- **[迭代版本](./storyboard/)** - v1-dark → v4-prop-lock
+- **[分镜关键帧](./storyboard/v4-prop-lock/frames/)** - 当前 V4 的 9 张关键帧（K1-K9）
+- **[场景母版](./storyboard/v4-prop-lock/masters/)** - 房间/街景/道具锁
+- **[历史迭代与归档](./archive/storyboard/)** - v1-dark → v3-room-lock、D0-D6 与重复副本
 - **[效果演示](./请替我沉默-场景Demo与效果.docx)** - 视觉效果展示
 - **[V4可玩资产包](./art/v4/playable/README.md)** - 55件静态资产、生成入口与校验规则
 - **[整页场景包](./art/v4/scenes/README.md)** - 13张整页 PNG、页面绑定、生成入口与校验规则
@@ -319,21 +319,15 @@ KeepSilentForMe/
 ├── WEB_TECH_STACK.md                   # 🌐 Web技术实现指南
 ├── script/
 │   └── chapters.json                   # 💾 游戏数据
-├── art/                                # 🎨 美术资产（新）
-│   ├── bg/                             # 背景场景（5张）
-│   ├── char/                           # 角色姿势（3张）
-│   ├── creature/                       # 消音体（3张）
-│   ├── ui/                             # UI元素（2张）
-│   ├── prompts/                        # 提示词文件
-│   └── _json/                          # 资产配置
-├── art/v4/playable/                    # 🎮 V4可玩资产包
-│   ├── README.md                       # 生成、绑定与校验说明
-│   ├── manifest.json                   # 资产清单与章节绑定
-│   ├── generate.sh                     # 统一生成入口
-│   ├── validate.py                     # 完整资产校验器
-│   └── [char/npc/ending/fx/ui/faces/]  # 各类资产
-├── storyboard/                         # 🎬 分镜资产
-├── art/v4/scenes/                      # 🖼️ 13张整页场景图与 pageBindings
+├── art/                                # 🎨 当前美术资产入口
+│   ├── bg/                             # 旧 manifest 仍使用的兼容背景源
+│   ├── v4/playable/                    # 🎮 V4可玩资产包
+│   └── v4/scenes/                      # 🖼️ 整页场景与页面绑定
+├── archive/                            # 🗃️ 历史美术、分镜与生成结果
+│   ├── art-v1/
+│   ├── generated-assets/
+│   └── storyboard/
+├── storyboard/v4-prop-lock/            # 🎬 当前道具锁分镜与母版
 ├── scripts/prepare-tauri.mjs           # Tauri 运行时资源组装与路径改写
 ├── src-tauri/                           # Tauri 2 Rust 桌面壳与打包配置
 └── web/                                # 🌐 Web游戏目录（整页翻页 Demo）

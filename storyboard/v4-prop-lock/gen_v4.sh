@@ -4,8 +4,10 @@ set -euo pipefail
 
 API="${API:-https://api.qingyuntop.top/v1}"
 KEY="${OPENAI_API_KEY:-$(cat /tmp/opencode/api_key.txt)}"
-ROOT="/home/donz/KeepSilentForMe/storyboard/v4-prop-lock"
-V3="/home/donz/KeepSilentForMe/storyboard/v3-room-lock"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO="$(cd "$SCRIPT_DIR/../.." && pwd)"
+ROOT="$SCRIPT_DIR"
+V3="$REPO/archive/storyboard/v3-room-lock"
 S09="/home/donz/game/video-storyboard-doomer-1999/generated/S09.png"
 S11="/home/donz/game/video-storyboard-doomer-1999/generated/S11.png"
 SIZE="${SIZE:-1536x1024}"

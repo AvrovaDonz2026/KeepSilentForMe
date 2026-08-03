@@ -18,7 +18,7 @@ if __name__ == "__main__":
     runpy.run_path(os.path.join(os.path.dirname(__file__), "validate.py"), run_name="__main__")
     raise SystemExit(0)
 
-PROJECT_ROOT = "/home/donz/KeepSilentForMe/art/v4/playable"
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # 扩展包资产清单
 EXTENSION_ASSETS = {

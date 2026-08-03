@@ -390,7 +390,12 @@ def main() -> int:
     pack_root = manifest_path.parent
     repo_root = pack_root.parents[2]
     manifest = read_json(manifest_path)
-    report: dict[str, Any] = {"manifest": str(manifest_path), "errors": [], "warnings": [], "assets": []}
+    report: dict[str, Any] = {
+        "manifest": str(manifest_path.relative_to(repo_root)),
+        "errors": [],
+        "warnings": [],
+        "assets": [],
+    }
     validate_references(manifest, report)
 
     assets = manifest.get("assets", [])
