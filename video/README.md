@@ -4,6 +4,9 @@
 `V0_out`、`V1_pass`、`V1_fail`、`V2_out`、`V3_out`、`V4_perform`、
 `V4_refuse`、`V5_A`、`V5_B`、`V5_C` 和 `V_RV`。
 
+可灵版本位于 `prompts/kling/`，已将动作拆成 22 个单场景镜头。每条镜头只使用一个
+整页首帧，跨章节和结局切换由游戏页面完成。
+
 提示词只描述镜头运动、角色动作和氛围；台词、字幕、黑条、按钮和弹幕由游戏 HTML
 或视频外层叠加，不要求模型生成。首帧统一优先使用 `art/v4/scenes/pages/` 的
 无 UI 整页图；`D0-D5` 旧分镜含台词框，不作为默认上传首帧。
@@ -15,8 +18,12 @@
 - `prompts/minimax-h3/COMMON_HARD_LOCK.txt` 和 `COMMON_NEGATIVE.txt`：必须置于每条提示词之前的强化约束。
 - `prompts/minimax-h3/alternatives.json`：8 条单场景保守备选提示词，专门用于跨场景或消音体运动失败时重试。
 - `prompts/minimax-h3/README.md`：生成顺序、参数建议和验收规则。
+- `prompts/kling/manifest.json`：22 个可灵单场景镜头、首帧、时长和输出名。
+- `prompts/kling/*.txt`：可直接粘贴到 Kling `image_to_video` 的单镜头提示词。
+- `prompts/kling/README.md`：可灵参数、生成顺序和镜头分组说明。
 - `generated/README.md`：当前已生成 MP4 的逐帧复盘和重试记录；MP4 本身被 `.gitignore` 忽略。
 - `node scripts/validate-video-prompts.mjs`：检查提示词、首末帧和输出路径。
+- `node scripts/validate-kling-prompts.mjs`：检查可灵 22 条单场景镜头和页面引用。
 
 ## 生成建议
 

@@ -9,7 +9,8 @@
     "tauri:icons": "tauri icon src-tauri/icons/app-icon.svg",
     "tauri:build": "tauri build",
     "validate:chapters": "node scripts/validate-chapters.mjs",
-    "validate:video-prompts": "node scripts/validate-video-prompts.mjs"
+    "validate:video-prompts": "node scripts/validate-video-prompts.mjs",
+    "validate:kling-prompts": "node scripts/validate-kling-prompts.mjs"
   },
   "devDependencies": {
     "@tauri-apps/cli": "2.11.4"
