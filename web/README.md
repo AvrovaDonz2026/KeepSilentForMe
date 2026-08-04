@@ -46,7 +46,7 @@ URL 参数是直接调试入口，启动时会跳过标题封面：
 - 私语只影响叙事回声和视觉反馈，不改旗标、章节分支或结局；下一章第一句旁显示上一章的私语，L0 教学和 L5 终局不插入该层。
 - 存档中的 `eatLog` 记录 `{ chapterId, text }`，`memoryByChapter` 保存已确认私语，`memoryDraft` 保存正在编排的草稿；旧版字符串数组会按当前章节自动兼容。
 - L2 与 L4 直播章节会显示独立的右侧滚屏评论层；每句台词切换一组观众文本和人数基准，人数会持续小幅波动，黑条吸附后的 NPC 反馈会追加到滚屏，离开直播章节自动清理。
-- 滚屏桌面宽度上限为 `480px`（约 `42vw`）、高度上限为 `420px`（约 `48vh`）；移动端宽度约 `72vw`、高度最高 `270px`，并保持在底部台词框上方。
+- 滚屏桌面宽度上限为 `480px`（约 `42vw`）、高度上限为 `420px`（约 `48vh`）；移动端宽度约 `72vw`、高度最高 `154px`，并保持在底部台词框上方。
 - `audio/manifest.json` 绑定 4 首 CC0 本地 BGM：标题/L0/L1 使用雨夜环境，L2/L4 使用直播压迫，L3 使用门厅悬疑，L5 和四个结局使用终局余响；章节或结局切换时交叉淡化。
 - 右上角总开关同时控制 Web Audio 提示音和 BGM；配乐在开始按钮或调试入口的第一次用户手势后启动，以遵守浏览器自动播放策略。
 - 右上角齿轮打开“音乐调节”面板，可分别调整配乐和提示音音量；设置保存在 `localStorage`，重新开始不会重置音量偏好。
@@ -65,7 +65,8 @@ Tauri 2 工作流位于 `.github/workflows/build-tauri.yml`。最新成功运行
 - `keep-silent-for-me-linux-amd64-deb`
 
 桌面构建前，`scripts/prepare-tauri.mjs` 会将 `web/`、`script/chapters.json`、
-`art/v4/playable/` 和 `art/v4/scenes/` 组装到 `dist/tauri/`。
+`art/bg/`、`art/v4/playable/` 和 `art/v4/scenes/` 组装到 `dist/tauri/`。
+`src-tauri/Cargo.lock` 与 CI 的 Rust 1.88.0 共同固定桌面依赖解析。
 
 ## 场景页生成与校验
 
@@ -79,6 +80,8 @@ MODEL=gpt-image-2 \
 ./art/v4/scenes/generate_pages.sh all
 
 python3 art/v4/scenes/validate.py
+python3 art/v4/playable/validate.py
+node scripts/validate-chapters.mjs
 ```
 
 生成器默认跳过已存在的 PNG；使用 `FORCE=1` 才会重绘。响应和日志保存在 `/tmp`。

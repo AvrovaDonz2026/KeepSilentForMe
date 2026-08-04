@@ -127,6 +127,8 @@ python3 -m http.server 8765 --directory .
 
 # Static and JavaScript validation
 python3 art/v4/scenes/validate.py
+python3 art/v4/playable/validate.py
+node scripts/validate-chapters.mjs
 node --check web/js/main.js
 node --check scripts/prepare-tauri.mjs
 

@@ -2,21 +2,26 @@
 # Generate KeepSilentForMe v4 prop-lock masters + keyframes via qingyuntop gpt-image-2
 set -euo pipefail
 
-API="${API:-https://api.qingyuntop.top/v1}"
-KEY="${OPENAI_API_KEY:-$(cat /tmp/opencode/api_key.txt)}"
+API="${OPENAI_BASE_URL:-${API:-https://api.qingyuntop.top/v1}}"
+API="${API%/}"
+[[ "$API" == */v1 ]] || API="$API/v1"
+KEY="${OPENAI_API_KEY:-}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$SCRIPT_DIR/../.." && pwd)"
 ROOT="$SCRIPT_DIR"
 V3="$REPO/archive/storyboard/v3-room-lock"
-S09="/home/donz/game/video-storyboard-doomer-1999/generated/S09.png"
-S11="/home/donz/game/video-storyboard-doomer-1999/generated/S11.png"
+S09="${S09:-}"
+S11="${S11:-}"
 SIZE="${SIZE:-1536x1024}"
 QUALITY="${QUALITY:-medium}"
 MODEL="${MODEL:-gpt-image-2}"
 LOG="$ROOT/gen.log"
 
 mkdir -p "$ROOT"/{masters,frames,frames-2k,visual,prompts,_json}
-export OPENAI_API_KEY="$KEY"
+if [[ -z "$KEY" ]]; then
+  echo "OPENAI_API_KEY is required; keys are read only from the process environment." >&2
+  exit 2
+fi
 
 log() { echo "[$(date +%H:%M:%S)] $*" | tee -a "$LOG"; }
 
@@ -64,6 +69,7 @@ edit_images() {
   )
   local img
   for img in "$@"; do
+    [[ -f "$img" ]] || { log "missing reference $img"; return 1; }
     args+=(-F "image=@${img};type=image/png")
   done
   local code

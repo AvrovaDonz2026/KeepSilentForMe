@@ -53,7 +53,7 @@
           </div>
         </header>
 
-        <aside id="audio-settings" class="audio-settings is-hidden" role="dialog" aria-labelledby="audio-settings-title" aria-describedby="audio-settings-status">
+        <aside id="audio-settings" class="audio-settings is-hidden" role="dialog" aria-modal="true" aria-labelledby="audio-settings-title" aria-describedby="audio-settings-status">
           <div class="audio-settings-head">
             <div>
               <p class="audio-settings-eyebrow">声音设置</p>
@@ -66,21 +66,21 @@
               <span class="audio-control-label">声音</span>
               <span id="audio-enabled-status" class="audio-control-note">配乐与提示音开启</span>
             </span>
-            <input id="audio-enabled" class="audio-switch" type="checkbox" checked />
+            <input id="audio-enabled" class="audio-switch" type="checkbox" checked aria-describedby="audio-enabled-status" />
           </label>
           <div class="audio-range-control">
             <div class="audio-range-head">
-              <label for="music-volume">配乐</label>
-              <output id="music-volume-value" for="music-volume">100%</output>
+              <label id="music-volume-label" for="music-volume">配乐</label>
+              <output id="music-volume-value" for="music-volume" aria-live="polite">100%</output>
             </div>
-            <input id="music-volume" type="range" min="0" max="100" step="1" value="100" />
+            <input id="music-volume" type="range" min="0" max="100" step="1" value="100" aria-labelledby="music-volume-label" aria-valuetext="100%" />
           </div>
           <div class="audio-range-control">
             <div class="audio-range-head">
-              <label for="sfx-volume">提示音</label>
-              <output id="sfx-volume-value" for="sfx-volume">100%</output>
+              <label id="sfx-volume-label" for="sfx-volume">提示音</label>
+              <output id="sfx-volume-value" for="sfx-volume" aria-live="polite">100%</output>
             </div>
-            <input id="sfx-volume" type="range" min="0" max="100" step="1" value="100" />
+            <input id="sfx-volume" type="range" min="0" max="100" step="1" value="100" aria-labelledby="sfx-volume-label" aria-valuetext="100%" />
           </div>
           <p id="audio-settings-status" class="audio-settings-status">当前配乐 · 等待载入</p>
         </aside>
@@ -127,7 +127,7 @@
         <div id="fx-layer" class="fx-layer" aria-hidden="true"></div>
         <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-        <section id="chapter-overlay" class="chapter-overlay is-hidden" aria-live="polite">
+        <section id="chapter-overlay" class="chapter-overlay is-hidden" role="dialog" aria-modal="true" aria-live="polite" aria-labelledby="overlay-title" aria-describedby="overlay-copy">
           <div class="overlay-rule" aria-hidden="true"></div>
           <p id="overlay-eyebrow" class="overlay-eyebrow">段落结束</p>
           <h1 id="overlay-title">雨声没有停</h1>

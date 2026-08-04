@@ -22,7 +22,7 @@
 
 被遮掉的文字不会消失，而是被你"吃掉"，逐渐在她身边长成你的身体。她靠你的沉默活在社会里，你靠她没说出口的真实想法活下来。
 
-**最新进展** (2026-08-03更新)：
+**最新进展** (2026-08-04更新)：
 - ✅ **可玩竖切 Demo 已完成**：标题封面、L0-L5、35句台词、拖拽遮字和四个结局均可运行
 - ✅ 运行时改为整页场景翻页：13张 `1536×1024` 页面由 `pageBindings` 驱动
 - ✅ 已接入继续/重新开始、`localStorage` 存档、URL 调试入口和 Web Audio 提示音
@@ -30,8 +30,11 @@
 - ✅ L2/L4 直播已加入独立滚屏评论：随台词切换观众文本、人数持续波动，吸附后的反馈会进入滚屏，桌面与移动端均适配
 - ✅ 已接入 4 首 CC0 本地 BGM：雨夜环境、直播压迫、门厅悬疑、终局余响；章节切换交叉淡化，右上角支持总开关、独立音量调节和持久化
 - ✅ V4 可玩资产包共 55 件，整页场景包共 13 件，manifest、尺寸和引用校验通过
+- ✅ 章节数据校验、重复 zone 定位、存档边界、禁用存储降级和小屏滚屏布局已加固
+- ✅ Pages/Tauri 产物同步包含 `art/bg/` 兼容背景；Tauri 提交 `Cargo.lock` 并固定 Rust 1.88.0
+- ✅ 已整理 MiniMax H3 的 11 条图生视频提示词、首帧映射、负面提示和生成参数
 - ✅ GitHub Pages 最新部署成功；Tauri Windows/Linux 打包工作流最新运行成功
-- 🟡 关末视频、外部 SFX/配音和完整跨章节分支仍未接入
+- 🟡 关末视频 MP4、外部 SFX/配音和完整跨章节分支仍未接入；H3 提示词已就绪
 - 🟡 当前原型中 L2/L3/L4 旗标主要用于记录，实际流程分支仍待规则对齐
 - 📝 **数据源统一**：`台本.md` 是完整内容源，`script/chapters.json` 是运行时数据源
 
@@ -328,7 +331,9 @@ KeepSilentForMe/
 │   ├── generated-assets/
 │   └── storyboard/
 ├── storyboard/v4-prop-lock/            # 🎬 当前道具锁分镜与母版
+├── video/prompts/minimax-h3/           # 🎞️ MiniMax H3 图生视频提示词与参数
 ├── scripts/prepare-tauri.mjs           # Tauri 运行时资源组装与路径改写
+├── scripts/validate-chapters.mjs       # 章节 zone 与 remain 数据契约校验
 ├── src-tauri/                           # Tauri 2 Rust 桌面壳与打包配置
 └── web/                                # 🌐 Web游戏目录（整页翻页 Demo）
     ├── README.md

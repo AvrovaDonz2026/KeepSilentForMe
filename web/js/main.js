@@ -10,6 +10,29 @@ const AUDIO_SETTINGS_KEY = "keep-silent-for-me-audio-settings";
 const MEMORY_CHAPTER_IDS = new Set(["L1", "L2", "L3", "L4"]);
 const LIVE_CHAPTER_IDS = new Set(["L2", "L4"]);
 const BGM_FADE_MS = 650;
+const PAGE_TURN_DURATION_MS = 720;
+const TITLE_CLOSE_DELAY_MS = 540;
+const LIVE_VIEWER_TICK_MS = 1800;
+const FX_REMOVE_DELAY_MS = 950;
+const FEEDBACK_HINT_DELAY_MS = 420;
+const FEEDBACK_DIALOGUE_REFRESH_DELAY_MS = 620;
+const FEEDBACK_RISK_DELAY_MS = 120;
+const TOAST_DEFAULT_DURATION_MS = 2100;
+const TOAST_REJECT_DURATION_MS = 1500;
+const TOAST_SELECTION_DURATION_MS = 2500;
+const TOAST_FAILURE_DURATION_MS = 2600;
+const BAR_DEFAULT_WIDTH = "min(34vw, 400px)";
+const BAR_MIN_WIDTH = 88;
+const BAR_MAX_WIDTH = 520;
+const BAR_REST_X_RATIO = 0.62;
+const BAR_REST_Y_RATIO = 0.44;
+const BAR_REST_BOTTOM_GUTTER = 330;
+const ZONE_REACHABLE_MIN_DISTANCE = 150;
+const ZONE_REACHABLE_WIDTH_RATIO = 0.86;
+const SELECTION_SNAP_DELAY_MS = 260;
+const SELECTION_FEEDBACK_DELAY_MS = 1060;
+const LINE_RENDER_DELAY_MS = 360;
+const DEBUG_KEYS = new Set(["chapter", "line", "ending"]);
 
 const AUDIO_TRACK_LABELS = {
   "rain-room": "雨夜环境",
@@ -171,6 +194,9 @@ const state = {
   },
   overlayAction: null,
   toastTimer: null,
+  transitionTimers: new Set(),
+  transitionVersion: 0,
+  persistenceAvailable: true,
   pageToken: 0,
   pageLoads: new Map(),
   hasSave: false,
@@ -212,28 +238,85 @@ function clampAudioValue(value, fallback = 1) {
   return Math.min(1, Math.max(0, number));
 }
 
-function saveAudioSettings() {
+function storageGet(key) {
   try {
-    localStorage.setItem(AUDIO_SETTINGS_KEY, JSON.stringify(state.audioSettings));
+    const storage = globalThis.localStorage;
+    if (!storage) {
+      state.persistenceAvailable = false;
+      return null;
+    }
+    return storage.getItem(key);
   } catch (error) {
-    console.warn("audio settings unavailable", error);
+    state.persistenceAvailable = false;
+    return null;
+  }
+}
+
+function storageSet(key, value) {
+  try {
+    const storage = globalThis.localStorage;
+    if (!storage) {
+      state.persistenceAvailable = false;
+      return false;
+    }
+    storage.setItem(key, value);
+    return true;
+  } catch (error) {
+    state.persistenceAvailable = false;
+    return false;
+  }
+}
+
+function storageRemove(key) {
+  try {
+    const storage = globalThis.localStorage;
+    if (!storage) {
+      state.persistenceAvailable = false;
+      return false;
+    }
+    storage.removeItem(key);
+    return true;
+  } catch (error) {
+    state.persistenceAvailable = false;
+    return false;
+  }
+}
+
+function scheduleTransition(callback, delay) {
+  const timer = window.setTimeout(() => {
+    state.transitionTimers.delete(timer);
+    callback();
+  }, delay);
+  state.transitionTimers.add(timer);
+  return timer;
+}
+
+function cancelTransitionTimers() {
+  state.transitionVersion += 1;
+  for (const timer of state.transitionTimers) window.clearTimeout(timer);
+  state.transitionTimers.clear();
+}
+
+function saveAudioSettings() {
+  if (!storageSet(AUDIO_SETTINGS_KEY, JSON.stringify(state.audioSettings))) {
+    console.warn("audio settings unavailable");
   }
 }
 
 function restoreAudioSettings() {
   state.audioSettings = { enabled: true, musicVolume: 1, sfxVolume: 1 };
+  const raw = storageGet(AUDIO_SETTINGS_KEY);
   try {
-    const raw = localStorage.getItem(AUDIO_SETTINGS_KEY);
     if (raw) {
       const saved = JSON.parse(raw);
-      if (saved && typeof saved === "object") {
+      if (saved && typeof saved === "object" && !Array.isArray(saved)) {
         state.audioSettings.enabled = saved.enabled !== false;
         state.audioSettings.musicVolume = clampAudioValue(saved.musicVolume);
         state.audioSettings.sfxVolume = clampAudioValue(saved.sfxVolume);
       }
     }
   } catch (error) {
-    localStorage.removeItem(AUDIO_SETTINGS_KEY);
+    storageRemove(AUDIO_SETTINGS_KEY);
   }
   state.sound = state.audioSettings.enabled;
   updateAudioSettingsUI();
@@ -264,8 +347,10 @@ function updateAudioSettingsUI() {
   dom.audioEnabled.checked = state.sound;
   dom.audioEnabledStatus.textContent = state.sound ? "配乐与提示音开启" : "配乐与提示音已静音";
   dom.musicVolume.value = String(musicPercent);
+  dom.musicVolume.setAttribute("aria-valuetext", `${musicPercent}%`);
   dom.musicVolumeValue.textContent = `${musicPercent}%`;
   dom.sfxVolume.value = String(sfxPercent);
+  dom.sfxVolume.setAttribute("aria-valuetext", `${sfxPercent}%`);
   dom.sfxVolumeValue.textContent = `${sfxPercent}%`;
   setRangeProgress(dom.musicVolume, settings.musicVolume);
   setRangeProgress(dom.sfxVolume, settings.sfxVolume);
@@ -533,7 +618,7 @@ function startLiveViewerCounter(lineId) {
     state.liveViewerCount = Math.max(0, state.liveViewerCount + changes[tick % changes.length]);
     dom.liveChatViewers.textContent = `观众 ${state.liveViewerCount.toLocaleString("zh-CN")}`;
     tick += 1;
-  }, 1800);
+  }, LIVE_VIEWER_TICK_MS);
 }
 
 function renderLiveChat(chapter, line) {
@@ -566,7 +651,7 @@ function hideLiveChat() {
   state.liveViewerTimer = null;
 }
 
-function showToast(text, duration = 2100) {
+function showToast(text, duration = TOAST_DEFAULT_DURATION_MS) {
   clearTimeout(state.toastTimer);
   dom.toast.textContent = text;
   dom.toast.classList.add("is-visible");
@@ -617,7 +702,7 @@ async function setScenePage(pageId, animate = true) {
       dom.scenePage.classList.add("is-turning");
       window.setTimeout(() => {
         if (token === state.pageToken) dom.scenePage.classList.remove("is-turning");
-      }, 720);
+      }, PAGE_TURN_DURATION_MS);
     }
     return true;
   } catch (error) {
@@ -630,7 +715,7 @@ async function setScenePage(pageId, animate = true) {
     if (previousSrc) {
       dom.scenePage.src = previousSrc;
       dom.scenePage.classList.add("is-visible");
-      showToast(`场景页 ${pageId} 暂时无法载入，已保留上一页。`, 2600);
+      showToast(`场景页 ${pageId} 暂时无法载入，已保留上一页。`, TOAST_FAILURE_DURATION_MS);
       return false;
     }
     dom.scenePage.classList.remove("is-visible", "is-turning");
@@ -648,22 +733,23 @@ function setScene(chapter, line = currentLine(), animate = false) {
   if (line) setScenePage(pageForLine(chapter, line), animate);
 }
 
+function dialogueZoneStart(raw, zone) {
+  if (Number.isInteger(zone.start)) return zone.start;
+  const occurrence = Math.max(1, Number(zone.occurrence) || 1);
+  let from = 0;
+  let start = -1;
+  for (let count = 0; count < occurrence; count += 1) {
+    start = raw.indexOf(zone.text, from);
+    if (start < 0) break;
+    from = start + zone.text.length;
+  }
+  return start;
+}
+
 function buildDialogue(raw, zones) {
-  const locate = (zone) => {
-    if (Number.isInteger(zone.start)) return zone.start;
-    const occurrence = Math.max(1, Number(zone.occurrence) || 1);
-    let from = 0;
-    let start = -1;
-    for (let count = 0; count < occurrence; count += 1) {
-      start = raw.indexOf(zone.text, from);
-      if (start < 0) break;
-      from = start + zone.text.length;
-    }
-    return start;
-  };
   const intervals = zones
     .map((zone, index) => {
-      const start = locate(zone);
+      const start = dialogueZoneStart(raw, zone);
       return { zone, index, start, end: start < 0 ? -1 : start + zone.text.length };
     })
     .filter((item) => item.start >= 0 && item.end > item.start && item.end <= raw.length);
@@ -745,7 +831,7 @@ function renderLine() {
   const cracked = manifestLayerIds("bar_cracked", line.id)?.length;
   const locked = manifestLayerIds("bar_locked", line.id)?.length;
   setBarSource(cracked ? "cracked" : locked ? "locked" : "hover");
-  dom.blackBar.style.width = "min(34vw, 400px)";
+  dom.blackBar.style.width = BAR_DEFAULT_WIDTH;
   dom.chapterKicker.textContent = `${chapter.id} · ${chapter.title}`;
   dom.chapterTitle.textContent = SCENE_META[chapter.id]?.readout ?? chapter.title;
   dom.speakerName.textContent = "她";
@@ -758,7 +844,7 @@ function renderLine() {
   setScene(chapter, line, true);
   clearNearestZone();
   window.requestAnimationFrame(positionBarAtRest);
-  triggerManifestEvent("zone_hint", undefined, 420);
+  triggerManifestEvent("zone_hint", undefined, FEEDBACK_HINT_DELAY_MS);
 }
 
 function setBarCenter(x, y) {
@@ -778,7 +864,10 @@ function setBarCenter(x, y) {
 
 function positionBarAtRest() {
   if (state.dragging || state.locked) return;
-  setBarCenter(window.innerWidth * 0.62, Math.min(window.innerHeight * 0.44, window.innerHeight - 330));
+  setBarCenter(
+    window.innerWidth * BAR_REST_X_RATIO,
+    Math.min(window.innerHeight * BAR_REST_Y_RATIO, window.innerHeight - BAR_REST_BOTTOM_GUTTER),
+  );
 }
 
 function getZones() {
@@ -820,7 +909,10 @@ function clearNearestZone() {
 }
 
 function isReachableZone(target) {
-  return Boolean(target && target.distance < Math.max(150, target.rect.width * 0.86));
+  return Boolean(
+    target
+      && target.distance < Math.max(ZONE_REACHABLE_MIN_DISTANCE, target.rect.width * ZONE_REACHABLE_WIDTH_RATIO),
+  );
 }
 
 function updateDragTarget(clientX, clientY) {
@@ -828,10 +920,10 @@ function updateDragTarget(clientX, clientY) {
   if (!nearest) return;
   if (isReachableZone(nearest)) {
     setNearestZone(nearest.index, nearest.element);
-    dom.blackBar.style.width = `${Math.min(520, Math.max(88, nearest.rect.width + 22))}px`;
+    dom.blackBar.style.width = `${Math.min(BAR_MAX_WIDTH, Math.max(BAR_MIN_WIDTH, nearest.rect.width + 22))}px`;
   } else {
     clearNearestZone();
-    dom.blackBar.style.width = "min(34vw, 400px)";
+    dom.blackBar.style.width = BAR_DEFAULT_WIDTH;
   }
 }
 
@@ -868,9 +960,9 @@ function onPointerUp(event) {
   if (!isReachableZone(target)) {
     clearNearestZone();
     setBarSource("hover");
-    dom.blackBar.style.width = "min(34vw, 400px)";
+    dom.blackBar.style.width = BAR_DEFAULT_WIDTH;
     positionBarAtRest();
-    showToast("黑条没有找到可以吞下的句子。", 1500);
+    showToast("黑条没有找到可以吞下的句子。", TOAST_REJECT_DURATION_MS);
     ping("reject");
     return;
   }
@@ -883,14 +975,15 @@ function snapToZone(index, targetElement = null) {
   const rect = zone.getBoundingClientRect();
   state.selectedZone = index;
   setNearestZone(index, zone);
-  dom.blackBar.style.width = `${Math.min(520, Math.max(88, rect.width + 22))}px`;
+  dom.blackBar.style.width = `${Math.min(BAR_MAX_WIDTH, Math.max(BAR_MIN_WIDTH, rect.width + 22))}px`;
   setBarSource("snap");
   setBarCenter(rect.left + rect.width / 2, rect.top + rect.height / 2);
   state.locked = true;
   dom.blackBar.classList.add("is-locked");
   ping("snap");
   triggerManifestEvent("bar_snap", index);
-  window.setTimeout(() => applySelection(index), 260);
+  const version = state.transitionVersion;
+  scheduleTransition(() => applySelection(index, version), SELECTION_SNAP_DELAY_MS);
 }
 
 function applyFlags(flags = []) {
@@ -902,7 +995,8 @@ function applyFlags(flags = []) {
   }
 }
 
-function applySelection(index) {
+function applySelection(index, version = state.transitionVersion) {
+  if (version !== state.transitionVersion || !state.locked) return;
   const line = currentLine();
   const zone = line?.zones?.[index];
   if (!line || !zone) return;
@@ -914,14 +1008,47 @@ function applySelection(index) {
   dom.feedbackCopy.textContent = zone.npc || "字在黑条下安静下来。";
   dom.statusCopy.textContent = zone.eat ? `已吞下「${zone.eat}」。` : "字被收进了黑条里。";
   appendLiveChat(zone.npc || "字被收进去了");
-  showToast(zone.npc || "字被吃掉了。", 2500);
+  showToast(zone.npc || "字被吃掉了。", TOAST_SELECTION_DURATION_MS);
   triggerFeedback("snap", index);
   triggerManifestEvent("censor_absorb", index);
-  triggerManifestEvent("dialogue_refresh", index, 620);
-  if (zone.flags?.some((flag) => flag.startsWith("risk"))) triggerFeedback("reject", index, 120);
-  triggerManifestEvent("bar_reject", index, 120);
+  triggerManifestEvent("dialogue_refresh", index, FEEDBACK_DIALOGUE_REFRESH_DELAY_MS);
+  if (zone.flags?.some((flag) => flag.startsWith("risk"))) triggerFeedback("reject", index, FEEDBACK_RISK_DELAY_MS);
+  triggerManifestEvent("bar_reject", index, FEEDBACK_RISK_DELAY_MS);
+  const transition = commitSelection(zone, line);
   saveState();
-  window.setTimeout(() => finishLine(zone), 1060);
+  scheduleTransition(() => continueAfterSelection(transition, version), SELECTION_FEEDBACK_DELAY_MS);
+}
+
+function commitSelection(zone, line) {
+  if (line.is_ending) {
+    const endingId = zone.ending ?? "A_separate";
+    state.endingId = endingId;
+    return { kind: "ending", endingId };
+  }
+  state.lineIndex += 1;
+  return {
+    kind: state.lineIndex >= currentChapter().lines.length ? "chapter" : "line",
+  };
+}
+
+function continueAfterSelection(transition, version) {
+  if (version !== state.transitionVersion) return;
+  if (transition.kind === "ending") {
+    void finishEnding(transition.endingId, version).catch((error) => {
+      if (version !== state.transitionVersion) return;
+      console.error(error);
+      state.locked = false;
+      showToast("结局场景暂时无法载入，请重试。", TOAST_FAILURE_DURATION_MS);
+    });
+    return;
+  }
+  if (transition.kind === "chapter") {
+    finishChapter();
+    return;
+  }
+  scheduleTransition(() => {
+    if (version === state.transitionVersion) renderLine();
+  }, LINE_RENDER_DELAY_MS);
 }
 
 function fxPosition(index) {
@@ -957,10 +1084,15 @@ function triggerFeedback(kind, index, delay = 0, assetIds = null) {
       sprite.style.width = id.includes("burst") ? "min(34vw, 440px)" : "min(62vw, 980px)";
       sprite.style.height = "auto";
       dom.fxLayer.append(sprite);
-      window.setTimeout(() => sprite.remove(), 950);
+      window.setTimeout(() => sprite.remove(), FX_REMOVE_DELAY_MS);
     }
   };
-  if (delay) window.setTimeout(schedule, delay); else schedule();
+  const version = state.transitionVersion;
+  const run = () => {
+    if (version !== state.transitionVersion) return;
+    schedule();
+  };
+  if (delay) scheduleTransition(run, delay); else run();
 }
 
 function manifestLayerIds(name, lineId) {
@@ -983,22 +1115,6 @@ function triggerManifestEvent(name, index, delay = 0) {
   if (!kind) return false;
   triggerFeedback(kind, index, delay, ids);
   return true;
-}
-
-function finishLine(zone) {
-  const line = currentLine();
-  if (!line || !zone) return;
-  if (line.is_ending) {
-    finishEnding(zone.ending ?? "A_separate");
-    return;
-  }
-  state.lineIndex += 1;
-  saveState();
-  if (state.lineIndex >= currentChapter().lines.length) {
-    finishChapter();
-    return;
-  }
-  window.setTimeout(renderLine, 360);
 }
 
 function chapterResult(chapter) {
@@ -1206,6 +1322,7 @@ function finishChapter() {
 }
 
 function nextChapter() {
+  cancelTransitionTimers();
   hideOverlay();
   hideMemoryOverlay();
   state.endingId = null;
@@ -1219,6 +1336,7 @@ function nextChapter() {
 }
 
 function restartChapter() {
+  cancelTransitionTimers();
   hideOverlay();
   hideMemoryOverlay();
   const chapter = currentChapter();
@@ -1236,11 +1354,14 @@ function restartChapter() {
   renderLine();
 }
 
-async function finishEnding(endingId) {
+async function finishEnding(endingId, expectedTransitionVersion = null) {
+  if (expectedTransitionVersion !== null && expectedTransitionVersion !== state.transitionVersion) return false;
   const pageId = state.pages?.endingPages?.[endingId];
   if (!pageId) throw new Error(`结局页面不存在: ${endingId}`);
   const loaded = await setScenePage(pageId, true);
-  if (!loaded) return false;
+  if (!loaded || (expectedTransitionVersion !== null && expectedTransitionVersion !== state.transitionVersion)) {
+    return false;
+  }
   dom.stage.dataset.ending = endingId;
   state.endingId = endingId;
   state.locked = true;
@@ -1272,7 +1393,8 @@ function hideOverlay() {
 }
 
 function resetRun() {
-  localStorage.removeItem(SAVE_KEY);
+  cancelTransitionTimers();
+  storageRemove(SAVE_KEY);
   state.chapterIndex = 0;
   state.lineIndex = 0;
   state.flags = {};
@@ -1297,47 +1419,110 @@ function restartGame() {
 }
 
 function saveState() {
-  try {
-    localStorage.setItem(SAVE_KEY, JSON.stringify({
-      chapterIndex: state.chapterIndex,
-      lineIndex: state.lineIndex,
-      flags: state.flags,
-      eatLog: state.eatLog,
-      memoryByChapter: state.memoryByChapter,
-      memoryDraft: state.memoryDraft,
-      endingId: state.endingId,
-    }));
+  const saved = storageSet(SAVE_KEY, JSON.stringify({
+    chapterIndex: state.chapterIndex,
+    lineIndex: state.lineIndex,
+    flags: state.flags,
+    eatLog: state.eatLog,
+    memoryByChapter: state.memoryByChapter,
+    memoryDraft: state.memoryDraft,
+    endingId: state.endingId,
+  }));
+  if (saved) {
     state.hasSave = true;
-  } catch (error) {
-    console.warn("save unavailable", error);
+  } else {
+    state.hasSave = false;
+    console.warn("save unavailable");
   }
 }
 
 function restoreState() {
   state.hasSave = false;
+  const raw = storageGet(SAVE_KEY);
   try {
-    const raw = localStorage.getItem(SAVE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
-    if (!saved || typeof saved !== "object") return;
-    state.hasSave = true;
-    state.chapterIndex = Math.min(Number(saved.chapterIndex) || 0, state.chapters.length - 1);
-    state.lineIndex = Math.max(0, Number(saved.lineIndex) || 0);
-    const lines = state.chapters[state.chapterIndex]?.lines ?? [];
-    if (state.lineIndex > lines.length) state.lineIndex = lines.length;
-    state.flags = saved.flags && typeof saved.flags === "object" ? saved.flags : {};
+    if (!saved || typeof saved !== "object" || Array.isArray(saved)) throw new Error("存档格式无效");
+    const chapterIndex = saved.chapterIndex;
+    if (typeof chapterIndex !== "number"
+      || !Number.isSafeInteger(chapterIndex)
+      || chapterIndex < 0
+      || chapterIndex >= state.chapters.length) {
+      throw new Error("存档章节索引无效");
+    }
+    const lineIndex = saved.lineIndex;
+    const lines = state.chapters[chapterIndex]?.lines ?? [];
+    if (typeof lineIndex !== "number"
+      || !Number.isSafeInteger(lineIndex)
+      || lineIndex < 0
+      || lineIndex > lines.length) {
+      throw new Error("存档台词索引无效");
+    }
+    const endingIds = new Set(Object.keys(state.pages?.endingPages ?? {}));
+    if (saved.endingId !== null && saved.endingId !== undefined && !endingIds.has(saved.endingId)) {
+      throw new Error("存档结局无效");
+    }
+    if (saved.flags !== undefined
+      && (!saved.flags || typeof saved.flags !== "object" || Array.isArray(saved.flags))) {
+      throw new Error("存档状态无效");
+    }
+    state.chapterIndex = chapterIndex;
+    state.lineIndex = lineIndex;
+    state.flags = saved.flags ?? {};
     state.eatLog = normalizeEatLog(saved.eatLog, state.chapters[state.chapterIndex]?.id ?? "L0");
     state.memoryByChapter = normalizeMemoryByChapter(saved.memoryByChapter);
     state.memoryDraft = normalizeMemoryDraft(saved.memoryDraft);
     state.endingId = typeof saved.endingId === "string" ? saved.endingId : null;
+    state.hasSave = true;
   } catch (error) {
-    localStorage.removeItem(SAVE_KEY);
+    storageRemove(SAVE_KEY);
+    console.warn("discarding invalid save", error.message);
   }
 }
 
-function hasDebugLocation() {
+function readDebugParam(params, key) {
+  const values = params.getAll(key);
+  if (!values.length) return { present: false, value: null };
+  if (values.length !== 1 || !values[0]) throw new Error(`调试参数 ${key} 必须只有一个非空值`);
+  return { present: true, value: values[0] };
+}
+
+function parseDebugLocation() {
   const params = new URLSearchParams(window.location.search);
-  return ["chapter", "line", "ending"].some((key) => params.has(key));
+  const values = Object.fromEntries([...DEBUG_KEYS].map((key) => [key, readDebugParam(params, key)]));
+  const active = [...DEBUG_KEYS].some((key) => values[key].present);
+  if (!active) return { active: false };
+
+  const chapterId = values.chapter.value;
+  const lineId = values.line.value;
+  const endingId = values.ending.value;
+  if (values.ending.present && (values.chapter.present || values.line.present)) {
+    throw new Error("调试结局不能同时指定章节或台词");
+  }
+  if (values.line.present && !values.chapter.present) {
+    throw new Error("调试台词必须同时指定 chapter");
+  }
+  if (values.ending.present) {
+    const endingPages = state.pages?.endingPages ?? {};
+    if (!Object.prototype.hasOwnProperty.call(endingPages, endingId)) {
+      throw new Error(`未知调试结局: ${endingId}`);
+    }
+    const chapterIndex = state.chapters.findIndex((chapter) => chapter.id === "L5");
+    if (chapterIndex < 0) throw new Error("找不到终局章节 L5");
+    return {
+      active: true,
+      endingId,
+      chapterIndex,
+      lineIndex: Math.max(0, (state.chapters[chapterIndex].lines?.length ?? 1) - 1),
+    };
+  }
+
+  const chapterIndex = state.chapters.findIndex((chapter) => chapter.id === chapterId);
+  if (chapterIndex < 0) throw new Error(`未知调试章节: ${chapterId}`);
+  const lines = state.chapters[chapterIndex].lines ?? [];
+  const lineIndex = values.line.present ? lines.findIndex((line) => line.id === lineId) : 0;
+  if (lineIndex < 0) throw new Error(`台词不属于 ${chapterId}: ${lineId}`);
+  return { active: true, chapterId, lineId: lineId ?? null, chapterIndex, lineIndex };
 }
 
 function configureTitleScreen() {
@@ -1376,7 +1561,7 @@ function closeTitleScreen() {
   window.setTimeout(() => {
     dom.titleScreen.classList.add("is-hidden");
     dom.app.classList.remove("is-title-screen");
-  }, 540);
+  }, TITLE_CLOSE_DELAY_MS);
 }
 
 async function startGame(mode = "continue") {
@@ -1425,22 +1610,14 @@ async function startGame(mode = "continue") {
   }
 }
 
-function applyDebugLocation() {
-  const params = new URLSearchParams(window.location.search);
-  const chapterId = params.get("chapter");
-  const lineId = params.get("line");
-  const endingId = params.get("ending");
-  if (chapterId) {
-    state.endingId = null;
-    const chapterIndex = state.chapters.findIndex((chapter) => chapter.id === chapterId);
-    if (chapterIndex >= 0) state.chapterIndex = chapterIndex;
-  }
-  if (lineId) {
-    state.endingId = null;
-    const lineIndex = currentChapter().lines.findIndex((line) => line.id === lineId);
-    if (lineIndex >= 0) state.lineIndex = lineIndex;
-  }
-  if (endingId && state.pages?.endingPages?.[endingId]) state.endingId = endingId;
+function applyDebugLocation(location) {
+  if (!location?.active) return;
+  state.chapterIndex = location.chapterIndex;
+  state.lineIndex = location.lineIndex;
+  state.endingId = location.endingId ?? null;
+  // A debug URL is an explicit location request; an interrupted memory draft
+  // from local storage must not hijack the requested chapter or line.
+  state.memoryDraft = null;
 }
 
 function audioContext() {
@@ -1504,11 +1681,18 @@ function bindEvents() {
   window.addEventListener("keydown", (event) => {
     if (event.key.toLowerCase() === "r" && dom.titleScreen.classList.contains("is-hidden")) restartGame();
     if (event.key === "Escape" && !dom.audioSettings.classList.contains("is-hidden")) {
+      event.preventDefault();
       closeAudioSettings();
       return;
     }
-    if (event.key === "Escape" && !dom.memoryOverlay.classList.contains("is-hidden")) return;
-    if (event.key === "Escape" && !dom.overlay.classList.contains("is-hidden")) hideOverlay();
+    if (event.key === "Escape" && !dom.memoryOverlay.classList.contains("is-hidden")) {
+      event.preventDefault();
+      return;
+    }
+    if (event.key === "Escape" && !dom.overlay.classList.contains("is-hidden")) {
+      event.preventDefault();
+      return;
+    }
   });
 }
 
@@ -1542,7 +1726,15 @@ function validateBindings() {
       const pageId = lineBindings[line.id];
       if (!pageId || !state.pageAssets.has(pageId)) throw new Error(`${line.id} 缺少场景页 ${pageId ?? ""}`);
       for (const zone of line.zones ?? []) {
-        if (!line.raw.includes(zone.text)) throw new Error(`${line.id} 的遮挡区不在原句中`);
+        const start = dialogueZoneStart(line.raw, zone);
+        if (start < 0
+          || start + zone.text.length > line.raw.length
+          || line.raw.slice(start, start + zone.text.length) !== zone.text) {
+          throw new Error(`${line.id} 的遮挡区不在原句中`);
+        }
+        if (Number.isInteger(zone.start) && zone.start < 0) {
+          throw new Error(`${line.id} 的遮挡区起点无效`);
+        }
         if (zone.ending && !endingIds.has(zone.ending)) {
           throw new Error(`${line.id} 引用了未知结局 ${zone.ending}`);
         }
@@ -1624,9 +1816,10 @@ async function load() {
     if (!state.chapters.length || !state.assets.size || !state.pageAssets.size) throw new Error("章节或资产为空");
     validateBindings();
     validateAudioManifest();
+    const debugLocation = parseDebugLocation();
     restoreState();
-    applyDebugLocation();
-    state.debugMode = hasDebugLocation();
+    applyDebugLocation(debugLocation);
+    state.debugMode = debugLocation.active;
     const savedEnding = state.endingId && state.pages.endingPages?.[state.endingId] ? state.endingId : null;
     state.endingId = savedEnding;
     if (!state.debugMode) {

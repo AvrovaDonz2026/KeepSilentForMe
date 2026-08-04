@@ -42,6 +42,22 @@ function copyManifestAssets(sourceRoot, destinationRoot) {
   }
 }
 
+function copyManifestBackgrounds(sourceRoot, destinationRoot) {
+  const manifest = JSON.parse(readFileSync(resolve(sourceRoot, "manifest.json"), "utf8"));
+  for (const [id, relativePath] of Object.entries(manifest.backgrounds ?? {})) {
+    if (typeof relativePath !== "string" || !relativePath) {
+      throw new Error(`Invalid background entry ${id} in ${sourceRoot}/manifest.json`);
+    }
+    const sourcePath = resolve(sourceRoot, relativePath);
+    const destinationPath = resolve(destinationRoot, relativePath);
+    if (!existsSync(sourcePath)) {
+      throw new Error(`Missing runtime background: ${relative(repositoryRoot, sourcePath)}`);
+    }
+    mkdirSync(dirname(destinationPath), { recursive: true });
+    cpSync(sourcePath, destinationPath);
+  }
+}
+
 rmSync(distRoot, { recursive: true, force: true });
 mkdirSync(distRoot, { recursive: true });
 cpSync(resolve(repositoryRoot, "web"), distRoot, { recursive: true });
@@ -55,6 +71,10 @@ for (const file of ["index.html", "js/main.js"]) {
 }
 
 copyManifestAssets(
+  resolve(repositoryRoot, "art", "v4", "playable"),
+  resolve(distRoot, "art", "v4", "playable"),
+);
+copyManifestBackgrounds(
   resolve(repositoryRoot, "art", "v4", "playable"),
   resolve(distRoot, "art", "v4", "playable"),
 );

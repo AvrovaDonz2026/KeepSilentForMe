@@ -124,8 +124,8 @@ edit_page() {
   decode "$response" "$output" | tee -a "$LOG"
 }
 
-S09="${S09:-/home/donz/game/video-storyboard-doomer-1999/generated/S09.png}"
-S11="${S11:-/home/donz/game/video-storyboard-doomer-1999/generated/S11.png}"
+S09="${S09:-}"
+S11="${S11:-}"
 V4="$REPO/storyboard/v4-prop-lock"
 BG_APARTMENT="$REPO/art/bg/BG_apartment.png"
 BG_LIVE="$REPO/art/bg/BG_live.png"
@@ -159,6 +159,9 @@ CREEP_3="$REPO/art/v4/playable/creature/CREEP_3.png"
 NPC_FRIEND="$REPO/art/v4/playable/npc/NPC_friend_door_silhouette.png"
 ENDING_ECHO="$REPO/art/v4/playable/ending/ENDING_echo_overlap.png"
 ENDING_HOLLOW="$REPO/art/v4/playable/ending/ENDING_hollow_proxy.png"
+
+[[ -f "$S09" ]] || { echo "S09 reference is missing; set S09=/path/to/S09.png" >&2; exit 1; }
+[[ -f "$S11" ]] || { echo "S11 reference is missing; set S11=/path/to/S11.png" >&2; exit 1; }
 
 crop_clean_ref "$S09" "$REFS/S09-clean.png" 820
 crop_clean_ref "$S11" "$REFS/S11-clean.png" 820

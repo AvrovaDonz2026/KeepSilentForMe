@@ -1,14 +1,43 @@
-# 台本逻辑漏洞清单
+# 仓库审计报告 / Repository Audit Report
 
-> 审查范围：`台本.md` v1.2 · `script/chapters.json` v1.2.1 · 对照 `schedule.md` §11.8  
-> 日期：2026-08-02  
-> 性质：逻辑 / 叙事 / 数据契约漏洞（非文笔润色意见）
+> 审查范围：完整代码库、数据契约、资产完整性、运行时一致性
+> 日期：2026-08-04
+> 审计者：Claude Opus 5 (1M context)
+> 性质：技术债务、逻辑漏洞、数据一致性、潜在运行时错误
 
 ---
 
-## 严重（会卡流程、定错结局、或实现必踩坑）
+## 审计概要
 
-### I-01 · 第四章结算条件自相矛盾，且存在「双 0 / 双不足」空洞
+**总体评估**：✅ 核心功能可运行，数据完整性良好，存在中等优先级技术债务
+
+**验证通过项**：
+- ✅ 所有 JSON manifest 格式有效
+- ✅ 13 个场景页资产完整存在（1536×1024）
+- ✅ 4 个 BGM 音频文件存在
+- ✅ JavaScript 语法无错误
+- ✅ 场景页验证脚本通过
+- ✅ 35 句台词、140 个 zone 数据完整
+- ✅ Zone 文本全部在 raw 中可定位
+
+**发现问题分类**：
+- 🔴 严重（P0）：7 个 - 会导致逻辑错误或运行时故障
+- 🟡 高（P1）：6 个 - 影响用户体验或叙事完整性
+- 🟢 中（P2）：8 个 - 技术债务或改进建议
+- 🔵 低（P3）：5 个 - 文档或边缘情况
+
+以上数量保留初次审计的优先级分类；当前是否已处理，以各条目标题中的状态标记和文末批次状态为准。
+
+**可行性标记**：`可直接修复` 表示已有明确行为和实现路径；`需设计决策` 表示要先确定
+结算、叙事或媒体规则；`低优先级/非当前缺陷` 表示暂不阻塞 Demo 发布。
+
+---
+
+## 🔴 P0 严重问题（必须修复）
+
+---
+
+### A-01 · [需设计决策] 第四章结算条件自相矛盾，且存在「双 0 / 双不足」空洞
 
 | 来源 | 条件 |
 | --- | --- |
@@ -33,7 +62,7 @@
 
 ---
 
-### I-02 · `L5_S03` 的 `ending_seed`「微调」没有算法
+### A-02 · [需设计决策] `L5_S03` 的 `ending_seed`「微调」没有算法
 
 台本写：
 
@@ -56,7 +85,7 @@ if S03.seed == A and final == B_alienate → 仍 B（或改为 A）  # 必须二
 
 ---
 
-### I-03 · 多出现 zone：`remain` 与「第一次 `indexOf`」错位
+### A-03 · [已修复] 多出现 zone：`remain` 与「第一次 `indexOf`」错位
 
 引擎约定：`raw.indexOf(zone.text)` 定位。下列 zone **文本在 raw 中出现 ≥2 次**，且手写 `remain` **不等于删第一处**：
 
@@ -76,7 +105,7 @@ if S03.seed == A and final == B_alienate → 仍 B（或改为 A）  # 必须二
 
 ---
 
-### I-04 · 第三章 → 第四章叙事因果断裂（缺「被炎上」事件）
+### A-04 · [需设计决策] 第三章 → 第四章叙事因果断裂（缺「被炎上」事件）
 
 时间线：
 
@@ -103,9 +132,90 @@ V3_out 仅「暗示舆论将至」，不能替代一次可玩/可看的事件节
 
 ---
 
-## 高（跨章 flag 空转、规则歧义、体验与文案冲突）
+### A-05 · [需设计决策后实现] Web 运行时未实现 L4 结算逻辑
 
-### I-05 · 跨章 flag 大量只增不读
+**位置**：`web/js/main.js:1004-1011`
+
+```javascript
+function chapterResult(chapter) {
+  if (chapter.id === "L1") {
+    const pass = state.flags.pass ?? 0;
+    const fail = state.flags.fail ?? 0;
+    return pass >= 4 && fail < 2 ? "pass" : "fail";
+  }
+  return "pass";  // ← L4 结算未实现，总是返回 "pass"
+}
+```
+
+**问题**：
+- L4 章节 `apology_perform` / `apology_refuse` 旗标被累积但从未读取
+- `finishChapter()` 中只检查 L1 失败，L4 的重试分支不存在
+- 导致无论玩家如何选择，L4 总是能通过，与台本设计不符
+
+**影响**：玩家无法体验 L4 失败重试，降低游戏难度和叙事张力
+
+**建议**：在 `chapterResult()` 中添加 L4 分支判定，并在 `finishChapter()` 中添加对应的 overlay 逻辑
+
+---
+
+### A-06 · [低优先级/非当前缺陷] 运行时 URL 路径不一致可能导致 404
+
+**位置**：`web/js/main.js:1-7`
+
+```javascript
+const DATA_URL = "../script/chapters.json";
+const PLAYABLE_MANIFEST_URL = "../art/v4/playable/manifest.json";
+const PAGE_MANIFEST_URL = "../art/v4/scenes/manifest.json";
+const AUDIO_MANIFEST_URL = "audio/manifest.json?v=audio-3";  // ← 不一致
+```
+
+**问题**：
+- 前三个 manifest 使用相对路径 `../`（相对于 `web/js/`）
+- 音频 manifest 使用 `audio/`（相对于当前页面）
+- 如果 HTML 不在 `web/` 根目录，音频 manifest 会 404
+- `PLAYABLE_ROOT` 和 `PAGE_ROOT` 也使用 `../` 前缀
+
+**影响**：在某些部署配置下（如子目录部署）可能导致资源加载失败
+
+**建议**：统一所有资源路径为相对于 HTML 的路径，或使用绝对路径
+
+---
+
+### A-07 · [已修复] L3_S04b 的 `remain` 删除了两处文本，违反游戏规则
+
+**位置**：`script/chapters.json:911-952` / `台本.md:504-512`
+
+```json
+{
+  "id": "L3_S04b",
+  "raw": "没有不能见人的朋友，只有不能见人的句子。",
+  "zones": [
+    {
+      "text": "不能见人的",
+      "remain": "没有朋友，只有句子。"  // ← 删除了两处 "不能见人的"
+    }
+  ]
+}
+```
+
+**问题**：
+- `zone.text` = "不能见人的" 在 raw 中出现 2 次
+- `remain` = "没有朋友，只有句子。" 是删除**两处**后的结果
+- 但游戏规则是"只能遮一段连续文字"
+- 正确的机械删除第一处应为："没有朋友，只有不能见人的句子。"
+
+**影响**：破坏游戏物理规则的一致性，玩家可能困惑为何一次遮挡删除了两段文字
+
+**建议**：
+1. 改 `zone.text` 为更长的唯一字符串，如 "没有不能见人的朋友，"
+2. 或修正 `remain` 为 "没有朋友，只有不能见人的句子。"
+3. 或在 JSON 中添加 `occurrence: 2` 明确指定删除第二处
+
+---
+
+## 🟡 P1 高优先级问题
+
+### B-01 · [需设计决策] 跨章 flag 大量只增不读
 
 | flag | 出现章 | 是否进入任何结算/结局 |
 | --- | --- | --- |
@@ -121,7 +231,7 @@ V3_out 仅「暗示舆论将至」，不能替代一次可玩/可看的事件节
 
 ---
 
-### I-06 · 第一章 `pass≥4 且 fail<2` 偏紧，且 `risk` 语义含混
+### B-02 · [需设计决策] 第一章 `pass≥4 且 fail<2` 偏紧，且 `risk` 语义含混
 
 - 7 句各选 1 zone；`pass+` 分布尚可，但随机全选通过率约 **12%**。
 - 多句「正解」只有 1 个 `pass+`，其余为 `fail+` 或 `risk+`。
@@ -132,7 +242,7 @@ V3_out 仅「暗示舆论将至」，不能替代一次可玩/可看的事件节
 
 ---
 
-### I-07 · 第二章结算与 `pass+` 污染
+### B-03 · [已修复] 第二章结算与 `pass+` 污染
 
 - 过关只读 `hate_leak<2`；L2_S02 却出现 `pass+`（面试旗标）。
 - 成功下播后 outro 固定：「刚才那句『有你在』……我是对你说的。」  
@@ -140,7 +250,7 @@ V3_out 仅「暗示舆论将至」，不能替代一次可玩/可看的事件节
 
 ---
 
-### I-08 · 第三章「无完美通关」与关系旗标无反馈
+### B-04 · [需设计决策] 第三章「无完美通关」与关系旗标无反馈
 
 - 设计声明无胜负，正确；但 `trust±` / `distance` / `secret_risk` / `crack` 在 UI 与后续章**零回声**。
 - L3_S05「房间里是有别人」把秘密推到门口，朋友「让我见见」后无解决、无代价，**悬置线**在 L5 也不回收。
@@ -149,7 +259,7 @@ V3_out 仅「暗示舆论将至」，不能替代一次可玩/可看的事件节
 
 ---
 
-### I-09 · 第四章「反噬」叙事 vs 数据
+### B-05 · [需设计决策] 第四章「反噬」叙事 vs 数据
 
 台本：Stage2.5–3，**细条可自爬/预锁**；L4_S02 special：困难下预锁 1.5s；结算台词：「刚才有一条，不是我拖的。」
 
@@ -161,7 +271,7 @@ JSON：仅 `special: parasite_auto_cover` / `prelock_optional`，**无一 zone �
 
 ---
 
-### I-10 · 终局 C / C' 与视频映射
+### B-06 · [需媒体决策] 终局 C / C' 与视频映射
 
 | zone | ending | 视频 |
 | --- | --- | --- |
@@ -174,9 +284,11 @@ JSON：仅 `special: parasite_auto_cover` / `prelock_optional`，**无一 zone �
 
 ---
 
-## 中（局部语句 / 规则边角）
+---
 
-### I-11 · 若干 `remain` 超越「单段连续删除」（叙事物理）
+## 🟢 P2 中等优先级问题
+
+### C-01 · [已修复] 若干 `remain` 超越「单段连续删除」（叙事物理）
 
 在「只遮连续一段」的前提下，下列手写 remain 删多了连接词或第二段，属于**润色越权**（玩法演示尚可，严格逻辑不自洽）：
 
@@ -192,20 +304,20 @@ JSON：仅 `special: parasite_auto_cover` / `prelock_optional`，**无一 zone �
 
 ---
 
-### I-12 · L2_S03 半遮逻辑听感破裂（可接受的 fail，但无 fail flag）
+### C-02 · [需文案决策] L2_S03 半遮逻辑听感破裂（可接受的 fail，但无 fail flag）
 
 遮 `只是我唱的时候心里在骂人，` → remain「你们要我唱歌也可以，**嘴上不会**。」  
 弹幕「嘴上不会啥」挂 `risk+`，合理；但同句完整遮才 `mask+`。教学上 OK，不影响结算。
 
 ---
 
-### I-13 · L1 录取后立刻「缺钱直播」
+### C-03 · [需文案决策] L1 录取后立刻「缺钱直播」
 
 叙事可解释为「尚未入职 / 试用无薪」，但台本未给一句时间锚（「入职前最后一晚」等），部分玩家会问：面试都过了为什么还在乞播。
 
 ---
 
-### I-14 · 反转文案与操作直觉的张力（非硬 bug）
+### C-04 · [需文案决策] 反转文案与操作直觉的张力（非硬 bug）
 
 玩法：遮住 = 不出口 / 喂给体；留下 = 对外说。  
 `V_RV`：「**被遮住的，是她说出口的**」「屏幕上留下的，是给外界的字幕」。
@@ -214,7 +326,96 @@ JSON：仅 `special: parasite_auto_cover` / `prelock_optional`，**无一 zone �
 
 ---
 
-### I-15 · 体量与编号
+### C-05 · [已修复] L3_S05 多出现 zone 的 note 说「末」但实际是哪一处不明确
+
+**位置**：`script/chapters.json:955-998` / `台本.md:516-527`
+
+```json
+{
+  "id": "L3_S05",
+  "raw": "房间里是有别人，但不是你想象的那种别人。",
+  "zones": [
+    {
+      "text": "别人",
+      "note": "末"  // ← 标注为"末"
+    }
+  ]
+}
+```
+
+**问题**：
+- `别人` 在句中出现 2 次："有**别人**" 和 "那种**别人**"
+- note 写 "末" 指第二处，但 JSON 没有 `occurrence: 2` 字段
+- 运行时 `indexOf()` 会匹配**第一处**
+- 导致遮挡位置与设计意图不符
+
+**影响**：玩家遮挡的是 "有别人"，但策划想让玩家遮 "那种别人"
+
+**建议**：
+1. 添加 `occurrence: 2` 明确指定第二次出现
+2. 或改 `zone.text` 为 "那种别人" 使其唯一
+3. 更新 `buildDialogue()` 函数支持 `occurrence` 字段（当前已支持，但 JSON 未使用）
+
+---
+
+### C-06 · [需设计决策] `risk+` 旗标用途不明确
+
+**统计**：39 个 zone 使用 `risk+`，是所有旗标中最多的
+
+**问题**：
+- `risk+` 在任何结算逻辑中都未被读取（L1, L4, 终局均不使用）
+- 台本总则未定义 `risk` 的语义
+- 从 NPC 反馈看，`risk` 似乎表示"语句异常但不算完全失败"
+- 但无数值 UI，玩家无法感知累积效果
+
+**影响**：玩家选择了 `risk+` zone 后无法得知后果，削弱选择的意义
+
+**建议**：
+1. 明确定义 `risk` 在结算中的作用（如 L1: `risk >= 3` 算软失败）
+2. 或将 `risk` 改为纯叙事标签，不参与逻辑判断
+3. 在文档中说明当前 `risk` 仅用于记录
+
+---
+
+### C-07 · [已修复] 音频设置面板缺少可访问性标签
+
+**位置**：`web/index.html:56-86`
+
+**问题**：
+- 音量滑块缺少 `aria-label` 或 `aria-labelledby`
+- `<output>` 元素未使用 `aria-live` 通知屏幕阅读器音量变化
+- 面板关闭按钮只有 `×` 符号，缺少明确的文本标签
+
+**影响**：屏幕阅读器用户难以使用音频设置
+
+**建议**：
+1. 为 `<input type="range">` 添加 `aria-valuetext` 动态描述当前值
+2. 为 `<output>` 添加 `aria-live="polite"`
+3. 关闭按钮的 `aria-label` 已有，但可以改进描述
+
+---
+
+### C-08 · [已修复] 代码中存在硬编码的魔法数字
+
+**示例**：
+- `web/js/main.js:781`：`window.innerWidth * 0.62` - 黑条休息位置
+- `web/js/main.js:824`：`Math.max(150, target.rect.width * 0.86)` - 可达距离
+- `web/js/main.js:12`：`650` - BGM 淡入淡出时间
+
+**问题**：这些数值缺少命名常量，难以调整和维护
+
+**建议**：提取为具名常量，如：
+```javascript
+const BAR_REST_POSITION_X_RATIO = 0.62;
+const BAR_REST_POSITION_Y_MAX_VH = 0.44;
+const ZONE_REACHABLE_MIN_DISTANCE = 150;
+```
+
+---
+
+## 🔵 P3 低优先级问题
+
+### D-01 · [低优先级/说明项] 体量与编号
 
 - 可遮句 35：L0:1 + L1–L4:7×4 + L5:6 = 35，与总表一致。
 - L3 可遮 id 为 S01–S03、**S04b**、S05–S07（S04 不可遮），导出/统计时勿当成缺 S04。
@@ -232,26 +433,320 @@ JSON：仅 `special: parasite_auto_cover` / `prelock_optional`，**无一 zone �
 
 ---
 
+### D-02 · [已修复] 文档不一致速查
+
+| 主题 | 台本.md | schedule.md / 实现手册 | chapters.json |
+| --- | --- | --- | --- |
+| L4 结算 | ≥2 或混线 | ≥1 且比大小 | objective 写 ≥2，无机器可执行 settlement 块 |
+| L5 seed | 要微调 | 不提 | 有字段无语义 |
+| 跨关 flag | 总则强调 | 多数不进 §11.8 表 | 只累加 |
+| L3 目标 | 记关系偏移 | 无胜负必播 V3 | 同左 |
+
+---
+
+### D-03 · [已验证/非缺陷] 资产清单验证通过
+
+**场景页（13 张）**：
+- ✅ `PAGE_L0_desk.png` (2.6M)
+- ✅ `PAGE_L1_interview.png` (2.7M)
+- ✅ `PAGE_L2_live.png` (2.6M)
+- ✅ `PAGE_L2_fed.png` (2.2M)
+- ✅ `PAGE_L3_door_default.png` (2.7M)
+- ✅ `PAGE_L3_door_hesitant.png` (2.4M)
+- ✅ `PAGE_L4_apology.png` (2.2M)
+- ✅ `PAGE_L4_break.png` (2.6M)
+- ✅ `PAGE_L5_empty.png` (2.3M)
+- ✅ `PAGE_L5_poster.png` (2.1M)
+- ✅ `PAGE_END_A_separate.png` (2.5M)
+- ✅ `PAGE_END_B_alienate.png` (2.3M)
+- ✅ `PAGE_END_C_hollow.png` (2.7M)
+
+**BGM 音频（4 首）**：
+- ✅ `rain-room.mp3` - 雨夜环境 (323.89s, CC0)
+- ✅ `live-pressure.mp3` - 直播压迫 (312.76s, CC0)
+- ✅ `hollow-hope.mp3` - 终局余响 (182.89s, CC0)
+- ✅ `door-tension.mp3` - 门厅悬疑 (181.39s, CC0)
+
+**JSON 清单**：
+- ✅ `script/chapters.json` - 6 章节 35 句台词 140 zones
+- ✅ `art/v4/scenes/manifest.json` - 13 场景页 + 6 章绑定 + 4 结局页
+- ✅ `art/v4/playable/manifest.json` - V4 可玩资产包（未启用）
+- ✅ `web/audio/manifest.json` - 4 音轨 + 章节/结局绑定
+
+---
+
+### D-04 · [已验证/非缺陷] 运行时验证状态
+
+**验证通过**：
+- ✅ Python 场景验证脚本：`OK: 13 scene pages, 6 chapters, 4 endings`
+- ✅ JavaScript 语法检查：无错误
+- ✅ 所有 JSON manifest 格式验证通过
+- ✅ Zone 文本全部在 raw 句中可定位（无孤立 zone）
+- ✅ GitHub Pages 最新部署成功
+- ✅ Tauri CI Windows/Linux 打包成功
+
+**已知限制**：
+- 🟡 关末视频（V0_out 到 V_RV）未实现
+- 🟡 外部 SFX/配音未接入
+- 🟡 L2/L3/L4 旗标结算逻辑部分缺失
+- 🟡 反噬自动遮挡机制未实现
+
+---
+
+### D-05 · [已验证/非缺陷] 旗标使用统计
+
+基于 `script/chapters.json` 的 140 个 zone 统计：
+
+| 旗标 | 出现次数 | 用途 | 是否参与结算 |
+|------|---------|------|-------------|
+| `risk+` | 39 | 异常/犹豫选项 | ❌ 未读取 |
+| `crack+` | 18 | 关系裂缝 | ❌ L3 记录未用 |
+| `control+` | 13 | 被控制感 | ❌ 未读取 |
+| `truth+` | 12 | 露出真实 | ❌ 未读取 |
+| `bond+` | 11 | 对消音依赖 | ❌ 未读取 |
+| `hate_leak+` | 11 | 直播厌恶外泄 | ✅ L2 结算 |
+| `pass+` | 11 | 面试通过分 | ✅ L1 结算 |
+| `mask+` | 10 | 表演/讨好 | ❌ 未读取 |
+| `fail+` | 9 | 面试失败分 | ✅ L1 结算 |
+| `secret_risk+` | 6 | 秘密暴露风险 | ❌ L3 记录未用 |
+| `apology_refuse+` | 5 | 道歉硬刚 | ⚠️ L4 累积但未结算 |
+| `apology_perform+` | 4 | 道歉表演 | ⚠️ L4 累积但未结算 |
+| `distance+` | 4 | 朋友距离 | ❌ L3 记录未用 |
+| `trust-` | 4 | 朋友不信任 | ❌ L3 记录未用 |
+| `trust+` | 2 | 朋友信任 | ❌ L3 记录未用 |
+| `revolt+` | 1 | 被反噬 | ❌ 未读取 |
+
+**结论**：140 个旗标中只有 31 个（22%）参与实际结算逻辑，78% 的旗标仅用于记录。
+
+---
+
 ## 建议修复优先级
 
-| 优先级 | 项 | 理由 |
-| --- | --- | --- |
-| P0 | I-01 L4 结算 | 直接决定能否出关、播哪条视频 |
-| P0 | I-03 多出现 zone | 运行时遮错字 / remain 错位 |
-| P0 | I-02 ending_seed | 结局判定歧义 |
-| P1 | I-04 炎上因果 | 第四章动机空洞 |
-| P1 | I-09 反噬兑现 | 关末台词可信度 |
-| P2 | I-05 / I-08 flag 消费或降级声明 | 避免假系统 |
-| P2 | I-06 L1 难度与重来范围 | 教学关体验 |
-| P3 | I-11 remain 物理、I-13 时间锚、I-14 反转措辞 | 打磨 |
+> 下表是初次审计时的排序记录；已修复项仍保留在表中用于追溯，当前待处理范围见文末批次状态。
+
+| 优先级 | 问题编号 | 标题 | 理由 |
+|--------|---------|------|------|
+| 🔴 P0 | A-01 | 第四章结算条件矛盾 | 直接决定能否出关、播哪条视频 |
+| 🔴 P0 | A-03 | 多出现 zone 错位 | 运行时遮错字 / remain 错位 |
+| 🔴 P0 | A-05 | L4 结算逻辑未实现 | 游戏规则未完成 |
+| 🔴 P0 | A-07 | L3_S04b 违反游戏规则 | 破坏物理规则一致性 |
+| 🔴 P0 | A-02 | ending_seed 无算法 | 结局判定歧义 |
+| 🔴 P0 | A-04 | L3→L4 因果断裂 | 第四章动机空洞 |
+| 🔴 P0 | A-06 | URL 路径不一致 | 可能导致 404 |
+| 🟡 P1 | B-01 | 跨章 flag 空转 | 78% 旗标未被消费 |
+| 🟡 P1 | B-02 | L1 难度与 risk 语义 | 教学关体验 |
+| 🟡 P1 | B-03 | L2 pass+ 污染 | 结算旗标污染 |
+| 🟡 P1 | B-04 | L3 关系旗标无反馈 | 系统完整性 |
+| 🟡 P1 | B-05 | 反噬叙事未兑现 | 关末台词可信度 |
+| 🟡 P1 | B-06 | 终局 C/C' 映射 | 视频资源清晰度 |
+| 🟢 P2 | C-01 | remain 超越删除规则 | 叙事物理一致性 |
+| 🟢 P2 | C-02 | L2_S03 听感破裂 | 边缘体验 |
+| 🟢 P2 | C-03 | L1→L2 时间锚缺失 | 叙事连贯性 |
+| 🟢 P2 | C-04 | 反转文案张力 | 元叙事清晰度 |
+| 🟢 P2 | C-05 | L3_S05 note 不明确 | 实现细节 |
+| 🟢 P2 | C-06 | risk+ 用途不明 | 系统透明度 |
+| 🟢 P2 | C-07 | 无障碍标签缺失 | 可访问性 |
+| 🟢 P2 | C-08 | 魔法数字硬编码 | 代码可维护性 |
+| 🔵 P3 | D-01 | 体量与编号说明 | 文档完整性 |
+| 🔵 P3 | D-02 | 文档不一致 | 开发协同 |
 
 ---
 
 ## 审查方法摘要
 
-- 全文对照台本字段与 `script/chapters.json`（35 句 / 140 zone）。
-- 校验每条 `zone.text ∈ line.raw`；标记多出现与 remain 非第一处删除。
-- 枚举 L1/L4 每句 4 选 1 的 flag 可达性（\(4^7=16384\)）。
-- 对照 `schedule.md` §11.8 结算表与台本结算节差异。
+**数据完整性验证**：
+- 全文对照 `台本.md` v1.2 与 `script/chapters.json` v1.2.1（35 句 / 140 zone）
+- 校验每条 `zone.text ∈ line.raw`；标记多出现与 remain 非第一处删除
+- 验证 13 个场景页 PNG 文件存在且尺寸正确（1536×1024）
+- 验证 4 个 BGM MP3 文件存在且 manifest 绑定完整
 
-（本文件只列问题，不直接改台本；确认修复策略后再改 `台本.md` / JSON / schedule 三处对齐。）
+**逻辑完整性验证**：
+- 枚举 L1/L4 每句 4 选 1 的 flag 可达性（4^7=16384 种组合）
+- 对照 `schedule.md` §11.8 结算表与台本结算节差异
+- 检查运行时代码 `web/js/main.js` 中的结算逻辑实现
+- 交叉验证 manifest 绑定与实际资产文件
+
+**代码质量验证**：
+- JavaScript 语法检查（`node --check`）
+- JSON 格式验证（`python -m json.tool`）
+- Python 场景验证脚本（`art/v4/scenes/validate.py`）
+- URL 路径一致性检查
+
+---
+
+## 结论与建议
+
+### 总体状态
+《请替我沉默》Demo 的**核心玩法循环完整且可运行**，数据资产完备，但存在**中等规模的技术债务**需要在正式发布前解决。
+
+### 待设计行动项（发布前仍需确认）
+1. **统一 L4 结算规则**并实现运行时逻辑（A-01, A-05）
+2. **明确 ending_seed 算法**或移除该特性（A-02）
+3. **补充 L3→L4 因果事件**（A-04）
+4. **评估非 `/web/` 根路径部署策略**（A-06，当前 `/web/` 入口已验证）
+
+### 短期改进项（提升体验）
+1. 消费或明确标注未使用的 78% 旗标（B-01）
+2. 实现反噬自动遮挡机制（B-05）
+3. 调整 L1 难度或明确 risk 语义（B-02）
+
+### 长期优化项（技术债务）
+1. 消费或明确标注未使用的关系旗标（B-01、B-04、C-06）
+2. 补齐反噬与终局媒体规则（B-05、B-06）
+3. 为 Tauri WebView 增加最小 CSP（R-12）
+
+**审计完成时间**：2026-08-04
+**下次审计建议**：关末视频接入后、正式发布前
+
+---
+
+## 2026-08-04 增量审计：运行时与发布链
+
+> 本节只补充本次代码、浏览器烟测和产物组装中确认的新问题；上方既有 A-D 条目保留不改。
+
+### R-01 · P1 · [已修复] `Esc` 关闭章节覆盖层后游戏卡死
+
+**位置**：`web/js/main.js:1269-1272,1504-1512`
+
+章节或结局覆盖层出现时，`Esc` 会调用 `hideOverlay()`，但不会清除上一句吸附留下的
+`state.locked = true`。覆盖层消失后，黑条仍有 `is-locked` 和 `pointer-events: none`，
+而 `overlayAction` 已被清空，玩家无法继续，只能重启或按 `R`。
+
+**复现**：完成任一 L0-L4 末句，在“段落结束”覆盖层按 `Esc`，再拖动黑条。
+
+**建议**：覆盖层关闭时恢复可继续状态，或章节覆盖层禁止 `Esc` 关闭；结局覆盖层则应明确
+只允许“重新开始”。
+
+### R-02 · P1 · [需设计决策后实现] L2 的 `hate_leak` 目标没有运行时结算
+
+`script/chapters.json` 声明 L2 目标为 `hate_leak<2`，否则应进入事故/重来分支；但
+`web/js/main.js:1004-1011` 的 `chapterResult()` 只实现 L1，`finishChapter()` 也只处理
+L1 失败。L2 无论累计多少 `hate_leak+` 都会正常进入 L3，旗标只写入存档而不产生结果。
+
+**建议**：实现 L2 结算和重试，或从章节 JSON 和文档中删除该目标，避免“可玩的规则”和实际
+流程不一致。
+
+### R-03 · P1 · [已修复] 调试 URL 会继承存档的旧行号
+
+`restoreState()` 先恢复 `lineIndex`，`applyDebugLocation()` 在只有 `chapter` 参数时只改
+`chapterIndex`（`web/js/main.js:1316-1344`），不会把行号重置为 0。已有存档停在 L5_S05
+时访问 `/web/?chapter=L3` 会打开 L3_S05；行号超过 L3 长度时则直接进入章节结束逻辑。
+未知章节参数也会让页面跳过封面并回退到存档状态。
+
+**建议**：`chapter` 参数存在且没有显式 `line` 时将 `lineIndex` 设为 0，并对未知 chapter/line
+返回可见错误或保留封面。
+
+### R-04 · P1 · [已修复] 选项提交不是原子存档，刷新可重复计数
+
+`applySelection()` 在 `web/js/main.js:905-924` 先把 flags 和 `eatLog` 写入存档，再通过
+`setTimeout` 延迟推进 `lineIndex`。玩家在约 1 秒窗口内刷新或关闭页面，恢复后仍停在同一句，
+但旗标和吞字记录已经存在；再次选择会重复累计。重启按钮或 `R` 也不会取消旧的延迟回调，
+可能让旧回调推进新的一局。
+
+**建议**：持久化 pending selection/token 并在恢复时完成或回滚，或把“选项结果 + 行号”一次性
+提交；重启时统一清理所有推进计时器。
+
+### R-05 · P2 · [已修复] 禁用 `localStorage` 时启动失败
+
+`restoreAudioSettings()` 和 `restoreState()` 的 `catch` 中再次调用 `localStorage.removeItem`
+（`web/js/main.js:223-239,1316-1335`）。在隐私模式或浏览器策略禁止存储时，第一次
+`getItem()` 已抛 `SecurityError`，清理调用会再次抛出并使 `load()` 显示致命错误页；`resetRun()`
+也未保护 `removeItem()`。
+
+**建议**：封装安全的读写/删除 helper；存储不可用时降级为无存档运行，而不是阻止游戏启动。
+
+### R-06 · P2 · [已修复] 小屏直播滚屏与台词框重叠
+
+在 520px 以下，`web/css/style.css:391,405-406` 同时设置台词框最小高度 246px、滚屏顶部
+190px 和滚屏最小高度 160px。浏览器 320×568 烟测中，滚屏最后几条评论和黑条落入台词框区域，
+遮挡评论及交互反馈。
+
+**建议**：用剩余可视高度计算滚屏高度，或在小屏将滚屏移到台词框上方并缩短最小高度；补充
+320×568 和横屏移动端截图验收。
+
+### R-07 · P2 · [已修复] Pages/Tauri 产物缺少 manifest 声明的旧背景
+
+`art/v4/playable/manifest.json:21-27` 的 `backgrounds` 指向 `../../bg/BG_*.png`，但
+`.github/workflows/deploy-pages.yml:46-50` 和 `scripts/prepare-tauri.mjs:57-64` 都只复制
+manifest 的 `assets[]`，不会复制 `art/bg/`。实测 `npm run tauri:prepare` 后，五个
+`dist/tauri/art/bg/BG_*.png` 均不存在。当前整页 Demo 不读取这些路径，但任何 legacy/fallback
+消费者都会在发布包中收到 404，manifest 也因此不是自包含的。
+
+**建议**：要么从发布 manifest 删除旧背景声明，要么把 `art/bg/` 纳入两个产物并在 CI 校验
+`backgrounds` 路径。
+
+### R-08 · P2 · [已修复] Tauri 构建没有 `Cargo.lock`
+
+`src-tauri/Cargo.lock` 不在仓库中，CI 使用 `dtolnay/rust-toolchain@stable`，而
+`tauri`/`tauri-build` 依赖按 semver 范围重新解析。相同提交在未来可能解析到不同依赖，导致
+桌面构建不可复现或突然失败。
+
+**建议**：提交桌面应用的 `Cargo.lock`，CI 使用 `cargo build --locked` 或等价的 Tauri 构建参数，
+并固定 Rust 工具链版本。
+
+### R-09 · P2 · [已修复] 资产生成入口泄露本地密钥约定且不可跨环境运行
+
+当前 `storyboard/v4-prop-lock/gen_v4.sh:6`、归档 `archive/art-v1/gen_art.sh:6` 和
+`archive/storyboard/demo-effects/gen_demo.sh:4` 在环境变量缺失时读取 `/tmp/opencode/api_key.txt`，
+与仓库的“密钥只从进程环境读取”约定冲突；同时这些脚本以及
+`art/v4/scenes/generate_pages.sh:127-128` 硬编码了
+`/home/donz/game/video-storyboard-doomer-1999/generated/S09.png` 和 `S11.png`，其他机器会直接失败。
+
+**建议**：只接受 `OPENAI_API_KEY`，参考图路径改为可配置变量并在调用前显式检查存在性。
+
+### R-10 · P2 · [已修复] Tauri CI 的质量门槛低于 Pages
+
+`.github/workflows/build-tauri.yml:55-56` 只验证音频；Pages 工作流才运行场景页校验。Tauri 的
+`beforeBuild` 会组装文件，但不会检查 page bindings、PNG 尺寸或可玩 manifest 语义，因此桌面包
+可能包含 Pages 会拒绝的坏资源。
+
+**建议**：在 Tauri workflow 也安装 Pillow 并运行场景/可玩资产校验，或对 `dist/tauri` 执行同等
+manifest 验证。
+
+### R-11 · P2 · [已修复] CI action 与工具链版本可漂移
+
+两个 workflow 使用可变的 `@v1/@v4/@v5` action、`rust-toolchain@stable` 和 `node-version: lts/*`。
+这会让构建结果受上游 tag 移动、Node LTS 切换或 Rust 更新影响，也扩大供应链风险。
+
+**建议**：对关键 action 使用 commit SHA，固定 Node/Rust 版本，并在升级时单独提交变更。
+
+### R-12 · P3 · [低优先级加固] Tauri WebView 未设置 CSP
+
+`src-tauri/tauri.conf.json:22-24` 将 `app.security.csp` 设为 `null`。当前资源是本地静态文件，
+风险有限；但若未来引入外部内容或动态 HTML，打包 WebView 没有 CSP 防线。
+
+**建议**：在不阻断本地资源的前提下设置最小 `default-src 'self'` 策略，并为需要的音频/图片源显式
+放行。
+
+### R-13 · P2 · [已修复] 存档索引和空存档缺少边界校验
+
+`restoreState()`（`web/js/main.js:1323-1327`）只对 `chapterIndex` 做上界限制，没有限制下界
+或整数性；手工写入 `-1`、小数或超大值的存档会让 `currentChapter()` 变成空值或跳到错误章节。
+即使存档只有 `{}`，也会被标记为 `hasSave = true`，标题页会错误显示“继续游戏”。
+
+**建议**：统一把章节/行号解析为有限整数并 clamp 到有效范围；校验失败时丢弃存档并回退为新游戏。
+
+### 增量审计复核
+
+- `python3 art/v4/scenes/validate.py`：通过（13 pages / 6 chapters / 4 endings）
+- `python3 art/v4/playable/validate.py`：通过（55 assets，0 errors，5 existing warnings）
+- `node scripts/validate-audio.mjs`：通过（4 tracks / 6 chapters / 4 endings）
+- `node --check web/js/main.js`：通过
+- `npm run tauri:prepare`：通过，五个旧背景路径已随产物复制并可解析
+- Chrome 1440×900、390×844、320×568：页面可加载；小屏滚屏已与台词框分离
+
+### 既有条目复核说明
+
+上方 A-06 将相对 URL 差异直接定为 P0，但仓库约定的 `/web/` 入口在 Pages 和本地静态服务器
+上已验证可加载；Tauri 组装脚本也会重写 `../art/` 与 `../script/`。该项更适合作为“页面被搬到
+其他目录时的可移植性风险”，不应与 R-07 的实际发布包资源缺失混为同一故障。
+
+### 直接修复批次状态（2026-08-04）
+
+- 已处理：A-03、A-07、B-03、C-01、C-05、C-07、C-08、D-02、R-01、R-03 至 R-11、R-13。
+- 新增 `scripts/validate-chapters.mjs`，并纳入 Pages/Tauri CI；`remainMode: mechanical` 只在
+  数据校验脚本中严格检查，运行时仍允许叙事文案保留标点重组。
+- 已验证：`node --check`、章节/音频/场景/playable 校验、`npm run tauri:prepare`、Pages/Tauri
+  workflow YAML 解析、桌面与 320×568 移动端浏览器冒烟。
+- 未处理：A-01、A-02、A-04、A-05、B-01、B-02、B-04、B-05、B-06、C-02 至 C-04、C-06、R-02；
+  这些条目仍需要结算、文案或媒体规则决策。R-12 CSP 继续作为后续安全加固项。

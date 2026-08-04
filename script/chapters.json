@@ -181,8 +181,9 @@
           "face": "紧张",
           "zones": [
             {
-              "text": "其实没什么经验，而且我经常会说错话，",
+              "text": "其实没什么经验，而且我经常会说错话，但我",
               "remain": "我真的很需要这份工作。",
+              "remainMode": "mechanical",
               "npc": "态度诚恳，可以。",
               "flags": [
                 "pass+"
@@ -191,8 +192,9 @@
               "note": "教学正解"
             },
             {
-              "text": "真的很需要这份工作",
-              "remain": "我其实没什么经验，而且我经常会说错话。",
+              "text": "但我真的很需要这份工作。",
+              "remain": "我其实没什么经验，而且我经常会说错话，",
+              "remainMode": "mechanical",
               "npc": "那我们很难录用。",
               "flags": [
                 "fail+"
@@ -200,8 +202,9 @@
               "eat": "很需要这份工作"
             },
             {
-              "text": "经常会说错话，",
+              "text": "而且我经常会说错话，",
               "remain": "我其实没什么经验，但我真的很需要这份工作。",
+              "remainMode": "mechanical",
               "npc": "经验可以培养。",
               "flags": [
                 "pass+"
@@ -485,14 +488,14 @@
               "remain": "我直播是因为缺钱，但我会好好说话。",
               "npc": "懂了",
               "flags": [
-                "pass+",
                 "truth+"
               ],
               "eat": "不是因为喜欢你们"
             },
             {
-              "text": "因为缺钱，",
+              "text": "是因为缺钱，",
               "remain": "我直播不是因为喜欢你们，但我会好好说话。",
+              "remainMode": "mechanical",
               "npc": "下头",
               "flags": [
                 "hate_leak+"
@@ -535,7 +538,8 @@
             },
             {
               "text": "心里在骂人，嘴上不会",
-              "remain": "你们要我唱歌也可以。",
+              "remain": "你们要我唱歌也可以，只是我唱的时候。",
+              "remainMode": "mechanical",
               "npc": "好哦唱歌",
               "flags": [
                 "mask+"
@@ -933,7 +937,9 @@
             },
             {
               "text": "不能见人的",
-              "remain": "没有朋友，只有句子。",
+              "remain": "没有朋友，只有不能见人的句子。",
+              "remainMode": "mechanical",
+              "occurrence": 1,
               "npc": "你到底行不行。",
               "flags": [
                 "crack+"
@@ -993,6 +999,7 @@
                 "risk+"
               ],
               "eat": "别人",
+              "occurrence": 2,
               "note": "末"
             }
           ]
@@ -1669,8 +1676,9 @@
           "face": "空白",
           "zones": [
             {
-              "text": "我只能问你饿不饿",
-              "remain": "如果你是人，我会问你爱不爱我。",
+              "text": "我只能问你饿不饿。",
+              "remain": "如果你是人，我会问你爱不爱我；你是消音，",
+              "remainMode": "mechanical",
               "npc": "",
               "flags": [
                 "truth+",

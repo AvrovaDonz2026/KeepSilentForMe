@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "请替我沉默 desktop application"
 authors = ["Avrova Donz"]
 edition = "2021"
-rust-version = "1.77.2"
+rust-version = "1.88.0"
 
 [lib]
 name = "keep_silent_for_me_lib"

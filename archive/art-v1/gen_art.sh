@@ -2,14 +2,16 @@
 # Production art batch for 请替我沉默
 # Usage: ./gen_art.sh all | bg | char | creature | face | ui | BG_apartment | ...
 set -euo pipefail
-API="${API:-https://api.qingyuntop.top/v1}"
-KEY="${OPENAI_API_KEY:-$(cat /tmp/opencode/api_key.txt)}"
+API="${OPENAI_BASE_URL:-${API:-https://api.qingyuntop.top/v1}}"
+API="${API%/}"
+[[ "$API" == */v1 ]] || API="$API/v1"
+KEY="${OPENAI_API_KEY:-}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$SCRIPT_DIR/../.." && pwd)"
 ROOT="$SCRIPT_DIR"
 SB="$REPO/storyboard"
-S09="/home/donz/game/video-storyboard-doomer-1999/generated/S09.png"
-S11="/home/donz/game/video-storyboard-doomer-1999/generated/S11.png"
+S09="${S09:-}"
+S11="${S11:-}"
 R0="$SB/v4-prop-lock/masters/R0-master-room.png"
 R0b="$SB/v4-prop-lock/masters/R0b-street-from-window.png"
 R0c="$SB/v4-prop-lock/masters/R0c-desk-props.png"
@@ -24,7 +26,10 @@ SIZE="${SIZE:-1536x1024}"
 QUALITY="${QUALITY:-medium}"
 MODEL="${MODEL:-gpt-image-2}"
 mkdir -p "$ROOT"/{bg,char,face,creature,ui,prompts,_json,gen}
-export OPENAI_API_KEY="$KEY"
+if [[ -z "$KEY" ]]; then
+  echo "OPENAI_API_KEY is required; keys are read only from the process environment." >&2
+  exit 2
+fi
 log(){ echo "[$(date +%H:%M:%S)] $*" | tee -a "$ROOT/gen/gen.log"; }
 
 decode(){
