@@ -14,6 +14,27 @@
 - Kling 没有 H3 的 `detailed-prompt` 或独立 negative prompt；每条提示已经把最重要的
   禁止项写入正文，`COMMON_SINGLE_SCENE.txt` 供复核或复制时放在正文最前面。
 
+## Kling 3 Omni 参考图
+
+`manifest.json` 的 `omni` 区块为同一批 22 个镜头提供参考照片槽位：`image_1` 永远是
+整页首帧，`image_2` 至 `image_7` 只用于角色、表情、朋友剪影、消音体或特效材质参考。
+提示词前必须追加 `OMNI_REFERENCE_PREFIX.txt`，它会明确“图片1/图片2”的优先级和禁止
+复制辅助图背景的规则。辅助图不是第二个镜头，也不能覆盖图片1的空间构图。
+
+```bash
+PATH=/home/donz/.npm-global/bin:$PATH kling image_to_video \
+  --model kling-video-v3_0_omni \
+  --image art/v4/scenes/pages/PAGE_L0_desk.png \
+  --image art/v4/playable/char/CHAR_sleeve_press.png \
+  --duration 5 --resolution 1080p --aspect_ratio 16:9 \
+  --prefer_multi_shots false --enable_audio false \
+  "$(cat video/prompts/kling/OMNI_REFERENCE_PREFIX.txt video/prompts/kling/K01_L0_ink.txt)"
+```
+
+当前服务端对 `kling-video-v3_0_omni` 的 `image_to_video` 只声明了 `image_1` 到
+`image_7`，没有视频文件参考输入。若要参考已有 MP4，先抽取一张代表帧作为 `image_N`
+并在提示词中说明它只是材质/动作参考；不能把 MP4 路径或伪造的“视频1”写进 prompt。
+
 ## 文件与末帧
 
 `manifest.json` 中每个资产只配置一个 `firstFrame`，输出应以单场景动作为主。终局页

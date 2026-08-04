@@ -20,6 +20,8 @@
 - `prompts/minimax-h3/README.md`：生成顺序、参数建议和验收规则。
 - `prompts/kling/manifest.json`：22 个可灵单场景镜头、首帧、时长和输出名。
 - `prompts/kling/*.txt`：可直接粘贴到 Kling `image_to_video` 的单镜头提示词。
+- `prompts/kling/OMNI_REFERENCE_PREFIX.txt`：Kling 3 Omni 的图片1-7引用规则；manifest 的
+  `omni.references` 为每条镜头登记角色、表情、消音体和特效参考照片。
 - `prompts/kling/README.md`：可灵参数、生成顺序和镜头分组说明。
 - `generated/README.md`：当前已生成 MP4 的逐帧复盘和重试记录；MP4 本身被 `.gitignore` 忽略。
 - `node scripts/validate-video-prompts.mjs`：检查提示词、首末帧和输出路径。
