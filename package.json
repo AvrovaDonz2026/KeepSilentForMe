@@ -7,7 +7,9 @@
     "tauri": "tauri",
     "tauri:prepare": "node scripts/prepare-tauri.mjs",
     "tauri:icons": "tauri icon src-tauri/icons/app-icon.svg",
-    "tauri:build": "tauri build"
+    "tauri:build": "tauri build",
+    "validate:chapters": "node scripts/validate-chapters.mjs",
+    "validate:video-prompts": "node scripts/validate-video-prompts.mjs"
   },
   "devDependencies": {
     "@tauri-apps/cli": "2.11.4"

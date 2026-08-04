@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "hardLock": "video/prompts/minimax-h3/COMMON_HARD_LOCK.txt",
+  "negativePrompt": "video/prompts/minimax-h3/COMMON_NEGATIVE.txt",
+  "alternatives": [
+    {
+      "id": "V0_out_single_room",
+      "prompt": "video/prompts/minimax-h3/V0_out_single_room.txt",
+      "baseVideo": "V0_out",
+      "useWhen": "跨到门口或冷白会议室时出现换脸、换房或跳帧"
+    },
+    {
+      "id": "V1_pass_single_room",
+      "prompt": "video/prompts/minimax-h3/V1_pass_single_room.txt",
+      "baseVideo": "V1_pass",
+      "useWhen": "跨场景转场导致会议室道具和人物身份漂移"
+    },
+    {
+      "id": "V2_out_creature_focus",
+      "prompt": "video/prompts/minimax-h3/V2_out_creature_focus.txt",
+      "baseVideo": "V2_out",
+      "useWhen": "Stage2 不能稳定聚拢或生成了五官"
+    },
+    {
+      "id": "V3_out_door_lock",
+      "prompt": "video/prompts/minimax-h3/V3_out_door_lock.txt",
+      "baseVideo": "V3_out",
+      "useWhen": "门锁动作不稳定或模型擅自生成新走廊"
+    },
+    {
+      "id": "V4_perform_stack",
+      "prompt": "video/prompts/minimax-h3/V4_perform_stack.txt",
+      "baseVideo": "V4_perform",
+      "useWhen": "Stage3 成长过快、变成真人或遮挡房间"
+    },
+    {
+      "id": "V4_refuse_cable",
+      "prompt": "video/prompts/minimax-h3/V4_refuse_cable.txt",
+      "baseVideo": "V4_refuse",
+      "useWhen": "红色噪波被生成成霓虹或弹幕文字"
+    },
+    {
+      "id": "V5_C_cold_mirror",
+      "prompt": "video/prompts/minimax-h3/V5_C_cold_mirror.txt",
+      "baseVideo": "V5_C",
+      "useWhen": "C_cold 需要更明确的无脸镜面结尾"
+    },
+    {
+      "id": "V_RV_layer_swap",
+      "prompt": "video/prompts/minimax-h3/V_RV_layer_swap.txt",
+      "baseVideo": "V_RV",
+      "useWhen": "模型无法稳定执行遮挡层和人物层的上下对调"
+    }
+  ]
+}

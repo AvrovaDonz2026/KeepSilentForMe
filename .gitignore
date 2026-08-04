@@ -103,3 +103,7 @@ __pycache__/
 /art/gen/
 /archive/art-v1/gen/
 .venv/
+
+# Local MiniMax H3 video outputs (keep prompt and review docs committed).
+/video/generated/*.mp4
+/video/generated/*/

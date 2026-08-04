@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "id": "keep-silent-for-me-minimax-h3-video-prompts",
+  "model": "MiniMax H3",
+  "mode": "图生视频",
+  "canvas": [640, 416],
+  "fps": 16,
+  "seed": -1,
+  "refine": "开启",
+  "upscale": false,
+  "interpolate": false,
+  "promptRoot": "video/prompts/minimax-h3",
+  "outputRoot": "video/generated",
+  "hardLock": "video/prompts/minimax-h3/COMMON_HARD_LOCK.txt",
+  "negativePrompt": "video/prompts/minimax-h3/COMMON_NEGATIVE.txt",
+  "alternatives": "video/prompts/minimax-h3/alternatives.json",
+  "commonNegativePrompt": "实拍，真人电影，3D 渲染，CGI，明亮偶像风，甜美动漫，赛博朋克霓虹，换房间，移动家具，新增角色，复制人物，脸部 morph，换发型，换衣服，手指错误，手部变形，镜头抖动，鱼眼，快速剪辑，循环动作，怪物脸，普通人形，烟雾，火焰，血液，可读中文，可读英文，数字，字幕，对白，弹幕，聊天框，粉丝数，标题，菜单，按钮，HUD，黑条 UI，logo，水印，烧录文字",
+  "assets": [
+    {
+      "id": "V0_out",
+      "prompt": "video/prompts/minimax-h3/V0_out.txt",
+      "firstFrame": "art/v4/scenes/pages/PAGE_L0_desk.png",
+      "duration": 8,
+      "output": "V0_out.mp4"
+    },
+    {
+      "id": "V1_pass",
+      "prompt": "video/prompts/minimax-h3/V1_pass.txt",
+      "firstFrame": "art/v4/scenes/pages/PAGE_L1_interview.png",
+      "duration": 8,
+      "output": "V1_pass.mp4"
+    },
+    {
+      "id": "V1_fail",
+      "prompt": "video/prompts/minimax-h3/V1_fail.txt",
+      "firstFrame": "art/v4/scenes/pages/PAGE_L1_interview.png",
+      "duration": 2,
+      "output": "V1_fail.mp4",
+      "optional": true
+    },
+    {
+      "id": "V2_out",
+      "prompt": "video/prompts/minimax-h3/V2_out.txt",
+      "firstFrame": "art/v4/scenes/pages/PAGE_L2_live.png",
+      "duration": 8,
+      "output": "V2_out.mp4"
+    },
+    {
+      "id": "V3_out",
+      "prompt": "video/prompts/minimax-h3/V3_out.txt",
+      "firstFrame": "art/v4/scenes/pages/PAGE_L3_door_default.png",
+      "duration": 8,
+      "output": "V3_out.mp4"
+    },
+    {
+      "id": "V4_perform",
+      "prompt": "video/prompts/minimax-h3/V4_perform.txt",
+      "firstFrame": "art/v4/scenes/pages/PAGE_L4_apology.png",
+      "duration": 10,
+      "output": "V4_perform.mp4"
+    },
+    {
+      "id": "V4_refuse",
+      "prompt": "video/prompts/minimax-h3/V4_refuse.txt",
+      "firstFrame": "art/v4/scenes/pages/PAGE_L4_apology.png",
+      "duration": 10,
+      "output": "V4_refuse.mp4"
+    },
+    {
+      "id": "V5_A",
+      "prompt": "video/prompts/minimax-h3/V5_A.txt",
+      "firstFrame": "art/v4/scenes/pages/PAGE_L5_empty.png",
+      "lastFrame": "art/v4/scenes/pages/PAGE_END_A_separate.png",
+      "duration": 12,
+      "output": "V5_A.mp4"
+    },
+    {
+      "id": "V5_B",
+      "prompt": "video/prompts/minimax-h3/V5_B.txt",
+      "firstFrame": "art/v4/scenes/pages/PAGE_L5_empty.png",
+      "lastFrame": "art/v4/scenes/pages/PAGE_END_B_alienate.png",
+      "duration": 12,
+      "output": "V5_B.mp4"
+    },
+    {
+      "id": "V5_C",
+      "prompt": "video/prompts/minimax-h3/V5_C.txt",
+      "firstFrame": "art/v4/scenes/pages/PAGE_L5_empty.png",
+      "lastFrame": "art/v4/scenes/pages/PAGE_END_C_hollow.png",
+      "duration": 12,
+      "output": "V5_C.mp4",
+      "variants": ["C_consume", "C_cold"]
+    },
+    {
+      "id": "V_RV",
+      "prompt": "video/prompts/minimax-h3/V_RV.txt",
+      "firstFrame": "art/v4/scenes/pages/PAGE_L1_interview.png",
+      "lastFrame": "art/v4/scenes/pages/PAGE_L5_poster.png",
+      "duration": 15,
+      "output": "V_RV.mp4"
+    }
+  ]
+}
