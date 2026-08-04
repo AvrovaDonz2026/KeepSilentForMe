@@ -105,3 +105,7 @@ __pycache__/
 .venv/
 
 # Local MiniMax H3 video outputs (keep prompt and review docs committed).
+
+# Agent skills with API keys
+.agents/
+.agent/
