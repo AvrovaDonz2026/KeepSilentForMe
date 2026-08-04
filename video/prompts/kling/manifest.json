@@ -10,6 +10,124 @@
   "promptRoot": "video/prompts/kling",
   "outputRoot": "video/generated/kling",
   "commonPrompt": "video/prompts/kling/COMMON_SINGLE_SCENE.txt",
+  "omni": {
+    "model": "kling-video-v3_0_omni",
+    "promptPrefix": "video/prompts/kling/OMNI_REFERENCE_PREFIX.txt",
+    "resolution": "1080p",
+    "aspectRatio": "16:9",
+    "preferMultiShots": false,
+    "enableAudio": false,
+    "maxReferenceImages": 7,
+    "videoReferenceSupported": false,
+    "videoReferenceNote": "当前 image_to_video 声明只接受 image_1..image_7；已有 MP4 需先抽取代表帧作为图片参考。",
+    "references": {
+      "K01_L0_ink": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L0_desk.png", "role": "唯一首帧与房间构图"},
+        {"slot": "image_2", "path": "art/v4/playable/char/CHAR_sleeve_press.png", "role": "角色按袖口姿态"}
+      ],
+      "K02_L0_door": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L0_desk.png", "role": "唯一首帧与房间构图"},
+        {"slot": "image_2", "path": "art/v4/playable/char/CHAR_stand.png", "role": "角色起身姿态"}
+      ],
+      "K03_L1_nod": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L1_interview.png", "role": "唯一首帧与采访室构图"},
+        {"slot": "image_2", "path": "art/v4/playable/char/CHAR_interview_sit.png", "role": "主角坐姿"},
+        {"slot": "image_3", "path": "art/v4/playable/npc/NPC_interviewer_a.png", "role": "面试官姿态"},
+        {"slot": "image_4", "path": "art/v4/playable/npc/NPC_interviewer_b.png", "role": "第二位面试官姿态"}
+      ],
+      "K04_L1_ink": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L1_interview.png", "role": "唯一首帧与采访室构图"},
+        {"slot": "image_2", "path": "art/v4/playable/char/CHAR_sleeve_press.png", "role": "角色按袖口姿态"}
+      ],
+      "K05_L1_fail_light": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L1_interview.png", "role": "唯一首帧与采访室构图"},
+        {"slot": "image_2", "path": "art/v4/playable/fx/FX_bar_reject_shiver.png", "role": "遮挡条拒绝时的细微震动材质"}
+      ],
+      "K06_L1_fail_shatter": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L1_interview.png", "role": "唯一首帧与采访室构图"},
+        {"slot": "image_2", "path": "art/v4/playable/fx/FX_censor_shatter.png", "role": "遮挡条碎裂材质"}
+      ],
+      "K07_L2_indicator": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L2_live.png", "role": "唯一首帧与直播房间构图"},
+        {"slot": "image_2", "path": "art/v4/playable/char/CHAR_livestream_speaking.png", "role": "角色直播姿态"},
+        {"slot": "image_3", "path": "art/v4/playable/fx/FX_crt_screen_off.png", "role": "CRT 熄屏材质"}
+      ],
+      "K08_L2_creature": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L2_live.png", "role": "唯一首帧与直播房间构图"},
+        {"slot": "image_2", "path": "art/v4/playable/creature/CREEP_1.png", "role": "无脸消音体轮廓"},
+        {"slot": "image_3", "path": "art/v4/playable/fx/FX_letter_to_creature_arc.png", "role": "碎片聚拢轨迹材质"}
+      ],
+      "K09_L3_door_close": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L3_door_default.png", "role": "唯一首帧与门厅构图"},
+        {"slot": "image_2", "path": "art/v4/playable/npc/NPC_friend_door_silhouette.png", "role": "门内朋友剪影"},
+        {"slot": "image_3", "path": "art/v4/playable/fx/FX_door_lock_click.png", "role": "锁舌闭合材质"}
+      ],
+      "K10_L3_stage2": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L3_door_default.png", "role": "唯一首帧与门厅构图"},
+        {"slot": "image_2", "path": "art/v4/playable/fx/FX_censor_growth_strip.png", "role": "Stage2 黑条拉长材质"}
+      ],
+      "K11_L4_live_off": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L4_apology.png", "role": "唯一首帧与道歉直播构图"},
+        {"slot": "image_2", "path": "art/v4/playable/char/CHAR_apology_bow.png", "role": "角色低头姿态"},
+        {"slot": "image_3", "path": "art/v4/playable/fx/FX_crt_screen_off.png", "role": "CRT 熄屏材质"}
+      ],
+      "K12_L4_stack": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L4_apology.png", "role": "唯一首帧与道歉直播构图"},
+        {"slot": "image_2", "path": "art/v4/playable/creature/CREEP_2.png", "role": "Stage3 无脸轮廓"},
+        {"slot": "image_3", "path": "art/v4/playable/fx/FX_censor_growth_strip.png", "role": "黑条堆叠材质"}
+      ],
+      "K13_L4_refuse_cable": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L4_apology.png", "role": "唯一首帧与道歉直播构图"},
+        {"slot": "image_2", "path": "art/v4/playable/char/CHAR_apology_bow.png", "role": "角色坐姿与手部基准"}
+      ],
+      "K14_L4_refuse_echo": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L4_apology.png", "role": "唯一首帧与道歉直播构图"},
+        {"slot": "image_2", "path": "art/v4/playable/fx/FX_bar_reject_shiver.png", "role": "黑条细微振动材质"},
+        {"slot": "image_3", "path": "art/v4/playable/creature/CREEP_2.png", "role": "无脸碎片轮廓"}
+      ],
+      "K15_L5_A_release": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L5_empty.png", "role": "唯一首帧与终局房间构图"},
+        {"slot": "image_2", "path": "art/v4/playable/char/CHAR_final_speaking.png", "role": "角色站立姿态"},
+        {"slot": "image_3", "path": "art/v4/playable/fx/FX_censor_shatter.png", "role": "遮挡条碎裂材质"},
+        {"slot": "image_4", "path": "art/v4/playable/fx/FX_gray_letter_fall.png", "role": "碎片下落材质"}
+      ],
+      "K16_END_A_hold": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_END_A_separate.png", "role": "唯一首帧与 A 结局构图"},
+        {"slot": "image_2", "path": "art/v4/playable/faces/FACE_resolved.png", "role": "角色 resolved 表情参考"}
+      ],
+      "K17_L5_B_offset": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L5_empty.png", "role": "唯一首帧与终局房间构图"},
+        {"slot": "image_2", "path": "art/v4/playable/ending/ENDING_echo_overlap.png", "role": "回声体错位材质"},
+        {"slot": "image_3", "path": "art/v4/playable/faces/FACE_detached.png", "role": "角色 detached 表情参考"}
+      ],
+      "K18_END_B_hold": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_END_B_alienate.png", "role": "唯一首帧与 B 结局构图"},
+        {"slot": "image_2", "path": "art/v4/playable/ending/ENDING_echo_overlap.png", "role": "回声残影材质"},
+        {"slot": "image_3", "path": "art/v4/playable/faces/FACE_detached.png", "role": "角色 detached 表情参考"}
+      ],
+      "K19_L5_C_drop": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L5_empty.png", "role": "唯一首帧与终局房间构图"},
+        {"slot": "image_2", "path": "art/v4/playable/faces/FACE_blank.png", "role": "角色 blank 表情参考"},
+        {"slot": "image_3", "path": "art/v4/playable/creature/CREEP_3.png", "role": "无脸空壳轮廓"}
+      ],
+      "K20_END_C_hold": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_END_C_hollow.png", "role": "唯一首帧与 C 结局构图"},
+        {"slot": "image_2", "path": "art/v4/playable/ending/ENDING_hollow_proxy.png", "role": "空壳材质"},
+        {"slot": "image_3", "path": "art/v4/playable/faces/FACE_blank.png", "role": "无表情脸部参考"},
+        {"slot": "image_4", "path": "art/v4/playable/creature/CREEP_3.png", "role": "无脸碎片轮廓"}
+      ],
+      "K21_RV_interview_hold": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L1_interview.png", "role": "唯一首帧与采访室构图"},
+        {"slot": "image_2", "path": "art/v4/playable/faces/FACE_downcast.png", "role": "人物冷暗侧影表情"},
+        {"slot": "image_3", "path": "art/v4/playable/fx/FX_bar_reject_shiver.png", "role": "遮挡层脉动材质"}
+      ],
+      "K22_RV_poster_hold": [
+        {"slot": "image_1", "path": "art/v4/scenes/pages/PAGE_L5_poster.png", "role": "唯一首帧与海报页构图"},
+        {"slot": "image_2", "path": "art/v4/playable/faces/FACE_detached.png", "role": "人物背影情绪参考"},
+        {"slot": "image_3", "path": "art/v4/playable/fx/FX_gray_letter_fall.png", "role": "灰黑碎片下落材质"}
+      ]
+    }
+  },
   "assets": [
     {"id": "K01_L0_ink", "source": "V0_out", "prompt": "video/prompts/kling/K01_L0_ink.txt", "firstFrame": "art/v4/scenes/pages/PAGE_L0_desk.png", "duration": 5, "output": "K01_L0_ink.mp4"},
     {"id": "K02_L0_door", "source": "V0_out", "prompt": "video/prompts/kling/K02_L0_door.txt", "firstFrame": "art/v4/scenes/pages/PAGE_L0_desk.png", "duration": 5, "output": "K02_L0_door.mp4"},
