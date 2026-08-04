@@ -20,14 +20,15 @@
 | `V3_out.mp4` | 8.8125s | `V3_out_door_lock.txt` | H3 原片 |
 | `V4_perform.mp4` | 10.9375s | `V4_perform_stack.txt` | 锁帧 H3 候选 |
 | `V4_refuse.mp4` | 10.9375s | `V4_refuse_cable.txt` | 锁帧 H3 候选 |
-| `V5_A.mp4` | 12.0000s | `V5_A.txt` | H3 动态段 + A 终局静帧 |
-| `V5_B.mp4` | 12.0000s | `V5_B.txt` | H3 动态段 + B 终局静帧 |
-| `V5_C.mp4` | 12.0000s | `V5_C.txt` | H3 动态段 + C 终局静帧 |
+| `V5_A.mp4` | 12.0000s | `V5_A.txt` | L5 静帧保持 + A 终局页淡入 |
+| `V5_B.mp4` | 12.0000s | `V5_B.txt` | L5 静帧保持 + B 终局页淡入 |
+| `V5_C.mp4` | 12.0000s | `V5_C.txt` | L5 静帧保持 + C 终局页淡入 |
 | `V_RV.mp4` | 15.0000s | `V_RV_layer_swap.txt` | H3 动态段 + `PAGE_L5_poster` |
 
-首帧抽查与 `manifest.json` 一致，所有视频均为 640x416 H.264；V5 三条片最后约 1.5 秒
-平滑落到各自 `PAGE_END_*`，V_RV 最后约 2 秒稳定保持 `PAGE_L5_poster`。后处理前的
-H3 源片保存在 `previous-v5-postprocess.*` 和 `previous-*-rv-postprocess/` 备份目录。
+首帧抽查与 `manifest.json` 一致，所有视频均为 640x416 H.264；V5 三条片前 10.4 秒
+锁定 `PAGE_L5_empty`，经过 0.4 秒黑场后在最后 1.6 秒稳定保持各自 `PAGE_END_*`，避免
+H3 把 Stage3 重绘成巨大人形。V_RV 最后约 2 秒稳定保持 `PAGE_L5_poster`。被拒绝的
+H3 动态源片保存在 `previous-v5-h3-dynamic.*`，更早的源片保存在其它 `previous-*` 目录。
 
 ## 二轮视觉修复
 
