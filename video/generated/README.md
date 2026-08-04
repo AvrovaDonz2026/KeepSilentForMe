@@ -1,7 +1,35 @@
 # 已生成视频复盘
 
 这里保存本机 H3 生成的 MP4。文件默认被 `.gitignore` 忽略，不进入仓库提交；本页记录
-复盘结论，方便下一轮提示词和首帧上传核对。
+复盘结论，方便下一轮提示词和首帧上传核对。`V_RV.mp4`、`V5_A.mp4`、`V5_B.mp4`、
+`V5_C.mp4` 如果被 Git 跟踪，仍以工作区中的成片为准；同目录的
+`previous-*` 文件夹保存后处理前的 H3 源片，不删除。
+
+## 2026-08-04 最终验收
+
+这轮按 `manifest.json` 的首帧映射逐条串行提交，并在每条任务前调用
+`clear_all_tasks` 清空远端任务和输出画廊，再用任务 ID 匹配结果。这样消除了 Gradio
+画廊残留导致的跨章节首帧错位。
+
+| 文件 | 实测时长 | 实际提示词 | 末段处理 |
+| --- | ---: | --- | --- |
+| `V0_out.mp4` | 8.8125s | `V0_out.txt` | H3 原片 |
+| `V1_pass.mp4` | 8.8125s | `V1_pass_single_room.txt` | H3 原片 |
+| `V1_fail.mp4` | 2.4375s | `V1_fail.txt` | H3 原片 |
+| `V2_out.mp4` | 8.8125s | `V2_out_creature_focus.txt` | H3 原片 |
+| `V3_out.mp4` | 8.8125s | `V3_out_door_lock.txt` | H3 原片 |
+| `V4_perform.mp4` | 10.9375s | `V4_perform_stack.txt` | H3 原片 |
+| `V4_refuse.mp4` | 10.9375s | `V4_refuse_cable.txt` | H3 原片 |
+| `V5_A.mp4` | 12.0000s | `V5_A.txt` | H3 动态段 + A 终局静帧 |
+| `V5_B.mp4` | 12.0000s | `V5_B.txt` | H3 动态段 + B 终局静帧 |
+| `V5_C.mp4` | 12.0000s | `V5_C.txt` | H3 动态段 + C 终局静帧 |
+| `V_RV.mp4` | 15.0000s | `V_RV_layer_swap.txt` | H3 动态段 + `PAGE_L5_poster` |
+
+首帧抽查与 `manifest.json` 一致，所有视频均为 640x416 H.264；V5 三条片最后约 1.5 秒
+平滑落到各自 `PAGE_END_*`，V_RV 最后约 2 秒稳定保持 `PAGE_L5_poster`。后处理前的
+H3 源片保存在 `previous-v5-postprocess.*` 和 `previous-*-rv-postprocess/` 备份目录。
+
+## 初轮复盘（已废弃）
 
 ## 2026-08-04 样本
 
