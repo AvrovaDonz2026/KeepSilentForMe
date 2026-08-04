@@ -26,6 +26,7 @@
     {
       "id": "V1_pass",
       "prompt": "video/prompts/minimax-h3/V1_pass.txt",
+      "selectedPrompt": "video/prompts/minimax-h3/V1_pass_single_room.txt",
       "firstFrame": "art/v4/scenes/pages/PAGE_L1_interview.png",
       "duration": 8,
       "output": "V1_pass.mp4"
@@ -33,6 +34,7 @@
     {
       "id": "V1_fail",
       "prompt": "video/prompts/minimax-h3/V1_fail.txt",
+      "selectedPrompt": "video/prompts/minimax-h3/V1_fail.txt",
       "firstFrame": "art/v4/scenes/pages/PAGE_L1_interview.png",
       "duration": 2,
       "output": "V1_fail.mp4",
@@ -41,6 +43,7 @@
     {
       "id": "V2_out",
       "prompt": "video/prompts/minimax-h3/V2_out.txt",
+      "selectedPrompt": "video/prompts/minimax-h3/V2_out_creature_focus.txt",
       "firstFrame": "art/v4/scenes/pages/PAGE_L2_live.png",
       "duration": 8,
       "output": "V2_out.mp4"
@@ -48,6 +51,7 @@
     {
       "id": "V3_out",
       "prompt": "video/prompts/minimax-h3/V3_out.txt",
+      "selectedPrompt": "video/prompts/minimax-h3/V3_out_door_lock.txt",
       "firstFrame": "art/v4/scenes/pages/PAGE_L3_door_default.png",
       "duration": 8,
       "output": "V3_out.mp4"
@@ -55,6 +59,7 @@
     {
       "id": "V4_perform",
       "prompt": "video/prompts/minimax-h3/V4_perform.txt",
+      "selectedPrompt": "video/prompts/minimax-h3/V4_perform_stack.txt",
       "firstFrame": "art/v4/scenes/pages/PAGE_L4_apology.png",
       "duration": 10,
       "output": "V4_perform.mp4"
@@ -62,6 +67,7 @@
     {
       "id": "V4_refuse",
       "prompt": "video/prompts/minimax-h3/V4_refuse.txt",
+      "selectedPrompt": "video/prompts/minimax-h3/V4_refuse_cable.txt",
       "firstFrame": "art/v4/scenes/pages/PAGE_L4_apology.png",
       "duration": 10,
       "output": "V4_refuse.mp4"
@@ -94,6 +100,7 @@
     {
       "id": "V_RV",
       "prompt": "video/prompts/minimax-h3/V_RV.txt",
+      "selectedPrompt": "video/prompts/minimax-h3/V_RV_layer_swap.txt",
       "firstFrame": "art/v4/scenes/pages/PAGE_L1_interview.png",
       "lastFrame": "art/v4/scenes/pages/PAGE_L5_poster.png",
       "duration": 15,

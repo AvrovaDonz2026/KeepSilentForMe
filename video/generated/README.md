@@ -15,11 +15,11 @@
 | --- | ---: | --- | --- |
 | `V0_out.mp4` | 8.8125s | `V0_out.txt` | H3 原片 |
 | `V1_pass.mp4` | 8.8125s | `V1_pass_single_room.txt` | H3 原片 |
-| `V1_fail.mp4` | 2.4375s | `V1_fail.txt` | H3 原片 |
-| `V2_out.mp4` | 8.8125s | `V2_out_creature_focus.txt` | H3 原片 |
+| `V1_fail.mp4` | 2.4375s | `V1_fail.txt` | V1 锁帧候选裁切 |
+| `V2_out.mp4` | 8.8125s | `V2_out_creature_focus.txt` | 锁帧 H3 候选 |
 | `V3_out.mp4` | 8.8125s | `V3_out_door_lock.txt` | H3 原片 |
-| `V4_perform.mp4` | 10.9375s | `V4_perform_stack.txt` | H3 原片 |
-| `V4_refuse.mp4` | 10.9375s | `V4_refuse_cable.txt` | H3 原片 |
+| `V4_perform.mp4` | 10.9375s | `V4_perform_stack.txt` | 锁帧 H3 候选 |
+| `V4_refuse.mp4` | 10.9375s | `V4_refuse_cable.txt` | 锁帧 H3 候选 |
 | `V5_A.mp4` | 12.0000s | `V5_A.txt` | H3 动态段 + A 终局静帧 |
 | `V5_B.mp4` | 12.0000s | `V5_B.txt` | H3 动态段 + B 终局静帧 |
 | `V5_C.mp4` | 12.0000s | `V5_C.txt` | H3 动态段 + C 终局静帧 |
@@ -28,6 +28,20 @@
 首帧抽查与 `manifest.json` 一致，所有视频均为 640x416 H.264；V5 三条片最后约 1.5 秒
 平滑落到各自 `PAGE_END_*`，V_RV 最后约 2 秒稳定保持 `PAGE_L5_poster`。后处理前的
 H3 源片保存在 `previous-v5-postprocess.*` 和 `previous-*-rv-postprocess/` 备份目录。
+
+## 二轮视觉修复
+
+六点抽帧（10%、20%、40%、60%、80%、95%）发现旧版 `V1_pass`、`V2_out`、
+`V4_perform`、`V4_refuse` 在中段出现亮度/材质漂移。已拒绝这些版本，改用锁帧候选：
+
+- `V1_pass`：固定采访室，只保留点头、按袖口和一瞬墨点。
+- `V1_fail`：取合格采访室候选的前 2.4375 秒，不再生成近黑闪断。
+- `V2_out`：只熄灭 CRT 微弱指示灯，不让 H3 自行生成红屏或新消音体。
+- `V4_perform` / `V4_refuse`：保持首帧已有 Stage3 轮廓，不新增黑色面积；动作限制为
+  拔线和极轻振动。
+
+每条候选在进入 `video/generated/` 前都经过同样的六点切片检查；失败候选留在临时目录，
+不覆盖生产片。旧生产片和本轮替换前的片段保存在同目录 `previous-*` 备份目录。
 
 ## 初轮复盘（已废弃）
 

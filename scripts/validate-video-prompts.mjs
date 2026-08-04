@@ -77,6 +77,12 @@ for (const [index, asset] of (manifest.assets ?? []).entries()) {
       errors.push(`${label} prompt 缺少强化约束段`);
     }
   }
+  if (asset?.selectedPrompt) {
+    const selectedPromptPath = fileFromRepo(asset.selectedPrompt, `${label} 实际提示词`);
+    if (selectedPromptPath && !readFileSync(selectedPromptPath, "utf8").trim()) {
+      errors.push(`${label} 实际提示词为空`);
+    }
+  }
   fileFromRepo(asset?.firstFrame, `${label} 首帧`);
   if (asset?.lastFrame) fileFromRepo(asset.lastFrame, `${label} 末帧`);
   if (!Number.isInteger(asset?.duration) || asset.duration < 1) errors.push(`${label} 时长无效`);
