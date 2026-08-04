@@ -23,6 +23,8 @@ Gradio 画廊当前显示的缩略图。
 
 - 长任务必须串行提交；使用 H3 skill 脚本的 `--reset-queue`，它会在上传和提交前清空
   远端队列/输出状态。
+- `manifest.json` 的 `prompt` 是主提示，`selectedPrompt` 是当前成片实际采用的锁帧提示；批量
+  重跑应优先读取 `selectedPrompt`，避免复现已经拒绝的漂移版本。
 - 首帧正确后优先保持单场景：本轮 `V1_pass`、`V2_out`、`V3_out`、`V4_perform`、
   `V4_refuse` 使用 `alternatives.json` 中的单场景备选提示词。
 - 若备选仍造成曝光漂移，优先使用“首帧就是整条视频母版、宁可静止也不重绘”的锁帧版本；
