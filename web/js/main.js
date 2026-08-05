@@ -2,11 +2,14 @@ const DATA_URL = "../script/chapters.json";
 const PLAYABLE_MANIFEST_URL = "../art/v4/playable/manifest.json";
 const PAGE_MANIFEST_URL = "../art/v4/scenes/manifest.json";
 const AUDIO_MANIFEST_URL = "audio/manifest.json?v=audio-3";
+const VIDEO_MANIFEST_URL = "video/manifest.json?v=video-2";
 const PLAYABLE_ROOT = "../art/v4/playable/";
 const PAGE_ROOT = "../art/v4/scenes/";
 const AUDIO_ROOT = "audio/";
+const VIDEO_ROOT = "video/";
 const SAVE_KEY = "keep-silent-for-me-demo";
 const AUDIO_SETTINGS_KEY = "keep-silent-for-me-audio-settings";
+const REVEAL_SEEN_KEY = "keep-silent-for-me-reveal-seen";
 const MEMORY_CHAPTER_IDS = new Set(["L1", "L2", "L3", "L4"]);
 const LIVE_CHAPTER_IDS = new Set(["L2", "L4"]);
 const BGM_FADE_MS = 650;
@@ -88,6 +91,10 @@ const dom = {
   app: document.querySelector("#app"),
   stage: document.querySelector(".stage"),
   scenePage: document.querySelector("#scene-page"),
+  storyVideoLayer: document.querySelector("#story-video-layer"),
+  storyVideo: document.querySelector("#story-video"),
+  storyVideoCaption: document.querySelector("#story-video-caption"),
+  storyVideoSkip: document.querySelector("#story-video-skip"),
   bgmA: document.querySelector("#bgm-a"),
   bgmB: document.querySelector("#bgm-b"),
   titleScreen: document.querySelector("#title-screen"),
@@ -149,6 +156,7 @@ const state = {
   playable: null,
   pages: null,
   audio: null,
+  video: null,
   assets: new Map(),
   pageAssets: new Map(),
   chapters: [],
@@ -203,6 +211,11 @@ const state = {
   titleReady: false,
   titleStarting: false,
   debugMode: false,
+  videoSequenceToken: 0,
+  videoCaptionTimers: new Set(),
+  videoPlaying: false,
+  videoSkipRequested: false,
+  revealSeen: false,
 };
 
 function assetUrl(id) {
@@ -213,6 +226,267 @@ function assetUrl(id) {
 function pageUrl(id) {
   const asset = state.pageAssets.get(id);
   return asset ? `${PAGE_ROOT}${asset.path}` : "";
+}
+
+function videoUrl(path) {
+  if (typeof path !== "string" || !path || path.includes("..")) return "";
+  return `${VIDEO_ROOT}${path}`;
+}
+
+function validateVideoManifest() {
+  const sequences = state.video?.sequences;
+  if (!sequences || typeof sequences !== "object" || Array.isArray(sequences)) {
+    throw new Error("运行时视频清单缺少 sequences");
+  }
+  for (const [sequenceId, sequence] of Object.entries(sequences)) {
+    if (!sequence || !Array.isArray(sequence.clips) || !sequence.clips.length) {
+      throw new Error(`视频序列 ${sequenceId} 缺少 clips`);
+    }
+    for (const clip of sequence.clips) {
+      if (!clip?.id || !videoUrl(clip.path)) throw new Error(`视频序列 ${sequenceId} 包含无效视频路径`);
+      if (!state.pageAssets.has(clip.beforePage)) {
+        throw new Error(`视频 ${clip.id} 引用了不存在的首帧场景页 ${clip.beforePage ?? ""}`);
+      }
+      if (!Number.isFinite(Number(clip.duration)) || Number(clip.duration) <= 0) {
+        throw new Error(`视频 ${clip.id} 缺少有效时长`);
+      }
+    }
+  }
+  for (const endingId of ["A_separate", "B_alienate", "C_consume", "C_cold"]) {
+    if (!sequences[endingId]?.clips?.length) throw new Error(`结局 ${endingId} 缺少视频序列`);
+  }
+  if (!sequences.reveal?.clips?.length) throw new Error("反转序列缺少视频");
+
+  const chapterOutros = state.video?.chapterOutros;
+  const requiredChapterOutros = [
+    "L0_to_L1",
+    "L1_pass_to_L2",
+    "L1_fail_retry",
+    "L2_to_L3",
+    "L3_to_L4",
+    "L4_perform_to_L5",
+    "L4_refuse_to_L5",
+  ];
+  if (!chapterOutros || typeof chapterOutros !== "object" || Array.isArray(chapterOutros)) {
+    throw new Error("运行时视频清单缺少 chapterOutros");
+  }
+  for (const sequenceId of requiredChapterOutros) {
+    const sequence = chapterOutros[sequenceId];
+    if (!sequence || sequence.kind !== "chapterOutro" || !Array.isArray(sequence.clips) || !sequence.clips.length) {
+      throw new Error(`章节过场 ${sequenceId} 缺少有效 clips`);
+    }
+    for (const clip of sequence.clips) {
+      if (!clip?.id || !videoUrl(clip.path)) throw new Error(`章节过场 ${sequenceId} 包含无效视频路径`);
+      if (!state.pageAssets.has(clip.beforePage)) {
+        throw new Error(`章节过场 ${clip.id} 引用了不存在的首帧场景页 ${clip.beforePage ?? ""}`);
+      }
+      if (!Number.isFinite(Number(clip.duration)) || Number(clip.duration) <= 0) {
+        throw new Error(`章节过场 ${clip.id} 缺少有效时长`);
+      }
+    }
+  }
+}
+
+function clearVideoCaptionTimers() {
+  for (const timer of state.videoCaptionTimers) window.clearTimeout(timer);
+  state.videoCaptionTimers.clear();
+  dom.storyVideoCaption.textContent = "";
+  dom.storyVideoCaption.classList.remove("is-visible");
+}
+
+function setVideoCaption(text) {
+  dom.storyVideoCaption.textContent = text;
+  dom.storyVideoCaption.classList.toggle("is-visible", Boolean(text));
+}
+
+function hideStoryVideo() {
+  clearVideoCaptionTimers();
+  dom.storyVideo.pause();
+  dom.storyVideo.style.opacity = "0";
+  dom.storyVideoLayer.classList.add("is-hidden");
+  dom.storyVideoLayer.setAttribute("aria-hidden", "true");
+  dom.storyVideoSkip.classList.add("is-hidden");
+  dom.app.classList.remove("is-video-playing");
+  state.videoPlaying = false;
+  state.videoSkipRequested = false;
+}
+
+function cancelStoryVideo() {
+  state.videoSequenceToken += 1;
+  state.videoSkipRequested = true;
+  dom.storyVideo.dispatchEvent(new Event("storycancel"));
+  hideStoryVideo();
+}
+
+function setRevealSeen() {
+  state.revealSeen = true;
+  storageSet(REVEAL_SEEN_KEY, "1");
+}
+
+function startRevealCaptions(token) {
+  const whispers = state.eatLog
+    .slice(-3)
+    .map((entry) => entry?.text)
+    .filter(Boolean);
+  const cues = [
+    [0, "你以为自己一直在删除。"],
+    [2000, "被遮住的，是她说出口的。"],
+    [5000, "屏幕上留下的，是给外界的字幕。"],
+    [7600, whispers.length ? `被吞下的字：${whispers.join(" · ")}` : "你不是替她沉默。"],
+    [9200, "你是她没有说出口的那个人。"],
+  ];
+  for (const [delay, text] of cues) {
+    const timer = window.setTimeout(() => {
+      state.videoCaptionTimers.delete(timer);
+      if (token === state.videoSequenceToken) setVideoCaption(text);
+    }, delay);
+    state.videoCaptionTimers.add(timer);
+  }
+}
+
+async function loadStoryClip(clip, token) {
+  if (token !== state.videoSequenceToken) return false;
+  const loaded = await setScenePage(clip.beforePage, false);
+  if (!loaded || token !== state.videoSequenceToken) return false;
+  const src = videoUrl(clip.path);
+  if (!src) throw new Error(`视频 ${clip.id} 路径无效`);
+  dom.storyVideo.style.opacity = "0";
+  dom.storyVideo.pause();
+  dom.storyVideo.src = src;
+  dom.storyVideo.load();
+  if (dom.storyVideo.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) {
+    await new Promise((resolve, reject) => {
+      let timer = window.setTimeout(() => {
+        cleanup();
+        reject(new Error(`视频 ${clip.id} 加载超时`));
+      }, 12000);
+      const cleanup = () => {
+        window.clearTimeout(timer);
+        dom.storyVideo.removeEventListener("canplay", onReady);
+        dom.storyVideo.removeEventListener("error", onError);
+      };
+      const onReady = () => { cleanup(); resolve(); };
+      const onError = () => { cleanup(); reject(new Error(`视频 ${clip.id} 解码失败`)); };
+      dom.storyVideo.addEventListener("canplay", onReady, { once: true });
+      dom.storyVideo.addEventListener("error", onError, { once: true });
+    });
+  }
+  if (token !== state.videoSequenceToken) return false;
+  dom.storyVideo.currentTime = 0;
+  return true;
+}
+
+async function playLoadedStoryClip(clip, token) {
+  if (token !== state.videoSequenceToken) return false;
+  dom.storyVideoLayer.classList.remove("is-hidden");
+  dom.storyVideoLayer.setAttribute("aria-hidden", "false");
+  dom.app.classList.add("is-video-playing");
+  dom.storyVideo.style.opacity = "1";
+  let cancelFinished = () => {};
+  const finished = new Promise((resolve, reject) => {
+    const cleanup = () => {
+      dom.storyVideo.removeEventListener("ended", onEnded);
+      dom.storyVideo.removeEventListener("error", onError);
+      dom.storyVideoSkip.removeEventListener("click", onSkip);
+      dom.storyVideo.removeEventListener("storycancel", onCancel);
+    };
+    const onEnded = () => { cleanup(); resolve(); };
+    const onError = () => { cleanup(); reject(new Error(`视频 ${clip.id} 播放失败`)); };
+    const onSkip = () => { cleanup(); dom.storyVideo.pause(); resolve(); };
+    const onCancel = () => { cleanup(); dom.storyVideo.pause(); resolve(); };
+    cancelFinished = () => { cleanup(); dom.storyVideo.pause(); resolve(); };
+    dom.storyVideo.addEventListener("ended", onEnded, { once: true });
+    dom.storyVideo.addEventListener("error", onError, { once: true });
+    dom.storyVideoSkip.addEventListener("click", onSkip, { once: true });
+    dom.storyVideo.addEventListener("storycancel", onCancel, { once: true });
+    if (state.videoSkipRequested) {
+      cleanup();
+      resolve();
+    }
+  });
+  try {
+    await dom.storyVideo.play();
+  } catch (error) {
+    cancelFinished();
+    throw new Error(`视频 ${clip.id} 无法自动播放: ${error.message}`);
+  }
+  await finished;
+  return token === state.videoSequenceToken;
+}
+
+async function playStorySequence(sequenceId, { reveal = false } = {}) {
+  const sequence = state.video?.sequences?.[sequenceId] ?? state.video?.chapterOutros?.[sequenceId];
+  if (!sequence?.clips?.length) throw new Error(`视频序列不存在: ${sequenceId}`);
+  const token = ++state.videoSequenceToken;
+  state.videoPlaying = true;
+  state.videoSkipRequested = false;
+  dom.storyVideo.muted = true;
+  dom.storyVideo.defaultMuted = true;
+  dom.storyVideoSkip.classList.toggle("is-hidden", !(reveal && state.revealSeen));
+  try {
+    for (let index = 0; index < sequence.clips.length; index += 1) {
+      const clip = sequence.clips[index];
+      const loaded = await loadStoryClip(clip, token);
+      if (!loaded) return false;
+      if (reveal && index === 0) startRevealCaptions(token);
+      const played = await playLoadedStoryClip(clip, token);
+      if (!played || state.videoSkipRequested) break;
+    }
+    if (reveal) setRevealSeen();
+    return token === state.videoSequenceToken;
+  } finally {
+    if (token === state.videoSequenceToken) hideStoryVideo();
+  }
+}
+
+function chapterOutroSequenceId(chapter) {
+  switch (chapter?.id) {
+    case "L0":
+      return "L0_to_L1";
+    case "L1":
+      return chapterResult(chapter) === "pass" ? "L1_pass_to_L2" : "L1_fail_retry";
+    case "L2":
+      return "L2_to_L3";
+    case "L3":
+      return "L3_to_L4";
+    case "L4": {
+      const perform = Number(state.flags.apology_perform) || 0;
+      const refuse = Number(state.flags.apology_refuse) || 0;
+      // 混线平票取表演；当前运行时没有额外的 1 秒噪声插片。
+      return perform >= refuse ? "L4_perform_to_L5" : "L4_refuse_to_L5";
+    }
+    default:
+      return "";
+  }
+}
+
+async function playChapterOutro(sequenceId, onComplete = null) {
+  try {
+    const played = await playStorySequence(sequenceId);
+    if (!played) return null;
+    onComplete?.();
+    return true;
+  } catch (error) {
+    console.error(error);
+    showToast("章节过场视频暂时无法载入，已继续游戏。", TOAST_FAILURE_DURATION_MS);
+    onComplete?.();
+    return false;
+  }
+}
+
+async function playChapterOutroThenAdvance(chapter) {
+  const sequenceId = chapterOutroSequenceId(chapter);
+  if (!sequenceId) {
+    nextChapter();
+    return;
+  }
+  hideOverlay();
+  hideMemoryOverlay();
+  state.locked = true;
+  const result = await playChapterOutro(sequenceId);
+  if (result === null) return;
+  if (currentChapter()?.id !== chapter?.id) return;
+  nextChapter();
 }
 
 function audioTrack(trackId) {
@@ -1267,7 +1541,7 @@ function openMemoryOverlay(chapter) {
     state.memoryByChapter[chapter.id] = [];
     state.memoryDraft = null;
     saveState();
-    nextChapter();
+    void playChapterOutroThenAdvance(chapter);
     return;
   }
   if (!memoryDraftMatches(state.memoryDraft, chapter.id, fragments)) {
@@ -1298,14 +1572,20 @@ function confirmMemory() {
   ping("snap");
   saveState();
   hideMemoryOverlay();
-  nextChapter();
+  void playChapterOutroThenAdvance(currentChapter());
 }
 
 function finishChapter() {
   const chapter = currentChapter();
   if (LIVE_CHAPTER_IDS.has(chapter?.id)) hideLiveChat();
   if (chapter.id === "L1" && chapterResult(chapter) === "fail") {
-    showOverlay("面试结束", "她没有被录用。", "把这一章重新说一遍", () => restartChapter(), "重试面试");
+    hideOverlay();
+    state.locked = true;
+    void playChapterOutro("L1_fail_retry", () => {
+      if (currentChapter()?.id !== "L1") return;
+      state.locked = true;
+      showOverlay("面试结束", "她没有被录用。", "把这一章重新说一遍", () => restartChapter(), "重试面试");
+    });
     return;
   }
   if (state.chapterIndex >= state.chapters.length - 1) return;
@@ -1317,7 +1597,9 @@ function finishChapter() {
     L4: ["道歉结束", "刚才有一条，不是她拖的。"],
   };
   const [title, copy] = titles[chapter.id] ?? ["下一段", "她还在等下一句。"];
-  const action = MEMORY_CHAPTER_IDS.has(chapter.id) ? () => openMemoryOverlay(chapter) : () => nextChapter();
+  const action = MEMORY_CHAPTER_IDS.has(chapter.id)
+    ? () => openMemoryOverlay(chapter)
+    : () => void playChapterOutroThenAdvance(chapter);
   showOverlay("段落结束", title, copy, action);
 }
 
@@ -1354,19 +1636,53 @@ function restartChapter() {
   renderLine();
 }
 
-async function finishEnding(endingId, expectedTransitionVersion = null) {
+async function playRevealSequence() {
+  hideOverlay();
+  state.locked = true;
+  try {
+    await playStorySequence("reveal", { reveal: true });
+    showOverlay(
+      "反转回放",
+      "你是她没有说出口的那个人",
+      "屏幕上留下的，不只是她说出口的。",
+      () => restartGame(),
+      "重新开始",
+    );
+  } catch (error) {
+    console.error(error);
+    showToast("反转视频暂时无法载入，已保留结局页面。", TOAST_FAILURE_DURATION_MS);
+    showOverlay(
+      "反转回放",
+      "你是她没有说出口的那个人",
+      "视频暂时无法载入，但这一句仍然属于你。",
+      () => restartGame(),
+      "重新开始",
+    );
+  }
+}
+
+async function finishEnding(endingId, expectedTransitionVersion = null, { playSequence = true } = {}) {
   if (expectedTransitionVersion !== null && expectedTransitionVersion !== state.transitionVersion) return false;
   const pageId = state.pages?.endingPages?.[endingId];
   if (!pageId) throw new Error(`结局页面不存在: ${endingId}`);
-  const loaded = await setScenePage(pageId, true);
-  if (!loaded || (expectedTransitionVersion !== null && expectedTransitionVersion !== state.transitionVersion)) {
-    return false;
-  }
-  dom.stage.dataset.ending = endingId;
   state.endingId = endingId;
   state.locked = true;
   syncBgmForLocation(null, endingId);
   saveState();
+  if (playSequence) {
+    try {
+      await playStorySequence(endingId);
+    } catch (error) {
+      console.error(error);
+      showToast("终局视频暂时无法载入，已切回整页结局。", TOAST_FAILURE_DURATION_MS);
+    }
+  }
+  const loaded = await setScenePage(pageId, false);
+  if (!loaded || (expectedTransitionVersion !== null && expectedTransitionVersion !== state.transitionVersion)) {
+    return false;
+  }
+  dom.stage.dataset.ending = endingId;
+  state.locked = true;
   const titles = {
     A_separate: "她把手收了回去",
     B_alienate: "留下的不是‘我’",
@@ -1374,7 +1690,13 @@ async function finishEnding(endingId, expectedTransitionVersion = null) {
     C_cold: "身份被抹去",
   };
   const endingCopy = state.data.endings?.[endingId] ?? "她取回了自己的声音。";
-  showOverlay(`结局 · ${endingId}`, titles[endingId] ?? "最后一句", endingCopy, () => restartGame(), "重新开始");
+  showOverlay(
+    `结局 · ${endingId}`,
+    titles[endingId] ?? "最后一句",
+    endingCopy,
+    () => void playRevealSequence(),
+    "观看反转",
+  );
   return true;
 }
 
@@ -1393,6 +1715,7 @@ function hideOverlay() {
 }
 
 function resetRun() {
+  cancelStoryVideo();
   cancelTransitionTimers();
   storageRemove(SAVE_KEY);
   state.chapterIndex = 0;
@@ -1584,7 +1907,7 @@ async function startGame(mode = "continue") {
     syncBgmForLocation(endingId ? null : currentChapter(), endingId);
 
     if (endingId) {
-      await finishEnding(endingId);
+      await finishEnding(endingId, null, { playSequence: false });
     } else {
       await setScenePage(pageId, true);
       state.endingId = null;
@@ -1803,12 +2126,14 @@ async function load() {
       fetch(PLAYABLE_MANIFEST_URL, fetchOptions),
       fetch(PAGE_MANIFEST_URL, fetchOptions),
       fetch(AUDIO_MANIFEST_URL, fetchOptions),
+      fetch(VIDEO_MANIFEST_URL, fetchOptions),
     ]);
     if (responses.some((response) => !response.ok)) throw new Error("数据文件未找到");
     state.data = await responses[0].json();
     state.playable = await responses[1].json();
     state.pages = await responses[2].json();
     state.audio = await responses[3].json();
+    state.video = await responses[4].json();
     restoreAudioSettings();
     state.chapters = state.data.chapters ?? [];
     state.assets = new Map((state.playable.assets ?? []).map((asset) => [asset.id, asset]));
@@ -1816,6 +2141,8 @@ async function load() {
     if (!state.chapters.length || !state.assets.size || !state.pageAssets.size) throw new Error("章节或资产为空");
     validateBindings();
     validateAudioManifest();
+    validateVideoManifest();
+    state.revealSeen = storageGet(REVEAL_SEEN_KEY) === "1";
     const debugLocation = parseDebugLocation();
     restoreState();
     applyDebugLocation(debugLocation);
@@ -1837,7 +2164,7 @@ async function load() {
       : pageForLine(currentChapter(), currentLine()) ?? chapterDefaultPage(currentChapter());
     await setScenePage(initialPageId, false);
     if (state.endingId && state.pages.endingPages?.[state.endingId]) {
-      await finishEnding(state.endingId);
+      await finishEnding(state.endingId, null, { playSequence: false });
     } else if (state.memoryDraft?.chapterId === currentChapter()?.id) {
       state.endingId = null;
       setScene(currentChapter(), null, false);

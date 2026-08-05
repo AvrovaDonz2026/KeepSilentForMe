@@ -67,6 +67,7 @@ jobs:
           node --check web/js/main.js
           node scripts/validate-chapters.mjs
           node scripts/validate-audio.mjs
+          node scripts/validate-runtime-videos.mjs
           python3 art/v4/scenes/validate.py
           python3 art/v4/playable/validate.py
 

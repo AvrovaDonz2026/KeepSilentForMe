@@ -50,7 +50,8 @@ URL 参数是直接调试入口，启动时会跳过标题封面：
 - `audio/manifest.json` 绑定 4 首 CC0 本地 BGM：标题/L0/L1 使用雨夜环境，L2/L4 使用直播压迫，L3 使用门厅悬疑，L5 和四个结局使用终局余响；章节或结局切换时交叉淡化。
 - 右上角总开关同时控制 Web Audio 提示音和 BGM；配乐在开始按钮或调试入口的第一次用户手势后启动，以遵守浏览器自动播放策略。
 - 右上角齿轮打开“音乐调节”面板，可分别调整配乐和提示音音量；设置保存在 `localStorage`，重新开始不会重置音量偏好。
-- 音频来源、作者、CC0 记录、原始文件、转码参数和 SHA-256 见 [`audio/SOURCES.md`](audio/SOURCES.md)；运行时不请求外部音频 URL。外部 SFX、配音和视频仍未接入。
+- 音频来源、作者、CC0 记录、原始文件、转码参数和 SHA-256 见 [`audio/SOURCES.md`](audio/SOURCES.md)；运行时不请求外部音频 URL。
+- 章节、终局和反转视频由 [`video/manifest.json`](video/manifest.json) 驱动：`chapterOutros` 覆盖 K01-K14 的七条过场（L1 失败播放后留在重试界面），`sequences` 覆盖 A/B/C 结局与 K21/K22 反转；视频静音，BGM 继续由 HTML 音频控制。首次反转播放后可跳过。
 
 ## 在线与桌面构建
 
@@ -64,7 +65,7 @@ Tauri 2 工作流位于 `.github/workflows/build-tauri.yml`。最新成功运行
 - `keep-silent-for-me-linux-amd64-appimage`
 - `keep-silent-for-me-linux-amd64-deb`
 
-桌面构建前，`scripts/prepare-tauri.mjs` 会将 `web/`、`script/chapters.json`、
+桌面构建前，`scripts/prepare-tauri.mjs` 会将 `web/`（包括 `web/video/kling/` 的 K01-K22）、`script/chapters.json`、
 `art/bg/`、`art/v4/playable/` 和 `art/v4/scenes/` 组装到 `dist/tauri/`。
 `src-tauri/Cargo.lock` 与 CI 的 Rust 1.88.0 共同固定桌面依赖解析。
 

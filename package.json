@@ -10,7 +10,8 @@
     "tauri:build": "tauri build",
     "validate:chapters": "node scripts/validate-chapters.mjs",
     "validate:video-prompts": "node scripts/validate-video-prompts.mjs",
-    "validate:kling-prompts": "node scripts/validate-kling-prompts.mjs"
+    "validate:kling-prompts": "node scripts/validate-kling-prompts.mjs",
+    "validate:runtime-videos": "node scripts/validate-runtime-videos.mjs"
   },
   "devDependencies": {
     "@tauri-apps/cli": "2.11.4"

@@ -73,6 +73,67 @@ button { font: inherit; }
 
 .scene-page.is-turning { animation: page-turn 720ms cubic-bezier(0.2, 0.78, 0.3, 1); }
 
+.story-video-layer {
+  position: absolute;
+  z-index: 12;
+  inset: 0;
+  overflow: hidden;
+  background: #101514;
+}
+.story-video-layer.is-hidden { display: none; }
+.story-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(0.78) contrast(1.04);
+}
+.story-video-caption {
+  position: absolute;
+  z-index: 1;
+  right: clamp(20px, 7vw, 110px);
+  bottom: clamp(34px, 10vh, 96px);
+  left: clamp(20px, 7vw, 110px);
+  min-height: 28px;
+  color: rgba(230, 232, 224, 0.92);
+  font-size: clamp(14px, 1.7vw, 22px);
+  line-height: 1.7;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.92);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+.story-video-caption.is-visible { opacity: 1; }
+.story-video-skip {
+  position: absolute;
+  z-index: 2;
+  top: 24px;
+  right: 28px;
+  padding: 8px 12px;
+  border: 1px solid rgba(214, 221, 211, 0.34);
+  border-radius: 2px;
+  background: rgba(7, 10, 10, 0.62);
+  color: rgba(214, 221, 211, 0.78);
+  cursor: pointer;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+.story-video-skip:hover,
+.story-video-skip:focus-visible { border-color: rgba(214, 221, 211, 0.76); color: var(--paper); outline: none; }
+.story-video-skip.is-hidden { display: none; }
+
+.app.is-video-playing .topbar,
+.app.is-video-playing .scene-status,
+.app.is-video-playing .live-chat,
+.app.is-video-playing .dialogue-frame,
+.app.is-video-playing .drag-layer,
+.app.is-video-playing .fx-layer,
+.app.is-video-playing .stage-grain,
+.app.is-video-playing .audio-settings,
+.app.is-video-playing .toast { visibility: hidden; opacity: 0; pointer-events: none; }
+
 .stage-shade {
   z-index: -4;
   pointer-events: none;
@@ -419,6 +480,8 @@ button { font: inherit; }
   .dialogue-frame { min-height: clamp(218px, 39dvh, 246px); }
   .dialogue-text { font-size: 18px; letter-spacing: 0.025em; }
   .dialogue-footer { font-size: 10px; }
+  .story-video-skip { top: 16px; right: 14px; }
+  .story-video-caption { right: 18px; bottom: 32px; left: 18px; font-size: 13px; letter-spacing: 0.08em; }
 }
 
 @media (max-width: 520px) and (max-height: 460px) {

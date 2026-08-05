@@ -23,7 +23,8 @@
 - `prompts/kling/OMNI_REFERENCE_PREFIX.txt`：Kling 3 Omni 的图片1-7引用规则；manifest 的
   `omni.references` 为每条镜头登记角色、表情、消音体和特效参考照片。
 - `prompts/kling/README.md`：可灵参数、生成顺序和镜头分组说明。
-- `generated/README.md`：当前已生成 MP4 的逐帧复盘和重试记录；MP4 本身被 `.gitignore` 忽略。
+- `generated/README.md`：当前已生成 MP4 的逐帧复盘和重试记录；正式接入 Demo 的 K01-K22 副本位于 `web/video/kling/`。
+- `web/video/manifest.json`：运行时章节过场、终局/反转序列与首帧场景页绑定；运行时校验命令为 `node scripts/validate-runtime-videos.mjs`。
 - `node scripts/validate-video-prompts.mjs`：检查提示词、首末帧和输出路径。
 - `node scripts/validate-kling-prompts.mjs`：检查可灵 22 条单场景镜头和页面引用。
 

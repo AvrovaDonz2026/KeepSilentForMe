@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "id": "keep-silent-for-me-runtime-video",
+  "format": "video/mp4",
+  "default": {
+    "muted": true,
+    "playsInline": true,
+    "controls": false,
+    "duration": 5
+  },
+  "sequences": {
+    "A_separate": {
+      "kind": "ending",
+      "clips": [
+        {
+          "id": "K15_L5_A_release",
+          "path": "kling/K15_L5_A_release.mp4",
+          "beforePage": "PAGE_L5_empty",
+          "duration": 5
+        },
+        {
+          "id": "K16_END_A_hold",
+          "path": "kling/K16_END_A_hold.mp4",
+          "beforePage": "PAGE_END_A_separate",
+          "duration": 5
+        }
+      ]
+    },
+    "B_alienate": {
+      "kind": "ending",
+      "clips": [
+        {
+          "id": "K17_L5_B_offset",
+          "path": "kling/K17_L5_B_offset.mp4",
+          "beforePage": "PAGE_L5_empty",
+          "duration": 5
+        },
+        {
+          "id": "K18_END_B_hold",
+          "path": "kling/K18_END_B_hold.mp4",
+          "beforePage": "PAGE_END_B_alienate",
+          "duration": 5
+        }
+      ]
+    },
+    "C_consume": {
+      "kind": "ending",
+      "clips": [
+        {
+          "id": "K19_L5_C_drop",
+          "path": "kling/K19_L5_C_drop.mp4",
+          "beforePage": "PAGE_L5_empty",
+          "duration": 5
+        },
+        {
+          "id": "K20_END_C_hold",
+          "path": "kling/K20_END_C_hold.mp4",
+          "beforePage": "PAGE_END_C_hollow",
+          "duration": 5
+        }
+      ]
+    },
+    "C_cold": {
+      "kind": "ending",
+      "clips": [
+        {
+          "id": "K19_L5_C_drop",
+          "path": "kling/K19_L5_C_drop.mp4",
+          "beforePage": "PAGE_L5_empty",
+          "duration": 5
+        },
+        {
+          "id": "K20_END_C_hold",
+          "path": "kling/K20_END_C_hold.mp4",
+          "beforePage": "PAGE_END_C_hollow",
+          "duration": 5
+        }
+      ]
+    },
+    "reveal": {
+      "kind": "reveal",
+      "clips": [
+        {
+          "id": "K21_RV_interview_hold",
+          "path": "kling/K21_RV_interview_hold.mp4",
+          "beforePage": "PAGE_L1_interview",
+          "duration": 5
+        },
+        {
+          "id": "K22_RV_poster_hold",
+          "path": "kling/K22_RV_poster_hold.mp4",
+          "beforePage": "PAGE_L5_poster",
+          "duration": 5
+        }
+      ]
+    }
+  },
+  "chapterOutros": {
+    "L0_to_L1": {
+      "kind": "chapterOutro",
+      "afterChapter": "L0",
+      "nextChapter": "L1",
+      "clips": [
+        {
+          "id": "K01_L0_ink",
+          "path": "kling/K01_L0_ink.mp4",
+          "beforePage": "PAGE_L0_desk",
+          "duration": 5
+        },
+        {
+          "id": "K02_L0_door",
+          "path": "kling/K02_L0_door.mp4",
+          "beforePage": "PAGE_L0_desk",
+          "duration": 5
+        }
+      ]
+    },
+    "L1_pass_to_L2": {
+      "kind": "chapterOutro",
+      "afterChapter": "L1",
+      "nextChapter": "L2",
+      "clips": [
+        {
+          "id": "K03_L1_nod",
+          "path": "kling/K03_L1_nod.mp4",
+          "beforePage": "PAGE_L1_interview",
+          "duration": 5
+        },
+        {
+          "id": "K04_L1_ink",
+          "path": "kling/K04_L1_ink.mp4",
+          "beforePage": "PAGE_L1_interview",
+          "duration": 5
+        }
+      ]
+    },
+    "L1_fail_retry": {
+      "kind": "chapterOutro",
+      "afterChapter": "L1",
+      "retryChapter": "L1",
+      "clips": [
+        {
+          "id": "K05_L1_fail_light",
+          "path": "kling/K05_L1_fail_light.mp4",
+          "beforePage": "PAGE_L1_interview",
+          "duration": 3
+        },
+        {
+          "id": "K06_L1_fail_shatter",
+          "path": "kling/K06_L1_fail_shatter.mp4",
+          "beforePage": "PAGE_L1_interview",
+          "duration": 3
+        }
+      ]
+    },
+    "L2_to_L3": {
+      "kind": "chapterOutro",
+      "afterChapter": "L2",
+      "nextChapter": "L3",
+      "clips": [
+        {
+          "id": "K07_L2_indicator",
+          "path": "kling/K07_L2_indicator.mp4",
+          "beforePage": "PAGE_L2_live",
+          "duration": 5
+        },
+        {
+          "id": "K08_L2_creature",
+          "path": "kling/K08_L2_creature.mp4",
+          "beforePage": "PAGE_L2_live",
+          "duration": 5
+        }
+      ]
+    },
+    "L3_to_L4": {
+      "kind": "chapterOutro",
+      "afterChapter": "L3",
+      "nextChapter": "L4",
+      "clips": [
+        {
+          "id": "K09_L3_door_close",
+          "path": "kling/K09_L3_door_close.mp4",
+          "beforePage": "PAGE_L3_door_default",
+          "duration": 5
+        },
+        {
+          "id": "K10_L3_stage2",
+          "path": "kling/K10_L3_stage2.mp4",
+          "beforePage": "PAGE_L3_door_default",
+          "duration": 5
+        }
+      ]
+    },
+    "L4_perform_to_L5": {
+      "kind": "chapterOutro",
+      "afterChapter": "L4",
+      "nextChapter": "L5",
+      "route": "perform",
+      "clips": [
+        {
+          "id": "K11_L4_live_off",
+          "path": "kling/K11_L4_live_off.mp4",
+          "beforePage": "PAGE_L4_apology",
+          "duration": 5
+        },
+        {
+          "id": "K12_L4_stack",
+          "path": "kling/K12_L4_stack.mp4",
+          "beforePage": "PAGE_L4_apology",
+          "duration": 5
+        }
+      ]
+    },
+    "L4_refuse_to_L5": {
+      "kind": "chapterOutro",
+      "afterChapter": "L4",
+      "nextChapter": "L5",
+      "route": "refuse",
+      "clips": [
+        {
+          "id": "K13_L4_refuse_cable",
+          "path": "kling/K13_L4_refuse_cable.mp4",
+          "beforePage": "PAGE_L4_apology",
+          "duration": 5
+        },
+        {
+          "id": "K14_L4_refuse_echo",
+          "path": "kling/K14_L4_refuse_echo.mp4",
+          "beforePage": "PAGE_L4_apology",
+          "duration": 5
+        }
+      ]
+    }
+  }
+}

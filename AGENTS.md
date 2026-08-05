@@ -7,7 +7,7 @@
 - `art/v4/scenes/` contains the 13 full-page scene images, `pageBindings`, generation prompts, and the scene validator. `art/v4/playable/` contains source/feedback assets and its manifest. Keep `art/bg/` because the legacy manifest and generation scripts still use it.
 - `storyboard/v4-prop-lock/` is the current visual reference set. Older art and storyboards live under `archive/` and should not be loaded by the runtime.
 - `scripts/` prepares the Tauri frontend and validates audio; `src-tauri/` contains the Tauri 2 shell and platform configs.
-- `video/prompts/minimax-h3/` contains the 11 MiniMax H3 motion prompts, clean scene-page references, and generation manifest; `video/prompts/kling/` contains 22 Kling single-scene shots; generated MP4 files stay outside version control.
+- `video/prompts/minimax-h3/` contains the 11 MiniMax H3 motion prompts, clean scene-page references, and generation manifest; `video/prompts/kling/` contains 22 Kling single-scene shots; generated source MP4s stay in `video/generated/`, while runtime-approved K01-K22 copies live under `web/video/kling/`.
 
 ## Build, Test, and Development
 
@@ -27,6 +27,7 @@ python3 art/v4/playable/validate.py
 node scripts/validate-audio.mjs
 node scripts/validate-video-prompts.mjs
 node scripts/validate-kling-prompts.mjs
+npm run validate:runtime-videos
 npm run tauri:prepare
 ```
 

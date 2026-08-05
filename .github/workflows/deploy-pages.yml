@@ -38,6 +38,7 @@ jobs:
           node --check web/js/main.js
           node scripts/validate-chapters.mjs
           node scripts/validate-audio.mjs
+          node scripts/validate-runtime-videos.mjs
           python3 art/v4/scenes/validate.py
           python3 art/v4/playable/validate.py
 
@@ -67,6 +68,7 @@ jobs:
               root / "web/index.html",
               root / "web/js/main.js",
               root / "web/audio/manifest.json",
+              root / "web/video/manifest.json",
               root / "art/v4/playable/manifest.json",
               root / "art/v4/scenes/manifest.json",
               root / "script/chapters.json",
@@ -110,9 +112,24 @@ jobs:
           if audio_missing:
               raise SystemExit(f"missing audio assets: {audio_missing}")
 
+          runtime_videos = json.loads((root / "web/video/manifest.json").read_text())
+          video_missing = []
+          all_video_sequences = [
+              *runtime_videos.get("sequences", {}).values(),
+              *runtime_videos.get("chapterOutros", {}).values(),
+          ]
+          for sequence in all_video_sequences:
+              for clip in sequence.get("clips", []):
+                  path = root / "web/video" / clip["path"]
+                  if not path.is_file() or path.stat().st_size == 0:
+                      video_missing.append(str(path))
+          if video_missing:
+              raise SystemExit(f"missing runtime video assets: {video_missing}")
+
           print(
               f"Pages artifact OK: {len(playable['assets'])} playable assets, "
-              f"{len(pages['assets'])} scene pages, {len(audio['tracks'])} audio tracks"
+              f"{len(pages['assets'])} scene pages, {len(audio['tracks'])} audio tracks, "
+              f"{sum(len(sequence.get('clips', [])) for sequence in all_video_sequences)} video clips"
           )
           PY
 

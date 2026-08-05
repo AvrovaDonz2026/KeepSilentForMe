@@ -5,13 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0b0d0d" />
     <title>请替我沉默 · 可玩 Demo</title>
-    <link rel="stylesheet" href="css/style.css?v=audio-3" />
+    <link rel="stylesheet" href="css/style.css?v=video-2" />
   </head>
   <body>
     <main id="app" class="app is-loading is-title-screen">
       <section class="stage" aria-label="请替我沉默可玩场景">
         <div class="scene-page-layer" aria-hidden="true">
           <img id="scene-page" class="scene-page" alt="" />
+        </div>
+        <div id="story-video-layer" class="story-video-layer is-hidden" aria-hidden="true">
+          <video id="story-video" class="story-video" muted playsinline preload="auto"></video>
+          <div id="story-video-caption" class="story-video-caption" aria-live="polite"></div>
+          <button id="story-video-skip" class="story-video-skip is-hidden" type="button">跳过反转</button>
         </div>
         <div class="stage-shade" aria-hidden="true"></div>
         <div class="stage-grain" aria-hidden="true"></div>
@@ -160,6 +165,6 @@
         </div>
       </section>
     </main>
-    <script type="module" src="js/main.js?v=audio-3"></script>
+    <script type="module" src="js/main.js?v=video-2"></script>
   </body>
 </html>
