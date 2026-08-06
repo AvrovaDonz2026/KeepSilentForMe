@@ -392,7 +392,13 @@ async function playLoadedStoryClip(clip, token) {
     };
     const onEnded = () => { cleanup(); resolve(); };
     const onError = () => { cleanup(); reject(new Error(`视频 ${clip.id} 播放失败`)); };
-    const onSkip = () => { cleanup(); dom.storyVideo.pause(); resolve(); };
+    const onSkip = () => {
+      // A skip applies to the whole sequence, not only the currently loaded clip.
+      state.videoSkipRequested = true;
+      cleanup();
+      dom.storyVideo.pause();
+      resolve();
+    };
     const onCancel = () => { cleanup(); dom.storyVideo.pause(); resolve(); };
     cancelFinished = () => { cleanup(); dom.storyVideo.pause(); resolve(); };
     dom.storyVideo.addEventListener("ended", onEnded, { once: true });
@@ -1558,6 +1564,10 @@ function openMemoryOverlay(chapter) {
 }
 
 function hideMemoryOverlay() {
+  const drag = state.memoryDrag;
+  if (drag?.pointerId !== undefined && drag.element?.hasPointerCapture?.(drag.pointerId)) {
+    drag.element.releasePointerCapture(drag.pointerId);
+  }
   dom.memoryOverlay.classList.add("is-hidden");
   state.memoryDrag = null;
   state.suppressMemoryClick = false;
@@ -1717,6 +1727,17 @@ function hideOverlay() {
 function resetRun() {
   cancelStoryVideo();
   cancelTransitionTimers();
+  hideLiveChat();
+  clearTimeout(state.toastTimer);
+  state.toastTimer = null;
+  dom.toast.classList.remove("is-visible");
+  if (state.pointerId !== null && dom.blackBar.hasPointerCapture?.(state.pointerId)) {
+    dom.blackBar.releasePointerCapture(state.pointerId);
+  }
+  state.dragging = false;
+  state.pointerId = null;
+  state.dragOffsetX = 0;
+  state.dragOffsetY = 0;
   storageRemove(SAVE_KEY);
   state.chapterIndex = 0;
   state.lineIndex = 0;
