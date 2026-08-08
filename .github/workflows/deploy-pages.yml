@@ -28,7 +28,10 @@ jobs:
           python-version: "3.12.8"
 
       - name: Install validation dependencies
-        run: python3 -m pip install --disable-pip-version-check --no-input Pillow
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          python3 -m pip install --disable-pip-version-check --no-input Pillow
 
       - name: Configure Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
