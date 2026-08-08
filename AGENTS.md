@@ -3,7 +3,7 @@
 ## Project Structure
 
 - `web/` is the current HTML/CSS/JavaScript game runtime; `web/js/main.js` owns the state machine, drag interaction, page transitions, live chat, and audio controls.
-- `script/chapters.json` is the authoritative dialogue data source.
+- `script/chapters.json` holds language-neutral rules and stable chapter/line/zone IDs. Player-facing copy lives in `script/locales/`; read `script/locales/README.md` before changing a locale.
 - `art/v4/scenes/` contains the 13 full-page scene images, `pageBindings`, generation prompts, and the scene validator. `art/v4/playable/` contains source/feedback assets and its manifest. Keep `art/bg/` because the legacy manifest and generation scripts still use it.
 - `storyboard/v4-prop-lock/` is the current visual reference set. Older art and storyboards live under `archive/` and should not be loaded by the runtime.
 - `scripts/` prepares the Tauri frontend and validates audio; `src-tauri/` contains the Tauri 2 shell and platform configs.
@@ -22,6 +22,8 @@ Run focused checks before submitting changes:
 ```bash
 node --check web/js/main.js
 node --check scripts/prepare-tauri.mjs
+node scripts/validate-chapters.mjs
+npm run validate:locales
 python3 art/v4/scenes/validate.py
 python3 art/v4/playable/validate.py
 node scripts/validate-audio.mjs
@@ -35,11 +37,11 @@ Use `npm ci` for a clean dependency install and `npm run tauri:build` for a nati
 
 ## Style and Naming
 
-Follow the existing formatting: two spaces in JavaScript, CSS, JSON, and Markdown examples; four spaces in Python; strict mode and quoted variables in shell scripts. Prefer small, local edits and existing browser APIs over new frameworks. Use existing identifiers such as `L3_S04b`, `PAGE_L3_door_default`, and `A_separate`; keep manifest IDs and file names synchronized.
+Follow the existing formatting: two spaces in JavaScript, CSS, JSON, and Markdown examples; four spaces in Python; strict mode and quoted variables in shell scripts. Prefer small, local edits and existing browser APIs over new frameworks. Use existing identifiers such as `L3_S04b`, `L3_S04b_Z01`, `PAGE_L3_door_default`, and `A_separate`; keep manifest IDs and file names synchronized. Do not use display text as an identifier or saved value.
 
 ## Assets and Configuration
 
-Page bindings must remain manifest-driven. Do not reintroduce runtime character/NPC overlays into the full-page demo. Image-generation keys are read from environment variables only; never commit secrets, `.env` files, generated logs, or temporary responses.
+Page bindings must remain manifest-driven. Do not reintroduce runtime character/NPC overlays into the full-page demo. Image-generation keys are read from environment variables only; never commit secrets, `.env` files, generated logs, or temporary responses. Locale packs must preserve base rule IDs/flags and provide exact zone offsets; run `npm run validate:locales` after any translation edit. English, German, and Russian are Beta until native review.
 
 ## Commits and Pull Requests
 

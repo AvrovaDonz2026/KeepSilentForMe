@@ -40,6 +40,7 @@ jobs:
         run: |
           node --check web/js/main.js
           node scripts/validate-chapters.mjs
+          node scripts/validate-locales.mjs
           node scripts/validate-audio.mjs
           node scripts/validate-runtime-videos.mjs
           python3 art/v4/scenes/validate.py
@@ -54,7 +55,7 @@ jobs:
           cp -a art/bg/. _site/art/bg/
           cp -a art/v4/playable/. _site/art/v4/playable/
           cp -a art/v4/scenes/. _site/art/v4/scenes/
-          cp script/chapters.json _site/script/chapters.json
+          cp -a script/. _site/script/
           touch _site/.nojekyll
 
       - name: Verify Pages artifact
@@ -75,6 +76,11 @@ jobs:
               root / "art/v4/playable/manifest.json",
               root / "art/v4/scenes/manifest.json",
               root / "script/chapters.json",
+              root / "script/locales/manifest.json",
+              root / "script/locales/zh-CN.json",
+              root / "script/locales/en.json",
+              root / "script/locales/de.json",
+              root / "script/locales/ru.json",
           ]
           missing = [str(path) for path in required if not path.is_file()]
           if missing:

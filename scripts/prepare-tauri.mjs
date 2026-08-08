@@ -83,10 +83,18 @@ copyManifestAssets(
   resolve(distRoot, "art", "v4", "scenes"),
 );
 
-const chapterSource = resolve(repositoryRoot, "script", "chapters.json");
-const chapterDestination = resolve(distRoot, "script", "chapters.json");
-mkdirSync(dirname(chapterDestination), { recursive: true });
-cpSync(chapterSource, chapterDestination);
+const scriptSource = resolve(repositoryRoot, "script");
+const scriptDestination = resolve(distRoot, "script");
+cpSync(scriptSource, scriptDestination, {
+  recursive: true,
+  filter: (sourcePath) => !sourcePath.endsWith(".md"),
+});
+for (const required of [
+  resolve(scriptDestination, "chapters.json"),
+  resolve(scriptDestination, "locales", "manifest.json"),
+]) {
+  if (!existsSync(required)) throw new Error(`Missing Tauri runtime data: ${relative(repositoryRoot, required)}`);
+}
 
 for (const file of ["index.html", "js/main.js"]) {
   const rewrittenFile = readFileSync(resolve(distRoot, file), "utf8");

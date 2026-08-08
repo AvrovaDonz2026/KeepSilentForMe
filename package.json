@@ -9,6 +9,7 @@
     "tauri:icons": "tauri icon src-tauri/icons/app-icon.svg",
     "tauri:build": "tauri build",
     "validate:chapters": "node scripts/validate-chapters.mjs",
+    "validate:locales": "node scripts/validate-locales.mjs",
     "validate:video-prompts": "node scripts/validate-video-prompts.mjs",
     "validate:kling-prompts": "node scripts/validate-kling-prompts.mjs",
     "validate:runtime-videos": "node scripts/validate-runtime-videos.mjs"

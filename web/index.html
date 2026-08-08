@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0b0d0d" />
     <title>请替我沉默 · 可玩 Demo</title>
-    <link rel="stylesheet" href="css/style.css?v=video-2" />
+    <link rel="stylesheet" href="css/style.css?v=i18n-1" />
   </head>
   <body>
     <main id="app" class="app is-loading is-title-screen">
-      <section class="stage" aria-label="请替我沉默可玩场景">
+      <section id="stage" class="stage" aria-label="请替我沉默可玩场景">
         <div class="scene-page-layer" aria-hidden="true">
           <img id="scene-page" class="scene-page" alt="" />
         </div>
@@ -28,15 +28,19 @@
         <section id="title-screen" class="title-screen" aria-label="游戏开始" aria-busy="true">
           <div class="title-screen-wash" aria-hidden="true"></div>
           <div class="title-content">
-            <p class="title-kicker">K/S · 01</p>
+            <p id="title-kicker" class="title-kicker">K/S · 01</p>
             <div class="title-rule" aria-hidden="true"></div>
-            <h1>请替我沉默</h1>
-            <p class="title-english">KEEP SILENT FOR ME</p>
-            <p class="title-tagline">她负责说谎，你负责活下来。</p>
+            <h1 id="title-game-name">请替我沉默</h1>
+            <p id="title-latin-name" class="title-english">KEEP SILENT FOR ME</p>
+            <p id="title-tagline" class="title-tagline">她负责说谎，你负责活下来。</p>
             <div class="title-actions">
               <button id="title-primary" class="text-button title-primary" type="button" disabled>开始游戏</button>
               <button id="title-new-game" class="title-secondary is-hidden" type="button">重新开始</button>
             </div>
+            <label class="title-language" for="title-language-select">
+              <span id="title-language-label">语言</span>
+              <select id="title-language-select" disabled></select>
+            </label>
             <p id="title-status" class="title-status" role="status" aria-live="polite">正在准备场景…</p>
           </div>
         </section>
@@ -44,7 +48,7 @@
         <header class="topbar">
           <div class="wordmark">
             <span class="wordmark-mark">K/S</span>
-            <span class="wordmark-name">请替我沉默</span>
+            <span id="wordmark-name" class="wordmark-name">请替我沉默</span>
           </div>
           <div class="chapter-readout">
             <span id="chapter-kicker">开场</span>
@@ -52,6 +56,10 @@
             <span id="chapter-title">雨窗里的第一句话</span>
           </div>
           <div class="topbar-actions">
+            <div class="language-menu-wrap">
+              <button id="language-menu-button" class="language-menu-button" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="language-menu" disabled>简体中文</button>
+              <div id="language-menu" class="language-menu is-hidden" role="menu" aria-label="切换语言"></div>
+            </div>
             <button id="restart-button" class="icon-button" type="button" aria-label="重新开始" title="重新开始">↺</button>
             <button id="audio-settings-button" class="icon-button" type="button" aria-label="打开音乐调节" title="音乐调节" aria-controls="audio-settings" aria-expanded="false">⚙</button>
             <button id="sound-button" class="icon-button" type="button" aria-label="切换提示音和配乐" title="切换提示音和配乐">◌</button>
@@ -61,14 +69,14 @@
         <aside id="audio-settings" class="audio-settings is-hidden" role="dialog" aria-modal="true" aria-labelledby="audio-settings-title" aria-describedby="audio-settings-status">
           <div class="audio-settings-head">
             <div>
-              <p class="audio-settings-eyebrow">声音设置</p>
+              <p id="audio-settings-eyebrow" class="audio-settings-eyebrow">声音设置</p>
               <h2 id="audio-settings-title">音乐调节</h2>
             </div>
             <button id="audio-settings-close" class="icon-button audio-settings-close" type="button" aria-label="关闭音乐调节" title="关闭音乐调节">×</button>
           </div>
           <label class="audio-enabled-row" for="audio-enabled">
             <span class="audio-enabled-copy">
-              <span class="audio-control-label">声音</span>
+              <span id="audio-control-label" class="audio-control-label">声音</span>
               <span id="audio-enabled-status" class="audio-control-note">配乐与提示音开启</span>
             </span>
             <input id="audio-enabled" class="audio-switch" type="checkbox" checked aria-describedby="audio-enabled-status" />
@@ -91,7 +99,7 @@
         </aside>
 
         <aside class="scene-status" aria-live="polite">
-          <div class="status-caption">当前状态</div>
+          <div id="status-caption" class="status-caption">当前状态</div>
           <div id="status-copy" class="status-copy">等待她把一句话交给你。</div>
           <div class="status-rule" aria-hidden="true"><span id="status-rule-fill"></span></div>
           <div id="scene-caption" class="scene-caption">场景页 · 尚未载入</div>
@@ -147,11 +155,11 @@
             <h1 id="memory-title">你吞下的字还没有沉下去</h1>
             <p id="memory-copy" class="memory-copy">把它们收拢成一句只留给自己的私语。</p>
             <div class="memory-section">
-              <div class="memory-label">碎片</div>
+              <div id="memory-fragments-label" class="memory-label">碎片</div>
               <div id="memory-pool" class="memory-pool" aria-label="私语碎片"></div>
             </div>
             <div class="memory-section">
-              <div class="memory-label">私语</div>
+              <div id="memory-whisper-label" class="memory-label">私语</div>
               <div id="memory-lane" class="memory-lane" aria-label="排列后的私语"></div>
             </div>
             <button id="memory-confirm" class="text-button memory-confirm" type="button" disabled>收好这句私语</button>
@@ -159,12 +167,12 @@
         </section>
 
         <div id="error-panel" class="error-panel is-hidden" role="alert">
-          <strong>场景暂时无法载入。</strong>
+          <strong id="error-title">场景暂时无法载入。</strong>
           <span id="error-copy">请通过本地服务器打开 Demo。</span>
           <button id="retry-button" class="text-button" type="button">重试</button>
         </div>
       </section>
     </main>
-    <script type="module" src="js/main.js?v=video-2"></script>
+    <script type="module" src="js/main.js?v=i18n-1"></script>
   </body>
 </html>

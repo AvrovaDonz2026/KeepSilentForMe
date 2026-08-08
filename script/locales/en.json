@@ -1,0 +1,1489 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "documentTitle": "Keep Silent for Me | Playable Demo",
+  "game": {
+    "title": "Keep Silent for Me",
+    "latinTitle": "KEEP SILENT FOR ME",
+    "tagline": "She lies to survive. You decide what disappears.",
+    "chapters": {
+      "L0": {
+        "title": "Opening",
+        "narration": [
+          "Some words split a life open the moment they are spoken.",
+          "So she keeps the unsayable beneath her tongue.",
+          "...Are you still there?",
+          "Drag the black bar over one unbroken stretch of words.",
+          "What it covers becomes you.",
+          "Her interview is tomorrow. ...Do not let her say the wrong thing."
+        ],
+        "objective": "Teach the rule: every word passes through you first."
+      },
+      "L1": {
+        "title": "The Interview",
+        "narration": [
+          "(Interviewer A) Please introduce yourself.",
+          "(Her, quietly) ...It has started.",
+          "(Interviewer B) Relax. Say whatever comes to mind. -- The most dangerous sentence."
+        ],
+        "objective": "pass >= 4 and fail < 2: hired. Otherwise, try again."
+      },
+      "L2": {
+        "title": "First Stream",
+        "narration": [
+          "(System) LIVE",
+          "(Chat) She is here / New streamer? / Show your face",
+          "(Her) ...Hello, everyone."
+        ],
+        "objective": "Keep hate_leak below 2 and make it to the end; failures can be retried."
+      },
+      "L3": {
+        "title": "A Friend at the Door",
+        "narration": [
+          "(Knocking)",
+          "(Friend) ...I know you are in there. Could you open the door?",
+          "(Her) ..."
+        ],
+        "objective": "There is no perfect route. Track trust, distance, secret risk, and cracks."
+      },
+      "L4": {
+        "title": "Apology Stream",
+        "narration": [
+          "(Chat) Apologize / Apologize / Why will not you speak?",
+          "(System) Abnormal traffic. No numbers, only noise.",
+          "(Her) ...All right."
+        ],
+        "objective": "Either apology_perform >= 2 or apology_refuse >= 2 can close this chapter."
+      },
+      "L5": {
+        "title": "A Room Without Viewers",
+        "narration": [
+          "(Narrator) No interviewers. No friend. No viewers.",
+          "(Her) ...Only you remain."
+        ],
+        "objective": "Your last cover chooses the ending. There is no menu."
+      }
+    },
+    "lines": {
+      "L0_S01": {
+        "raw": "I gave you every word I could not say. Please swallow them for me.",
+        "zones": {
+          "L0_S01_Z01": {
+            "text": "every word I could not say",
+            "start": 11,
+            "remain": "I gave you . Please swallow them for me.",
+            "npc": "The words are gone. Look at the desk.",
+            "eat": "words I could not say"
+          },
+          "L0_S01_Z02": {
+            "text": "Please swallow them for me",
+            "start": 39,
+            "remain": "I gave you every word I could not say. .",
+            "npc": "You could cover the ending instead.",
+            "eat": "swallow them for me"
+          },
+          "L0_S01_Z03": {
+            "text": "gave you",
+            "start": 2,
+            "remain": "I  every word I could not say. Please swallow them for me.",
+            "npc": "The sentence changes shape.",
+            "eat": "gave them to you"
+          },
+          "L0_S01_Z04": {
+            "text": "I gave",
+            "start": 0,
+            "remain": " you every word I could not say. Please swallow them for me.",
+            "npc": "...Where did the subject go?",
+            "eat": "I gave"
+          }
+        }
+      },
+      "L1_S01": {
+        "raw": "My name is--never mind. Names do not matter. I am ordinary, and I ruin things easily.",
+        "zones": {
+          "L1_S01_Z01": {
+            "text": "I ruin things easily",
+            "start": 64,
+            "remain": "My name is--never mind. Names do not matter. I am ordinary, and .",
+            "npc": "Ordinary is fine.",
+            "eat": "I ruin things easily"
+          },
+          "L1_S01_Z02": {
+            "text": "Names do not matter.",
+            "start": 24,
+            "remain": "My name is--never mind.  I am ordinary, and I ruin things easily.",
+            "npc": "How should we address you, then?",
+            "eat": "names do not matter"
+          },
+          "L1_S01_Z03": {
+            "text": "My name is--never mind.",
+            "start": 0,
+            "remain": " Names do not matter. I am ordinary, and I ruin things easily.",
+            "npc": "At least that is honest.",
+            "eat": "my name--never mind"
+          },
+          "L1_S01_Z04": {
+            "text": "I am ordinary,",
+            "start": 45,
+            "remain": "My name is--never mind. Names do not matter.  and I ruin things easily.",
+            "npc": "...And your confidence?",
+            "eat": "ordinary"
+          }
+        }
+      },
+      "L1_S02": {
+        "raw": "I never stay anywhere long. It is not that they reject me; I am the one who leaves first.",
+        "zones": {
+          "L1_S02_Z01": {
+            "text": "I am the one who leaves first",
+            "start": 59,
+            "remain": "I never stay anywhere long. It is not that they reject me; .",
+            "npc": "Stability can be learned.",
+            "eat": "I leave first"
+          },
+          "L1_S02_Z02": {
+            "text": "It is not that they reject me;",
+            "start": 28,
+            "remain": "I never stay anywhere long.  I am the one who leaves first.",
+            "npc": "That sounds like job-hopping.",
+            "eat": "they do not reject me"
+          },
+          "L1_S02_Z03": {
+            "text": "never stay anywhere long.",
+            "start": 2,
+            "remain": "I  It is not that they reject me; I am the one who leaves first.",
+            "npc": "Could you be more specific?",
+            "eat": "never stay long"
+          },
+          "L1_S02_Z04": {
+            "text": "I never",
+            "start": 0,
+            "remain": " stay anywhere long. It is not that they reject me; I am the one who leaves first.",
+            "npc": "The sentence is drifting.",
+            "eat": "I never"
+          }
+        }
+      },
+      "L1_S03": {
+        "raw": "I have little experience, and I say the wrong thing too often, but I need this job.",
+        "zones": {
+          "L1_S03_Z01": {
+            "text": "I have little experience, and I say the wrong thing too often, but I",
+            "start": 0,
+            "remain": " need this job.",
+            "npc": "That is candid. Fine.",
+            "eat": "little experience...wrong words"
+          },
+          "L1_S03_Z02": {
+            "text": "but I need this job.",
+            "start": 63,
+            "remain": "I have little experience, and I say the wrong thing too often, ",
+            "npc": "Then it will be hard to hire you.",
+            "eat": "need this job"
+          },
+          "L1_S03_Z03": {
+            "text": "and I say the wrong thing too often,",
+            "start": 26,
+            "remain": "I have little experience,  but I need this job.",
+            "npc": "Experience can be taught.",
+            "eat": "say the wrong thing"
+          },
+          "L1_S03_Z04": {
+            "text": "I have",
+            "start": 0,
+            "remain": " little experience, and I say the wrong thing too often, but I need this job.",
+            "npc": "That phrasing is strange.",
+            "eat": "I have"
+          }
+        }
+      },
+      "L1_S04": {
+        "raw": "When pressure gets high, I may want to run, but I finish what is in front of me first.",
+        "zones": {
+          "L1_S04_Z01": {
+            "text": "I may want to run, but",
+            "start": 25,
+            "remain": "When pressure gets high,  I finish what is in front of me first.",
+            "npc": "Not terrible.",
+            "eat": "want to run"
+          },
+          "L1_S04_Z02": {
+            "text": "I finish what is in front of me first",
+            "start": 48,
+            "remain": "When pressure gets high, I may want to run, but .",
+            "npc": "We need people who handle pressure.",
+            "eat": "finish what is in front of me"
+          },
+          "L1_S04_Z03": {
+            "text": "When pressure gets high,",
+            "start": 0,
+            "remain": " I may want to run, but I finish what is in front of me first.",
+            "npc": "Under what condition?",
+            "eat": "when pressure gets high"
+          },
+          "L1_S04_Z04": {
+            "text": "want to run",
+            "start": 31,
+            "remain": "When pressure gets high, I may , but I finish what is in front of me first.",
+            "npc": "And then what?",
+            "eat": "want to run"
+          }
+        }
+      },
+      "L1_S05": {
+        "raw": "My flaw is that I am too honest. Whatever people ask, I want to answer plainly, even when it makes things ugly.",
+        "zones": {
+          "L1_S05_Z01": {
+            "text": "even when it makes things ugly.",
+            "start": 80,
+            "remain": "My flaw is that I am too honest. Whatever people ask, I want to answer plainly, ",
+            "npc": "Honesty is a strength.",
+            "eat": "makes things ugly"
+          },
+          "L1_S05_Z02": {
+            "text": "I am too honest.",
+            "start": 16,
+            "remain": "My flaw is that  Whatever people ask, I want to answer plainly, even when it makes things ugly.",
+            "npc": "That sounds hard to work with.",
+            "eat": "too honest"
+          },
+          "L1_S05_Z03": {
+            "text": "Whatever people ask, I want to answer plainly,",
+            "start": 33,
+            "remain": "My flaw is that I am too honest.  even when it makes things ugly.",
+            "npc": "Could you be specific?",
+            "eat": "answer plainly"
+          },
+          "L1_S05_Z04": {
+            "text": "My flaw is",
+            "start": 0,
+            "remain": " that I am too honest. Whatever people ask, I want to answer plainly, even when it makes things ugly.",
+            "npc": "Is that an introduction?",
+            "eat": "my flaw is"
+          }
+        }
+      },
+      "L1_S06": {
+        "raw": "I can cooperate with people, but it is hard to truly feel that we are on the same side.",
+        "zones": {
+          "L1_S06_Z01": {
+            "text": "but it is hard to truly feel that we are on the same side",
+            "start": 29,
+            "remain": "I can cooperate with people, .",
+            "npc": "Cooperation is enough for now.",
+            "eat": "hard to feel we are together"
+          },
+          "L1_S06_Z02": {
+            "text": "I can cooperate with people,",
+            "start": 0,
+            "remain": " but it is hard to truly feel that we are on the same side.",
+            "npc": "That is ungrammatical, and sharp.",
+            "eat": "can cooperate"
+          },
+          "L1_S06_Z03": {
+            "text": "with people",
+            "start": 16,
+            "remain": "I can cooperate , but it is hard to truly feel that we are on the same side.",
+            "npc": "Please answer in full.",
+            "eat": "with people"
+          },
+          "L1_S06_Z04": {
+            "text": "truly",
+            "start": 47,
+            "remain": "I can cooperate with people, but it is hard to  feel that we are on the same side.",
+            "npc": "...Still sharp.",
+            "eat": "truly"
+          }
+        }
+      },
+      "L1_S07": {
+        "raw": "I want to ask--if I am not good enough, will you give up on me at once, or give me a little more time?",
+        "zones": {
+          "L1_S07_Z01": {
+            "text": "will you give up on me at once, or",
+            "start": 40,
+            "remain": "I want to ask--if I am not good enough,  give me a little more time?",
+            "npc": "It depends on your performance. Honesty helps.",
+            "eat": "give up on me"
+          },
+          "L1_S07_Z02": {
+            "text": "give me a little more time",
+            "start": 75,
+            "remain": "I want to ask--if I am not good enough, will you give up on me at once, or ?",
+            "npc": "That question is very negative.",
+            "eat": "a little more time"
+          },
+          "L1_S07_Z03": {
+            "text": "if I am not good enough,",
+            "start": 15,
+            "remain": "I want to ask-- will you give up on me at once, or give me a little more time?",
+            "npc": "Too many hypotheticals.",
+            "eat": "not good enough"
+          },
+          "L1_S07_Z04": {
+            "text": "I want to ask--",
+            "start": 0,
+            "remain": "if I am not good enough, will you give up on me at once, or give me a little more time?",
+            "npc": "Go on.",
+            "eat": "I want to ask"
+          }
+        }
+      },
+      "L2_S01": {
+        "raw": "Thank you for coming. I will try to make you happy, though I am not very good at pretending.",
+        "zones": {
+          "L2_S01_Z01": {
+            "text": "though I am not very good at pretending.",
+            "start": 52,
+            "remain": "Thank you for coming. I will try to make you happy, ",
+            "npc": "Good.",
+            "eat": "not good at pretending"
+          },
+          "L2_S01_Z02": {
+            "text": "I will try to make you happy,",
+            "start": 22,
+            "remain": "Thank you for coming.  though I am not very good at pretending.",
+            "npc": "Cold.",
+            "eat": "make you happy"
+          },
+          "L2_S01_Z03": {
+            "text": "Thank you for coming.",
+            "start": 0,
+            "remain": " I will try to make you happy, though I am not very good at pretending.",
+            "npc": "Wrong room?",
+            "eat": "thank you for coming"
+          },
+          "L2_S01_Z04": {
+            "text": "pretending",
+            "start": 81,
+            "remain": "Thank you for coming. I will try to make you happy, though I am not very good at .",
+            "npc": "Good at what?",
+            "eat": "pretending"
+          }
+        }
+      },
+      "L2_S02": {
+        "raw": "I stream because I need money, not because I like you, but I will mind my manners.",
+        "zones": {
+          "L2_S02_Z01": {
+            "text": "not because I like you,",
+            "start": 31,
+            "remain": "I stream because I need money,  but I will mind my manners.",
+            "npc": "Got it.",
+            "eat": "not because I like you"
+          },
+          "L2_S02_Z02": {
+            "text": "because I need money,",
+            "start": 9,
+            "remain": "I stream  not because I like you, but I will mind my manners.",
+            "npc": "Major turnoff.",
+            "eat": "need money"
+          },
+          "L2_S02_Z03": {
+            "text": "but I will mind my manners",
+            "start": 55,
+            "remain": "I stream because I need money, not because I like you, .",
+            "npc": "Get out.",
+            "eat": "mind my manners"
+          },
+          "L2_S02_Z04": {
+            "text": "I stream because",
+            "start": 0,
+            "remain": " I need money, not because I like you, but I will mind my manners.",
+            "npc": "Where is the grammar?",
+            "eat": "I stream because"
+          }
+        }
+      },
+      "L2_S03": {
+        "raw": "I can sing if you want, but while I sing, I am cursing you in my head, not aloud.",
+        "zones": {
+          "L2_S03_Z01": {
+            "text": "but while I sing, I am cursing you in my head,",
+            "start": 24,
+            "remain": "I can sing if you want,  not aloud.",
+            "npc": "Not aloud what?",
+            "eat": "cursing you in my head"
+          },
+          "L2_S03_Z02": {
+            "text": "I am cursing you in my head, not aloud",
+            "start": 42,
+            "remain": "I can sing if you want, but while I sing, .",
+            "npc": "Okay, sing then.",
+            "eat": "cursing you, not aloud"
+          },
+          "L2_S03_Z03": {
+            "text": "I can sing if you want,",
+            "start": 0,
+            "remain": " but while I sing, I am cursing you in my head, not aloud.",
+            "npc": "If you do not want to sing, leave.",
+            "eat": "I can sing"
+          },
+          "L2_S03_Z04": {
+            "text": "not aloud",
+            "start": 71,
+            "remain": "I can sing if you want, but while I sing, I am cursing you in my head, .",
+            "npc": "Cursing who?",
+            "eat": "not aloud"
+          }
+        }
+      },
+      "L2_S04": {
+        "raw": "With you here, I feel like I can say anything.",
+        "zones": {
+          "L2_S04_Z01": {
+            "text": "feel like",
+            "start": 17,
+            "remain": "With you here, I  I can say anything.",
+            "npc": "Flirting?",
+            "eat": "feel like"
+          },
+          "L2_S04_Z02": {
+            "text": "I can say anything",
+            "start": 27,
+            "remain": "With you here, I feel like .",
+            "npc": "Finish the thought.",
+            "eat": "say anything"
+          },
+          "L2_S04_Z03": {
+            "text": "With you here,",
+            "start": 0,
+            "remain": " I feel like I can say anything.",
+            "npc": "Feeling confident?",
+            "eat": "with you here"
+          },
+          "L2_S04_Z04": {
+            "text": "I feel",
+            "start": 15,
+            "remain": "With you here,  like I can say anything.",
+            "npc": "Who is speaking?",
+            "eat": "I feel"
+          }
+        }
+      },
+      "L2_S05": {
+        "raw": "I hate the questions you keep asking, but I will still answer with a smile.",
+        "zones": {
+          "L2_S05_Z01": {
+            "text": "I hate the questions you keep asking,",
+            "start": 0,
+            "remain": " but I will still answer with a smile.",
+            "npc": "So gentle.",
+            "eat": "hate these questions"
+          },
+          "L2_S05_Z02": {
+            "text": "but I will still answer with a smile",
+            "start": 38,
+            "remain": "I hate the questions you keep asking, .",
+            "npc": "End stream.",
+            "eat": "answer with a smile"
+          },
+          "L2_S05_Z03": {
+            "text": "hate",
+            "start": 2,
+            "remain": "I  the questions you keep asking, but I will still answer with a smile.",
+            "npc": "The sentence broke.",
+            "eat": "hate"
+          },
+          "L2_S05_Z04": {
+            "text": "with a smile",
+            "start": 62,
+            "remain": "I hate the questions you keep asking, but I will still answer .",
+            "npc": "A bitter smile?",
+            "eat": "with a smile"
+          }
+        }
+      },
+      "L2_S06": {
+        "raw": "Do not ask why my room is so dark. If I turn on the lights, you will see what I do not want seen.",
+        "zones": {
+          "L2_S06_Z01": {
+            "text": "If I turn on the lights, you will see what I do not want seen.",
+            "start": 35,
+            "remain": "Do not ask why my room is so dark. ",
+            "npc": "Nice atmosphere.",
+            "eat": "what I do not want seen"
+          },
+          "L2_S06_Z02": {
+            "text": "Do not ask why my room is so dark.",
+            "start": 0,
+            "remain": " If I turn on the lights, you will see what I do not want seen.",
+            "npc": "Are you threatening the chat?",
+            "eat": "do not ask why it is dark"
+          },
+          "L2_S06_Z03": {
+            "text": "do not want seen",
+            "start": 80,
+            "remain": "Do not ask why my room is so dark. If I turn on the lights, you will see what I .",
+            "npc": "What thing?",
+            "eat": "do not want seen"
+          },
+          "L2_S06_Z04": {
+            "text": "you will see",
+            "start": 60,
+            "remain": "Do not ask why my room is so dark. If I turn on the lights,  what I do not want seen.",
+            "npc": "Grammar.",
+            "eat": "you will see"
+          }
+        }
+      },
+      "L2_S07": {
+        "raw": "That is all for tonight. Thank you for watching. I will miss you--that is a lie, but lies are safer.",
+        "zones": {
+          "L2_S07_Z01": {
+            "text": "--that is a lie, but lies are safer.",
+            "start": 64,
+            "remain": "That is all for tonight. Thank you for watching. I will miss you",
+            "npc": "Good night.",
+            "eat": "lies are safer"
+          },
+          "L2_S07_Z02": {
+            "text": "I will miss you",
+            "start": 49,
+            "remain": "That is all for tonight. Thank you for watching. --that is a lie, but lies are safer.",
+            "npc": "???",
+            "eat": "miss you"
+          },
+          "L2_S07_Z03": {
+            "text": "lies are safer",
+            "start": 85,
+            "remain": "That is all for tonight. Thank you for watching. I will miss you--that is a lie, but .",
+            "npc": "But what?",
+            "eat": "lies are safer"
+          },
+          "L2_S07_Z04": {
+            "text": "Thank you for watching.",
+            "start": 25,
+            "remain": "That is all for tonight.  I will miss you--that is a lie, but lies are safer.",
+            "npc": "Rude.",
+            "eat": "thank you for watching"
+          }
+        }
+      },
+      "L3_S01": {
+        "raw": "Why are you here? I thought a relationship like ours belonged in the read receipts.",
+        "zones": {
+          "L3_S01_Z01": {
+            "text": "I thought a relationship like ours belonged in the read receipts.",
+            "start": 18,
+            "remain": "Why are you here? ",
+            "npc": "...I came anyway.",
+            "eat": "belonged in the read receipts"
+          },
+          "L3_S01_Z02": {
+            "text": "Why are you here?",
+            "start": 0,
+            "remain": " I thought a relationship like ours belonged in the read receipts.",
+            "npc": "That does not sound like a welcome.",
+            "eat": "why are you here"
+          },
+          "L3_S01_Z03": {
+            "text": "belonged in the read receipts",
+            "start": 53,
+            "remain": "Why are you here? I thought a relationship like ours .",
+            "npc": "What kind of relationship?",
+            "eat": "read receipts"
+          },
+          "L3_S01_Z04": {
+            "text": "a relationship like ours",
+            "start": 28,
+            "remain": "Why are you here? I thought  belonged in the read receipts.",
+            "npc": "...Is there still an 'us'?",
+            "eat": "our relationship"
+          }
+        }
+      },
+      "L3_S02": {
+        "raw": "I have not been avoiding you. I just do not know how to face you.",
+        "zones": {
+          "L3_S02_Z01": {
+            "text": "not been avoiding you.",
+            "start": 7,
+            "remain": "I have  I just do not know how to face you.",
+            "npc": "...That is still a kind of avoidance.",
+            "eat": "not avoiding you"
+          },
+          "L3_S02_Z02": {
+            "text": "I just do not know how to face you.",
+            "start": 30,
+            "remain": "I have not been avoiding you. ",
+            "npc": "That is good, then. The door is opening very slowly.",
+            "eat": "do not know how to face you"
+          },
+          "L3_S02_Z03": {
+            "text": "I have",
+            "start": 0,
+            "remain": " not been avoiding you. I just do not know how to face you.",
+            "npc": "You are talking strangely.",
+            "eat": "I have"
+          },
+          "L3_S02_Z04": {
+            "text": "avoiding you",
+            "start": 16,
+            "remain": "I have not been . I just do not know how to face you.",
+            "npc": "Avoiding what?",
+            "eat": "avoiding you"
+          }
+        }
+      },
+      "L3_S03": {
+        "raw": "It is not that I do not miss you. I am afraid that one sentence will expose who I am now.",
+        "zones": {
+          "L3_S03_Z01": {
+            "text": "I am afraid that one sentence will expose who I am now.",
+            "start": 34,
+            "remain": "It is not that I do not miss you. ",
+            "npc": "...Then I was imagining things.",
+            "eat": "expose who I am now"
+          },
+          "L3_S03_Z02": {
+            "text": "It is not that I do not miss you.",
+            "start": 0,
+            "remain": " I am afraid that one sentence will expose who I am now.",
+            "npc": "What are you afraid of?",
+            "eat": "not that I do not miss you"
+          },
+          "L3_S03_Z03": {
+            "text": "expose who I am now",
+            "start": 69,
+            "remain": "It is not that I do not miss you. I am afraid that one sentence will .",
+            "npc": "Then what?",
+            "eat": "expose me"
+          },
+          "L3_S03_Z04": {
+            "text": "I am afraid",
+            "start": 34,
+            "remain": "It is not that I do not miss you.  that one sentence will expose who I am now.",
+            "npc": "Are you still yourself?",
+            "eat": "I am afraid"
+          }
+        }
+      },
+      "L3_S04b": {
+        "raw": "There are no friends I need to hide. There are only sentences I cannot show anyone.",
+        "zones": {
+          "L3_S04b_Z01": {
+            "text": "There are only sentences I cannot show anyone.",
+            "start": 37,
+            "remain": "There are no friends I need to hide. ",
+            "npc": "...Fine. I will believe you once.",
+            "eat": "sentences I cannot show"
+          },
+          "L3_S04b_Z02": {
+            "text": "There are no friends I need to hide.",
+            "start": 0,
+            "remain": " There are only sentences I cannot show anyone.",
+            "npc": "Are you speaking in riddles?",
+            "eat": "no friends to hide"
+          },
+          "L3_S04b_Z03": {
+            "text": "I cannot show anyone",
+            "start": 62,
+            "remain": "There are no friends I need to hide. There are only sentences .",
+            "npc": "Can you even do this?",
+            "eat": "cannot show anyone"
+          },
+          "L3_S04b_Z04": {
+            "text": "friends",
+            "start": 13,
+            "remain": "There are no  I need to hide. There are only sentences I cannot show anyone.",
+            "npc": "What are you repeating?",
+            "eat": "friends"
+          }
+        }
+      },
+      "L3_S05": {
+        "raw": "There is someone in the room, but not the person you are imagining.",
+        "zones": {
+          "L3_S05_Z01": {
+            "text": "but not the person you are imagining.",
+            "start": 30,
+            "remain": "There is someone in the room, ",
+            "npc": "...Who? Let me meet them.",
+            "eat": "not who you imagine"
+          },
+          "L3_S05_Z02": {
+            "text": "There is someone in the room,",
+            "start": 0,
+            "remain": " but not the person you are imagining.",
+            "npc": "Then what kind?",
+            "eat": "someone in the room"
+          },
+          "L3_S05_Z03": {
+            "text": "you are imagining",
+            "start": 49,
+            "remain": "There is someone in the room, but not the person .",
+            "npc": "Do not speak in riddles.",
+            "eat": "you are imagining"
+          },
+          "L3_S05_Z04": {
+            "text": "the person",
+            "start": 38,
+            "remain": "There is someone in the room, but not  you are imagining.",
+            "npc": "...What kind of person?",
+            "eat": "the person"
+          }
+        }
+      },
+      "L3_S06": {
+        "raw": "Do you want to come in and sit, or are we both better off staying at the door?",
+        "zones": {
+          "L3_S06_Z01": {
+            "text": "or are we both better off staying at the door?",
+            "start": 32,
+            "remain": "Do you want to come in and sit, ",
+            "npc": "...Maybe next time.",
+            "eat": "staying at the door"
+          },
+          "L3_S06_Z02": {
+            "text": "Do you want to come in and sit,",
+            "start": 0,
+            "remain": " or are we both better off staying at the door?",
+            "npc": "You are sending me away.",
+            "eat": "come in and sit"
+          },
+          "L3_S06_Z03": {
+            "text": "both better off",
+            "start": 42,
+            "remain": "Do you want to come in and sit, or are we  staying at the door?",
+            "npc": "Whatever you say.",
+            "eat": "both better off"
+          },
+          "L3_S06_Z04": {
+            "text": "we both",
+            "start": 39,
+            "remain": "Do you want to come in and sit, or are  better off staying at the door?",
+            "npc": "Who is 'we'?",
+            "eat": "we both"
+          }
+        }
+      },
+      "L3_S07": {
+        "raw": "Goodbye. I hope you worry less about me, and I hope you do not knock that loudly again.",
+        "zones": {
+          "L3_S07_Z01": {
+            "text": "and I hope you do not knock that loudly again.",
+            "start": 41,
+            "remain": "Goodbye. I hope you worry less about me, ",
+            "npc": "...All right. Worry less.",
+            "eat": "do not knock again"
+          },
+          "L3_S07_Z02": {
+            "text": "I hope you worry less about me,",
+            "start": 9,
+            "remain": "Goodbye.  and I hope you do not knock that loudly again.",
+            "npc": "You nearly knocked the door down.",
+            "eat": "worry less about me"
+          },
+          "L3_S07_Z03": {
+            "text": "Goodbye.",
+            "start": 0,
+            "remain": " I hope you worry less about me, and I hope you do not knock that loudly again.",
+            "npc": "That is it?",
+            "eat": "goodbye"
+          },
+          "L3_S07_Z04": {
+            "text": "you worry",
+            "start": 16,
+            "remain": "Goodbye. I hope  less about me, and I hope you do not knock that loudly again.",
+            "npc": "Your words are unraveling.",
+            "eat": "you worry"
+          }
+        }
+      },
+      "L4_S01": {
+        "raw": "I did not go live to explain the truth. I came to give you the expression you want.",
+        "zones": {
+          "L4_S01_Z01": {
+            "text": "I came to give you the expression you want.",
+            "start": 40,
+            "remain": "I did not go live to explain the truth. ",
+            "npc": "Bold.",
+            "eat": "give you the expression"
+          },
+          "L4_S01_Z02": {
+            "text": "I did not go live to explain the truth.",
+            "start": 0,
+            "remain": " I came to give you the expression you want.",
+            "npc": "Finally, you understand.",
+            "eat": "not here to explain"
+          },
+          "L4_S01_Z03": {
+            "text": "the expression you want",
+            "start": 59,
+            "remain": "I did not go live to explain the truth. I came to give you .",
+            "npc": "What expression?",
+            "eat": "the one you want"
+          },
+          "L4_S01_Z04": {
+            "text": "go live",
+            "start": 10,
+            "remain": "I did not  to explain the truth. I came to give you the expression you want.",
+            "npc": "Read the script already.",
+            "eat": "go live"
+          }
+        }
+      },
+      "L4_S02": {
+        "raw": "I am sorry. I know you want to hear that, but I do not think I did anything wrong.",
+        "zones": {
+          "L4_S02_Z01": {
+            "text": "but I do not think I did anything wrong.",
+            "start": 42,
+            "remain": "I am sorry. I know you want to hear that, ",
+            "npc": "Finally, an apology.",
+            "eat": "do not think I was wrong"
+          },
+          "L4_S02_Z02": {
+            "text": "I am sorry. I know you want to hear that,",
+            "start": 0,
+            "remain": " but I do not think I did anything wrong.",
+            "npc": "A fake apology.",
+            "eat": "sorry...what you want"
+          },
+          "L4_S02_Z03": {
+            "text": "you want to hear that",
+            "start": 19,
+            "remain": "I am sorry. I know , but I do not think I did anything wrong.",
+            "npc": "Empty words.",
+            "eat": "want to hear that"
+          },
+          "L4_S02_Z04": {
+            "text": "do not think",
+            "start": 48,
+            "remain": "I am sorry. I know you want to hear that, but I  I did anything wrong.",
+            "npc": "Feeling guilty?",
+            "eat": "do not think"
+          }
+        }
+      },
+      "L4_S03": {
+        "raw": "If I hurt someone, that is my fault, and it is a fault I had to speak to stay alive.",
+        "zones": {
+          "L4_S03_Z01": {
+            "text": "and it is a fault I had to speak to stay alive.",
+            "start": 37,
+            "remain": "If I hurt someone, that is my fault, ",
+            "npc": "Taking responsibility.",
+            "eat": "a fault I had to speak"
+          },
+          "L4_S03_Z02": {
+            "text": "that is my fault,",
+            "start": 19,
+            "remain": "If I hurt someone,  and it is a fault I had to speak to stay alive.",
+            "npc": "Passing the blame.",
+            "eat": "my fault"
+          },
+          "L4_S03_Z03": {
+            "text": "If I hurt someone,",
+            "start": 0,
+            "remain": " that is my fault, and it is a fault I had to speak to stay alive.",
+            "npc": "So you did hurt someone?",
+            "eat": "if I hurt someone"
+          },
+          "L4_S03_Z04": {
+            "text": "had to speak",
+            "start": 57,
+            "remain": "If I hurt someone, that is my fault, and it is a fault I  to stay alive.",
+            "npc": "You are not making sense.",
+            "eat": "had to speak"
+          }
+        }
+      },
+      "L4_S04": {
+        "raw": "Please eat a little less tonight. I want to finish the second half myself.",
+        "zones": {
+          "L4_S04_Z01": {
+            "text": "eat a little less tonight.",
+            "start": 7,
+            "remain": "Please  I want to finish the second half myself.",
+            "npc": "A code word?",
+            "eat": "eat a little less"
+          },
+          "L4_S04_Z02": {
+            "text": "I want to finish the second half myself.",
+            "start": 34,
+            "remain": "Please eat a little less tonight. ",
+            "npc": "An apology diet?",
+            "eat": "finish it myself"
+          },
+          "L4_S04_Z03": {
+            "text": "Please",
+            "start": 0,
+            "remain": " eat a little less tonight. I want to finish the second half myself.",
+            "npc": "Who are you ordering around?",
+            "eat": "please"
+          },
+          "L4_S04_Z04": {
+            "text": "the second half",
+            "start": 51,
+            "remain": "Please eat a little less tonight. I want to finish  myself.",
+            "npc": "The second half of what?",
+            "eat": "the second half"
+          }
+        }
+      },
+      "L4_S05": {
+        "raw": "I promise that from now on I will say only what you want to hear, until I cannot remember what I wanted to say.",
+        "zones": {
+          "L4_S05_Z01": {
+            "text": "until I cannot remember what I wanted to say.",
+            "start": 66,
+            "remain": "I promise that from now on I will say only what you want to hear, ",
+            "npc": "Fine.",
+            "eat": "cannot remember what I wanted"
+          },
+          "L4_S05_Z02": {
+            "text": "I will say only what you want to hear,",
+            "start": 27,
+            "remain": "I promise that from now on  until I cannot remember what I wanted to say.",
+            "npc": "Is that a threat?",
+            "eat": "only what you want to hear"
+          },
+          "L4_S05_Z03": {
+            "text": "I promise that from now on",
+            "start": 0,
+            "remain": " I will say only what you want to hear, until I cannot remember what I wanted to say.",
+            "npc": "That is no promise.",
+            "eat": "I promise from now on"
+          },
+          "L4_S05_Z04": {
+            "text": "what I wanted to say",
+            "start": 90,
+            "remain": "I promise that from now on I will say only what you want to hear, until I cannot remember .",
+            "npc": "Remember what?",
+            "eat": "what I wanted to say"
+          }
+        }
+      },
+      "L4_S06": {
+        "raw": "Do not teach me how to live in the comments. I have seen how you live too, and it is not pretty.",
+        "zones": {
+          "L4_S06_Z01": {
+            "text": "I have seen how you live too, and it is not pretty.",
+            "start": 45,
+            "remain": "Do not teach me how to live in the comments. ",
+            "npc": "Insulting the chat.",
+            "eat": "you are not pretty"
+          },
+          "L4_S06_Z02": {
+            "text": "Do not teach me how to live in the comments.",
+            "start": 0,
+            "remain": " I have seen how you live too, and it is not pretty.",
+            "npc": "Now the fighting starts.",
+            "eat": "do not teach me how to live"
+          },
+          "L4_S06_Z03": {
+            "text": "it is not pretty.",
+            "start": 79,
+            "remain": "Do not teach me how to live in the comments. I have seen how you live too, and ",
+            "npc": "And?",
+            "eat": "not pretty"
+          },
+          "L4_S06_Z04": {
+            "text": "teach me how to live",
+            "start": 7,
+            "remain": "Do not  in the comments. I have seen how you live too, and it is not pretty.",
+            "npc": "Grammar.",
+            "eat": "teach me how to live"
+          }
+        }
+      },
+      "L4_S07": {
+        "raw": "This stream is over. Please leave, and please stay.",
+        "zones": {
+          "L4_S07_Z01": {
+            "text": "and please stay.",
+            "start": 35,
+            "remain": "This stream is over. Please leave, ",
+            "npc": "Bye.",
+            "eat": "please stay"
+          },
+          "L4_S07_Z02": {
+            "text": "Please leave,",
+            "start": 21,
+            "remain": "This stream is over.  and please stay.",
+            "npc": "Who should stay?",
+            "eat": "please leave"
+          },
+          "L4_S07_Z03": {
+            "text": "This stream is over.",
+            "start": 0,
+            "remain": " Please leave, and please stay.",
+            "npc": "You have not finished apologizing.",
+            "eat": "this stream is over"
+          },
+          "L4_S07_Z04": {
+            "text": "leave",
+            "start": 28,
+            "remain": "This stream is over. Please , and please stay.",
+            "npc": "An order?",
+            "eat": "leave"
+          }
+        }
+      },
+      "L5_S01": {
+        "raw": "It is so quiet now. So quiet I can hear the words you ate turning over in your stomach.",
+        "zones": {
+          "L5_S01_Z01": {
+            "text": "So quiet I can hear the words you ate turning over in your stomach.",
+            "start": 20,
+            "remain": "It is so quiet now. ",
+            "npc": "",
+            "eat": "words turning in your stomach"
+          },
+          "L5_S01_Z02": {
+            "text": "It is so quiet now.",
+            "start": 0,
+            "remain": " So quiet I can hear the words you ate turning over in your stomach.",
+            "npc": "",
+            "eat": "so quiet now"
+          },
+          "L5_S01_Z03": {
+            "text": "the words you ate",
+            "start": 40,
+            "remain": "It is so quiet now. So quiet I can hear  turning over in your stomach.",
+            "npc": "",
+            "eat": "the words you ate"
+          },
+          "L5_S01_Z04": {
+            "text": "turning over in your stomach",
+            "start": 58,
+            "remain": "It is so quiet now. So quiet I can hear the words you ate .",
+            "npc": "",
+            "eat": "turning in your stomach"
+          }
+        }
+      },
+      "L5_S02": {
+        "raw": "I no longer know which words are mine and which ones you allow me to say.",
+        "zones": {
+          "L5_S02_Z01": {
+            "text": "which ones you allow me to say.",
+            "start": 42,
+            "remain": "I no longer know which words are mine and ",
+            "npc": "",
+            "eat": "you allow me to say"
+          },
+          "L5_S02_Z02": {
+            "text": "which words are mine",
+            "start": 17,
+            "remain": "I no longer know  and which ones you allow me to say.",
+            "npc": "",
+            "eat": "which words are mine"
+          },
+          "L5_S02_Z03": {
+            "text": "I no longer know",
+            "start": 0,
+            "remain": " which words are mine and which ones you allow me to say.",
+            "npc": "",
+            "eat": "I no longer know"
+          },
+          "L5_S02_Z04": {
+            "text": "are mine",
+            "start": 29,
+            "remain": "I no longer know which words  and which ones you allow me to say.",
+            "npc": "",
+            "eat": "mine"
+          }
+        }
+      },
+      "L5_S03": {
+        "raw": "This time, do not cover for me again. I want to finish speaking for myself.",
+        "zones": {
+          "L5_S03_Z01": {
+            "text": "do not cover for me again.",
+            "start": 11,
+            "remain": "This time,  I want to finish speaking for myself.",
+            "npc": "",
+            "eat": "do not cover for me"
+          },
+          "L5_S03_Z02": {
+            "text": "I want to finish speaking for myself.",
+            "start": 38,
+            "remain": "This time, do not cover for me again. ",
+            "npc": "",
+            "eat": "finish speaking myself"
+          },
+          "L5_S03_Z03": {
+            "text": "This time,",
+            "start": 0,
+            "remain": " do not cover for me again. I want to finish speaking for myself.",
+            "npc": "",
+            "eat": "this time"
+          },
+          "L5_S03_Z04": {
+            "text": "for me",
+            "start": 24,
+            "remain": "This time, do not cover  again. I want to finish speaking for myself.",
+            "npc": "",
+            "eat": "for me"
+          }
+        }
+      },
+      "L5_S04": {
+        "raw": "I gave you every word I could not say. Please swallow them for me.",
+        "zones": {
+          "L5_S04_Z01": {
+            "text": "Please swallow them for me",
+            "start": 39,
+            "remain": "I gave you every word I could not say. .",
+            "npc": "",
+            "eat": "swallow them for me"
+          },
+          "L5_S04_Z02": {
+            "text": "every word I could not say",
+            "start": 11,
+            "remain": "I gave you . Please swallow them for me.",
+            "npc": "",
+            "eat": "words I could not say"
+          },
+          "L5_S04_Z03": {
+            "text": "gave you",
+            "start": 2,
+            "remain": "I  every word I could not say. Please swallow them for me.",
+            "npc": "",
+            "eat": "gave them to you"
+          },
+          "L5_S04_Z04": {
+            "text": "I gave",
+            "start": 0,
+            "remain": " you every word I could not say. Please swallow them for me.",
+            "npc": "",
+            "eat": "I gave"
+          }
+        }
+      },
+      "L5_S05": {
+        "raw": "If you were human, I would ask whether you loved me. You are silence; all I can ask is whether you are hungry.",
+        "zones": {
+          "L5_S05_Z01": {
+            "text": "all I can ask is whether you are hungry.",
+            "start": 70,
+            "remain": "If you were human, I would ask whether you loved me. You are silence; ",
+            "npc": "",
+            "eat": "whether you are hungry"
+          },
+          "L5_S05_Z02": {
+            "text": "I would ask whether you loved me.",
+            "start": 19,
+            "remain": "If you were human,  You are silence; all I can ask is whether you are hungry.",
+            "npc": "",
+            "eat": "whether you loved me"
+          },
+          "L5_S05_Z03": {
+            "text": "If you were human,",
+            "start": 0,
+            "remain": " I would ask whether you loved me. You are silence; all I can ask is whether you are hungry.",
+            "npc": "",
+            "eat": "if you were human"
+          },
+          "L5_S05_Z04": {
+            "text": "You are silence;",
+            "start": 53,
+            "remain": "If you were human, I would ask whether you loved me.  all I can ask is whether you are hungry.",
+            "npc": "",
+            "eat": "you are silence"
+          }
+        }
+      },
+      "L5_S06": {
+        "raw": "Please leave me here.",
+        "zones": {
+          "L5_S06_Z01": {
+            "text": "Please",
+            "start": 0,
+            "remain": " leave me here.",
+            "npc": "",
+            "eat": "please"
+          },
+          "L5_S06_Z02": {
+            "text": "leave me",
+            "start": 7,
+            "remain": "Please  here.",
+            "npc": "",
+            "eat": "leave me"
+          },
+          "L5_S06_Z03": {
+            "text": "here",
+            "start": 16,
+            "remain": "Please leave me .",
+            "npc": "",
+            "eat": "here"
+          },
+          "L5_S06_Z04": {
+            "text": "me",
+            "start": 13,
+            "remain": "Please leave  here.",
+            "npc": "",
+            "eat": "me"
+          }
+        }
+      }
+    },
+    "endings": {
+      "A_separate": "She pulls her hand back.",
+      "B_alienate": "What remains is not 'me'.",
+      "C_consume": "A hollow request.",
+      "C_cold": "The identity is erased."
+    },
+    "chapterOverlays": {
+      "L0": {
+        "title": "The First Mouthful",
+        "copy": "For the first time, she gives you the words she cannot say."
+      },
+      "L1": {
+        "title": "Interview Over",
+        "copy": "She leaves the meeting room. The black bar does not."
+      },
+      "L2": {
+        "title": "Stream Over",
+        "copy": "After the screen goes dark, the words 'with you here' remain lit."
+      },
+      "L3": {
+        "title": "The Door Closes Again",
+        "copy": "Her friend did not finish asking. You did not finish answering."
+      },
+      "L4": {
+        "title": "Apology Over",
+        "copy": "Just now, one of those lines was not dragged by her."
+      }
+    },
+    "endingTitles": {
+      "A_separate": "She pulls her hand back",
+      "B_alienate": "What remains is not 'me'",
+      "C_consume": "A hollow request",
+      "C_cold": "The identity is erased"
+    },
+    "revealCaptions": [
+      "You thought you had been deleting things.",
+      "What was covered was what she truly said.",
+      "What remained onscreen was a subtitle for everyone else.",
+      "You were never keeping her quiet.",
+      "You were the person she never spoke into being."
+    ]
+  },
+  "ui": {
+    "titleKicker": "K/S - 01",
+    "titlePrimaryNew": "Start Game",
+    "titlePrimaryContinue": "Continue",
+    "titleNewGame": "Start Over",
+    "titleReady": "Ready.",
+    "titleHasSave": "An unfinished record is waiting.",
+    "titleLoading": "Preparing the scene...",
+    "languageLabel": "Language",
+    "languageMenuLabel": "Change language",
+    "beta": "Beta",
+    "stageLabel": "Keep Silent for Me playable scene",
+    "titleScreenLabel": "Game start",
+    "storyVideoSkip": "Skip reveal",
+    "restart": "Restart",
+    "audioSettingsOpen": "Open sound settings",
+    "audioSettings": "Sound settings",
+    "audioSettingsClose": "Close sound settings",
+    "soundToggleOn": "Turn on music and sound effects",
+    "soundToggleOff": "Turn off music and sound effects",
+    "soundSettingsEyebrow": "Sound settings",
+    "sound": "Sound",
+    "audioOn": "Music and sound effects are on",
+    "audioOff": "Music and sound effects are muted",
+    "music": "Music",
+    "soundEffects": "Sound effects",
+    "currentTrack": "Now playing - {track}",
+    "currentTrackMuted": "Now playing - muted",
+    "waitingTrack": "Waiting to load",
+    "sceneStatus": "Current status",
+    "sceneLoading": "Scene page - not loaded",
+    "liveChatLabel": "Live chat",
+    "viewerCount": "{count} viewers",
+    "dialogueLabel": "Dialogue",
+    "speaker": "Her",
+    "initialFeedback": "The black bar rests outside the sentence.",
+    "lineFeedbackFirst": "The black bar waits outside the sentence.",
+    "lineFeedback": "She has not finished this sentence yet.",
+    "swallowed": "Swallowed \"{text}\".",
+    "swallowedFallback": "The words disappear into the black bar.",
+    "swallowedNpcFallback": "The words grow quiet beneath the black bar.",
+    "selectionNotFound": "The black bar could not find a sentence to swallow.",
+    "sceneLoadRetained": "Scene page {pageId} could not load. The previous page remains.",
+    "transitionVideoFailed": "The chapter transition video could not load. The game continued.",
+    "endingSceneFailed": "The ending scene could not load. Try again.",
+    "endingVideoFailed": "The ending video could not load. The full-page ending remains.",
+    "revealVideoFailed": "The reveal video could not load. The ending page remains.",
+    "revealVideoFallback": "The video could not load, but this line still belongs to you.",
+    "chapterEnded": "Chapter complete",
+    "nextChapter": "Next chapter",
+    "nextChapterCopy": "She is still waiting for the next sentence.",
+    "continue": "Continue",
+    "retryInterviewEyebrow": "Interview over",
+    "retryInterviewTitle": "She was not hired.",
+    "retryInterviewAction": "Speak this chapter again",
+    "retryInterviewToast": "Retry interview",
+    "endingEyebrow": "Ending - {endingId}",
+    "endingFallbackTitle": "The last sentence",
+    "watchReveal": "Watch reveal",
+    "replayEyebrow": "Reveal replay",
+    "replayTitle": "You were the person she never spoke into being",
+    "replayCopy": "What remains on the screen is not only what she said aloud.",
+    "replayAction": "Start over",
+    "memoryEyebrow": "{chapterId} - Language Stomach",
+    "memoryTitle": "The words you swallowed have not settled yet",
+    "memoryCopy": "Gather them into a whisper meant only for yourself.",
+    "memoryFragments": "Fragments",
+    "memoryWhisper": "Whisper",
+    "memoryPoolLabel": "Whisper fragments",
+    "memoryLaneLabel": "Arranged whisper",
+    "memoryConfirm": "Keep this whisper",
+    "memoryEmpty": "There are no words to gather yet.",
+    "memorySaved": "This whisper has been kept.",
+    "oldSaveMigrated": "Your progress was kept; old swallowed-word records cannot move across languages.",
+    "errorTitle": "The scene could not load.",
+    "errorLocalServer": "Open the demo through a local server.",
+    "retry": "Retry",
+    "loadErrorSuffix": "Open web/ through a local server instead of double-clicking the HTML file.",
+    "runtimeDataMissing": "Data file not found",
+    "fallbackChat": [
+      "LIVE",
+      "Anyone here?",
+      "Can you hear me?"
+    ]
+  },
+  "trackLabels": {
+    "rain-room": "Rainy room",
+    "live-pressure": "Live pressure",
+    "door-tension": "Doorway tension",
+    "hollow-hope": "Hollow afterglow"
+  },
+  "sceneMeta": {
+    "L0": {
+      "readout": "Rainy window - Desk",
+      "status": "She sits at the desk and offers up the first sentence.",
+      "caption": "Full page - D0 Desk"
+    },
+    "L1": {
+      "readout": "Meeting room",
+      "status": "She answers the questions. You decide which parts can be heard.",
+      "caption": "Full page - D1 Interview"
+    },
+    "L2": {
+      "readout": "First stream",
+      "status": "The screen is bright. The room is not.",
+      "caption": "Full page - Live stage"
+    },
+    "L3": {
+      "readout": "Doorway",
+      "status": "The door is open a crack. Her friend has not come in.",
+      "caption": "Full page - Doorway"
+    },
+    "L4": {
+      "readout": "Apology stream",
+      "status": "She gives the audience an expression. The black bar knows the answer first.",
+      "caption": "Full page - Apology"
+    },
+    "L5": {
+      "readout": "A room without viewers",
+      "status": "No viewers. Only her, and the words you swallowed.",
+      "caption": "Full page - Ending"
+    }
+  },
+  "liveChat": {
+    "L2_S01": [
+      "She is here",
+      "New streamer?",
+      "Show your face",
+      "Her voice sounds tired",
+      "Look at the camera"
+    ],
+    "L2_S02": [
+      "Why stream?",
+      "Tell the truth",
+      "Ice queen",
+      "Everyone needs money",
+      "Mind your manners lol"
+    ],
+    "L2_S03": [
+      "Sing something!",
+      "Who are you cursing?",
+      "This streamer is scary",
+      "All bark",
+      "Song request!"
+    ],
+    "L2_S04": [
+      "With you here?",
+      "That sounded like a confession",
+      "Who are you looking at?",
+      "She can say anything?",
+      "Suddenly serious"
+    ],
+    "L2_S05": [
+      "Ask about her day",
+      "She smiled",
+      "So gentle",
+      "End stream",
+      "Is she upset?"
+    ],
+    "L2_S06": [
+      "The room is so dark",
+      "Turn on a light",
+      "Is someone behind her?",
+      "A little scary",
+      "Do not turn it off"
+    ],
+    "L2_S07": [
+      "Good night",
+      "Stream a little longer",
+      "Miss us?",
+      "That sounded fake",
+      "See you next time"
+    ],
+    "L4_S01": [
+      "Apologize",
+      "Stop playing dead",
+      "Finally online",
+      "Explain it first",
+      "Where is the expression?"
+    ],
+    "L4_S02": [
+      "That is all? Sorry?",
+      "Finally apologizing",
+      "Fake apology",
+      "Stop reading a script",
+      "You think you did nothing wrong?"
+    ],
+    "L4_S03": [
+      "Playing the victim again",
+      "Taking responsibility?",
+      "What do you mean if?",
+      "Speak plainly",
+      "Who did you hurt?"
+    ],
+    "L4_S04": [
+      "Who are you talking to?",
+      "Eat less?",
+      "What code?",
+      "What is the second half?",
+      "Someone is beside her"
+    ],
+    "L4_S05": [
+      "Only say what we want",
+      "Threatening the viewers?",
+      "Reflect on yourself",
+      "Something is wrong with her eyes",
+      "Stop acting"
+    ],
+    "L4_S06": [
+      "Still insulting people",
+      "Here comes the fight",
+      "End stream",
+      "Reported",
+      "Now that is the truth"
+    ],
+    "L4_S07": [
+      "You have not finished apologizing",
+      "Who should stay?",
+      "Do not go",
+      "Do not end the stream",
+      "Bye"
+    ]
+  }
+}

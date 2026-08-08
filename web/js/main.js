@@ -1,4 +1,6 @@
 const DATA_URL = "../script/chapters.json";
+const LOCALE_MANIFEST_URL = "../script/locales/manifest.json";
+const LOCALE_ROOT = "../script/locales/";
 const PLAYABLE_MANIFEST_URL = "../art/v4/playable/manifest.json";
 const PAGE_MANIFEST_URL = "../art/v4/scenes/manifest.json";
 const AUDIO_MANIFEST_URL = "audio/manifest.json?v=audio-3";
@@ -8,6 +10,7 @@ const PAGE_ROOT = "../art/v4/scenes/";
 const AUDIO_ROOT = "audio/";
 const VIDEO_ROOT = "video/";
 const SAVE_KEY = "keep-silent-for-me-demo";
+const LOCALE_KEY = "keep-silent-for-me-locale";
 const AUDIO_SETTINGS_KEY = "keep-silent-for-me-audio-settings";
 const REVEAL_SEEN_KEY = "keep-silent-for-me-reveal-seen";
 const MEMORY_CHAPTER_IDS = new Set(["L1", "L2", "L3", "L4"]);
@@ -37,39 +40,6 @@ const SELECTION_FEEDBACK_DELAY_MS = 1060;
 const LINE_RENDER_DELAY_MS = 360;
 const DEBUG_KEYS = new Set(["chapter", "line", "ending"]);
 
-const AUDIO_TRACK_LABELS = {
-  "rain-room": "雨夜环境",
-  "live-pressure": "直播压迫",
-  "door-tension": "门厅悬疑",
-  "hollow-hope": "终局余响",
-};
-
-const SCENE_META = {
-  L0: { readout: "雨窗 · 书桌", status: "她坐在书桌前，把第一句话递了出来。", caption: "整页 · D0 书桌" },
-  L1: { readout: "会议室", status: "她在回答问题。你在决定哪些部分可以被听见。", caption: "整页 · D1 面试" },
-  L2: { readout: "第一次直播", status: "屏幕亮着，房间没有变亮。", caption: "整页 · 直播阶段" },
-  L3: { readout: "门厅", status: "门开着一条缝，朋友还没有进来。", caption: "整页 · 门口" },
-  L4: { readout: "道歉直播", status: "她把表情交给了观众，黑条比她更早知道答案。", caption: "整页 · 道歉" },
-  L5: { readout: "没有观众的房间", status: "没有观众。只有她，和你吞下去的字。", caption: "整页 · 终局" },
-};
-
-const LIVE_CHAT_COPY = {
-  L2_S01: ["来了来了", "新人？", "脸呢", "声音有点困", "主播看镜头"],
-  L2_S02: ["为什么直播", "说实话", "冷淡姐", "缺钱也正常", "好好说话哈哈"],
-  L2_S03: ["唱一首！", "心里在骂谁", "这主播好凶", "嘴硬", "点歌点歌"],
-  L2_S04: ["有你在？", "这句像告白", "主播你在看谁", "好像什么都能说", "突然认真"],
-  L2_S05: ["问问日常", "她笑了", "好温柔", "下播吧", "是不是不开心"],
-  L2_S06: ["房间好暗", "开灯看看", "后面有人吗", "有点吓人", "别关灯"],
-  L2_S07: ["晚安", "再播一会", "想你们？", "这句好假", "下次见"],
-  L4_S01: ["道歉", "别装死", "终于上线了", "先解释清楚", "表情呢"],
-  L4_S02: ["对不起就完了？", "终于道歉", "假道歉", "别念稿", "你觉得自己没错？"],
-  L4_S03: ["又在卖惨", "有担当？", "如果是什么意思", "说人话", "谁被伤害了"],
-  L4_S04: ["在跟谁说话", "少吃一点？", "什么暗号", "后半句呢", "她旁边有人"],
-  L4_S05: ["只说我们想听的", "威胁观众？", "好好反省", "她眼神不对", "别演了"],
-  L4_S06: ["还敢骂人", "互撕开始", "下播吧", "举报了", "这才是真话"],
-  L4_S07: ["还没道完", "谁留下来", "别走", "直播别关", "拜拜"],
-};
-
 const LIVE_VIEWERS = {
   L2_S01: 1204,
   L2_S02: 1238,
@@ -89,7 +59,7 @@ const LIVE_VIEWERS = {
 
 const dom = {
   app: document.querySelector("#app"),
-  stage: document.querySelector(".stage"),
+  stage: document.querySelector("#stage"),
   scenePage: document.querySelector("#scene-page"),
   storyVideoLayer: document.querySelector("#story-video-layer"),
   storyVideo: document.querySelector("#story-video"),
@@ -98,9 +68,18 @@ const dom = {
   bgmA: document.querySelector("#bgm-a"),
   bgmB: document.querySelector("#bgm-b"),
   titleScreen: document.querySelector("#title-screen"),
+  titleKicker: document.querySelector("#title-kicker"),
+  titleGameName: document.querySelector("#title-game-name"),
+  titleLatinName: document.querySelector("#title-latin-name"),
+  titleTagline: document.querySelector("#title-tagline"),
   titlePrimary: document.querySelector("#title-primary"),
   titleNewGame: document.querySelector("#title-new-game"),
+  titleLanguageLabel: document.querySelector("#title-language-label"),
+  titleLanguageSelect: document.querySelector("#title-language-select"),
   titleStatus: document.querySelector("#title-status"),
+  wordmarkName: document.querySelector("#wordmark-name"),
+  languageMenuButton: document.querySelector("#language-menu-button"),
+  languageMenu: document.querySelector("#language-menu"),
   chapterKicker: document.querySelector("#chapter-kicker"),
   chapterTitle: document.querySelector("#chapter-title"),
   statusCopy: document.querySelector("#status-copy"),
@@ -135,6 +114,7 @@ const dom = {
   memoryLane: document.querySelector("#memory-lane"),
   memoryConfirm: document.querySelector("#memory-confirm"),
   errorPanel: document.querySelector("#error-panel"),
+  errorTitle: document.querySelector("#error-title"),
   errorCopy: document.querySelector("#error-copy"),
   restartButton: document.querySelector("#restart-button"),
   soundButton: document.querySelector("#sound-button"),
@@ -148,11 +128,25 @@ const dom = {
   sfxVolume: document.querySelector("#sfx-volume"),
   sfxVolumeValue: document.querySelector("#sfx-volume-value"),
   audioSettingsStatus: document.querySelector("#audio-settings-status"),
+  audioSettingsEyebrow: document.querySelector("#audio-settings-eyebrow"),
+  audioSettingsTitle: document.querySelector("#audio-settings-title"),
+  audioControlLabel: document.querySelector("#audio-control-label"),
+  musicVolumeLabel: document.querySelector("#music-volume-label"),
+  sfxVolumeLabel: document.querySelector("#sfx-volume-label"),
+  statusCaption: document.querySelector("#status-caption"),
+  memoryFragmentsLabel: document.querySelector("#memory-fragments-label"),
+  memoryWhisperLabel: document.querySelector("#memory-whisper-label"),
   retryButton: document.querySelector("#retry-button"),
 };
 
 const state = {
   data: null,
+  baseData: null,
+  localeManifest: null,
+  locale: null,
+  localeData: null,
+  fallbackLocaleData: null,
+  localeSwitching: false,
   playable: null,
   pages: null,
   audio: null,
@@ -216,7 +210,278 @@ const state = {
   videoPlaying: false,
   videoSkipRequested: false,
   revealSeen: false,
+  pendingMigrationNotice: false,
 };
+
+function pathValue(object, path) {
+  return path.split(".").reduce((value, key) => (
+    value && typeof value === "object" ? value[key] : undefined
+  ), object);
+}
+
+function formatText(value, variables = {}) {
+  if (typeof value !== "string") return "";
+  return value.replace(/\{([a-zA-Z0-9_]+)\}/g, (match, key) => (
+    Object.prototype.hasOwnProperty.call(variables, key) ? String(variables[key]) : match
+  ));
+}
+
+function localeValue(path, fallback = "") {
+  const current = pathValue(state.localeData, path);
+  if (current !== undefined && current !== null) return current;
+  const fallbackValue = pathValue(state.fallbackLocaleData, path);
+  return fallbackValue !== undefined && fallbackValue !== null ? fallbackValue : fallback;
+}
+
+function t(path, variables = {}, fallback = "") {
+  return formatText(localeValue(path, fallback), variables);
+}
+
+function localeDescriptor(localeId) {
+  return state.localeManifest?.locales?.find((locale) => locale?.id === localeId) ?? null;
+}
+
+function defaultLocaleDescriptor() {
+  return localeDescriptor(state.localeManifest?.defaultLocale) ?? state.localeManifest?.locales?.[0] ?? null;
+}
+
+function localeLabel(locale) {
+  if (!locale) return "";
+  return locale.beta ? `${locale.nativeName} (${t("ui.beta", {}, "Beta")})` : locale.nativeName;
+}
+
+function compactLocaleLabel(locale) {
+  if (!locale) return "";
+  return locale.id === "zh-CN" ? "中文" : locale.id.toUpperCase();
+}
+
+function normalizeBrowserLocale(locale) {
+  if (typeof locale !== "string" || !locale) return "";
+  const normalized = locale.replace("_", "-").toLowerCase();
+  if (localeDescriptor(normalized)) return normalized;
+  const language = normalized.split("-")[0];
+  if (language === "zh") return localeDescriptor("zh-CN") ? "zh-CN" : "";
+  return localeDescriptor(language) ? language : "";
+}
+
+function requestedLocaleDescriptor() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has("lang")) {
+    const requested = params.get("lang") ?? "";
+    const match = localeDescriptor(requested);
+    if (!match) console.warn(`Unsupported locale query: ${requested}`);
+    return match ?? defaultLocaleDescriptor();
+  }
+  const saved = localeDescriptor(storageGet(LOCALE_KEY));
+  if (saved) return saved;
+  for (const candidate of navigator.languages ?? [navigator.language]) {
+    const localeId = normalizeBrowserLocale(candidate);
+    if (localeId) return localeDescriptor(localeId);
+  }
+  return defaultLocaleDescriptor();
+}
+
+function localePath(locale) {
+  if (!locale || typeof locale.path !== "string" || !locale.path || locale.path.includes("..")) return "";
+  return `${LOCALE_ROOT}${locale.path}`;
+}
+
+async function fetchLocaleData(locale) {
+  const path = localePath(locale);
+  if (!path) throw new Error("Invalid locale path");
+  const response = await fetch(path, { cache: "no-store" });
+  if (!response.ok) throw new Error(`Locale data unavailable: ${locale.id}`);
+  const data = await response.json();
+  if (!data || data.schemaVersion !== 1 || data.locale !== locale.id) {
+    throw new Error(`Locale data is invalid: ${locale.id}`);
+  }
+  return data;
+}
+
+function joinLocalizedChapters(baseData, localizedData) {
+  if (!baseData || !Array.isArray(baseData.chapters) || !localizedData?.game?.lines) {
+    throw new Error("Localized chapter data is invalid");
+  }
+  return baseData.chapters.map((baseChapter) => {
+    const localizedChapter = localizedData.game.chapters?.[baseChapter.id];
+    if (!localizedChapter || typeof localizedChapter.title !== "string") {
+      throw new Error(`Locale is missing chapter ${baseChapter.id}`);
+    }
+    return {
+      ...baseChapter,
+      title: localizedChapter.title,
+      narration: localizedChapter.narration ?? [],
+      objective: localizedChapter.objective ?? "",
+      lines: (baseChapter.lines ?? []).map((baseLine) => {
+        const localizedLine = localizedData.game.lines[baseLine.id];
+        if (!localizedLine || typeof localizedLine.raw !== "string" || !localizedLine.zones) {
+          throw new Error(`Locale is missing line ${baseLine.id}`);
+        }
+        return {
+          ...baseLine,
+          raw: localizedLine.raw,
+          zones: (baseLine.zones ?? []).map((baseZone) => {
+            const localizedZone = localizedLine.zones[baseZone.id];
+            if (!localizedZone || typeof localizedZone.text !== "string" || !localizedZone.text
+              || !Number.isInteger(localizedZone.start)) {
+              throw new Error(`Locale is missing zone ${baseZone.id}`);
+            }
+            return { ...baseZone, ...localizedZone };
+          }),
+        };
+      }),
+    };
+  });
+}
+
+function zoneById(chapterId, zoneId) {
+  const chapter = state.chapters.find((item) => item.id === chapterId);
+  return chapter?.lines?.flatMap((line) => line.zones ?? []).find((zone) => zone.id === zoneId) ?? null;
+}
+
+function textForZoneId(chapterId, zoneId) {
+  const zone = zoneById(chapterId, zoneId);
+  return zone?.eat || zone?.text || "";
+}
+
+function languageSwitchLocked() {
+  return dom.app.classList.contains("is-loading")
+    || state.dragging
+    || state.locked
+    || state.videoPlaying
+    || state.titleStarting
+    || state.memoryDrag !== null
+    || !dom.memoryOverlay.classList.contains("is-hidden")
+    || state.localeSwitching;
+}
+
+function closeLanguageMenu() {
+  dom.languageMenu.classList.add("is-hidden");
+  dom.languageMenuButton.setAttribute("aria-expanded", "false");
+}
+
+function syncLanguageControls() {
+  const disabled = languageSwitchLocked() || !state.localeManifest?.locales?.length;
+  dom.titleLanguageSelect.disabled = disabled;
+  dom.languageMenuButton.disabled = disabled;
+  dom.languageMenuButton.setAttribute("aria-disabled", String(disabled));
+  if (disabled) closeLanguageMenu();
+}
+
+function renderLanguageControls() {
+  const locales = state.localeManifest?.locales ?? [];
+  const selectedId = state.locale?.id ?? "";
+  const options = locales.map((locale) => {
+    const option = document.createElement("option");
+    option.value = locale.id;
+    option.textContent = localeLabel(locale);
+    option.selected = locale.id === selectedId;
+    return option;
+  });
+  dom.titleLanguageSelect.replaceChildren(...options);
+  dom.titleLanguageSelect.value = selectedId;
+  dom.languageMenuButton.textContent = compactLocaleLabel(state.locale);
+  dom.languageMenuButton.setAttribute("aria-label", `${t("ui.languageMenuLabel")}: ${localeLabel(state.locale)}`);
+  dom.languageMenuButton.setAttribute("title", localeLabel(state.locale));
+  const choices = locales.map((locale) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "language-menu-option";
+    button.role = "menuitemradio";
+    button.setAttribute("aria-checked", String(locale.id === selectedId));
+    button.textContent = localeLabel(locale);
+    button.addEventListener("click", () => { void switchLocale(locale.id, { persist: true }); });
+    return button;
+  });
+  dom.languageMenu.replaceChildren(...choices);
+  syncLanguageControls();
+}
+
+function applyLocaleText() {
+  if (!state.localeData || !state.locale) return;
+  document.documentElement.lang = state.locale.id;
+  document.title = localeValue("documentTitle", "Keep Silent for Me");
+  dom.stage.setAttribute("aria-label", t("ui.stageLabel"));
+  dom.titleScreen.setAttribute("aria-label", t("ui.titleScreenLabel"));
+  dom.storyVideoSkip.textContent = t("ui.storyVideoSkip");
+  dom.titleKicker.textContent = t("ui.titleKicker");
+  dom.titleGameName.textContent = t("game.title");
+  dom.titleLatinName.textContent = t("game.latinTitle");
+  dom.titleTagline.textContent = t("game.tagline");
+  dom.titleNewGame.textContent = t("ui.titleNewGame");
+  dom.titleLanguageLabel.textContent = t("ui.languageLabel");
+  dom.wordmarkName.textContent = t("game.title");
+  dom.languageMenu.setAttribute("aria-label", t("ui.languageMenuLabel"));
+  dom.restartButton.setAttribute("aria-label", t("ui.restart"));
+  dom.restartButton.setAttribute("title", t("ui.restart"));
+  dom.audioSettingsButton.setAttribute("aria-label", t("ui.audioSettingsOpen"));
+  dom.audioSettingsButton.setAttribute("title", t("ui.audioSettings"));
+  dom.audioSettingsEyebrow.textContent = t("ui.soundSettingsEyebrow");
+  dom.audioSettingsTitle.textContent = t("ui.audioSettings");
+  dom.audioSettingsClose.setAttribute("aria-label", t("ui.audioSettingsClose"));
+  dom.audioSettingsClose.setAttribute("title", t("ui.audioSettingsClose"));
+  dom.audioControlLabel.textContent = t("ui.sound");
+  dom.musicVolumeLabel.textContent = t("ui.music");
+  dom.sfxVolumeLabel.textContent = t("ui.soundEffects");
+  dom.statusCaption.textContent = t("ui.sceneStatus");
+  dom.statusCopy.textContent = localeValue("sceneMeta.L0.status", "");
+  dom.sceneCaption.textContent = t("ui.sceneLoading");
+  dom.liveChat.setAttribute("aria-label", t("ui.liveChatLabel"));
+  dom.dialogueFrame.setAttribute("aria-label", t("ui.dialogueLabel"));
+  dom.speakerName.textContent = t("ui.speaker");
+  dom.feedbackCopy.textContent = t("ui.initialFeedback");
+  dom.overlayEyebrow.textContent = t("ui.chapterEnded");
+  dom.overlayAction.textContent = t("ui.continue");
+  dom.memoryEyebrow.textContent = t("ui.memoryEyebrow", { chapterId: currentChapter()?.id ?? "L0" });
+  dom.memoryTitle.textContent = t("ui.memoryTitle");
+  dom.memoryCopy.textContent = t("ui.memoryCopy");
+  dom.memoryFragmentsLabel.textContent = t("ui.memoryFragments");
+  dom.memoryWhisperLabel.textContent = t("ui.memoryWhisper");
+  dom.memoryPool.setAttribute("aria-label", t("ui.memoryPoolLabel"));
+  dom.memoryLane.setAttribute("aria-label", t("ui.memoryLaneLabel"));
+  dom.memoryConfirm.textContent = t("ui.memoryConfirm");
+  dom.errorTitle.textContent = t("ui.errorTitle");
+  dom.retryButton.textContent = t("ui.retry");
+  if (dom.errorPanel.classList.contains("is-hidden")) dom.errorCopy.textContent = t("ui.errorLocalServer");
+  renderLanguageControls();
+  updateAudioSettingsUI();
+}
+
+async function switchLocale(localeId, { persist = false } = {}) {
+  if (languageSwitchLocked()) return false;
+  const target = localeDescriptor(localeId);
+  if (!target) return false;
+  if (target.id === state.locale?.id) {
+    closeLanguageMenu();
+    return true;
+  }
+  state.localeSwitching = true;
+  syncLanguageControls();
+  try {
+    const localizedData = await fetchLocaleData(target);
+    const chapters = joinLocalizedChapters(state.baseData, localizedData);
+    state.locale = target;
+    state.localeData = localizedData;
+    state.data = { ...state.baseData, endings: localizedData.game.endings ?? {} };
+    state.chapters = chapters;
+    if (persist) storageSet(LOCALE_KEY, target.id);
+    applyLocaleText();
+    if (dom.titleScreen.classList.contains("is-hidden")) {
+      renderLine();
+    } else {
+      configureTitleScreen();
+    }
+    return true;
+  } catch (error) {
+    console.error(error);
+    showToast(t("ui.errorTitle", {}, "Unable to switch language."), TOAST_FAILURE_DURATION_MS);
+    return false;
+  } finally {
+    state.localeSwitching = false;
+    closeLanguageMenu();
+    syncLanguageControls();
+  }
+}
 
 function assetUrl(id) {
   const asset = state.assets.get(id);
@@ -309,6 +574,7 @@ function hideStoryVideo() {
   dom.app.classList.remove("is-video-playing");
   state.videoPlaying = false;
   state.videoSkipRequested = false;
+  syncLanguageControls();
 }
 
 function cancelStoryVideo() {
@@ -326,14 +592,15 @@ function setRevealSeen() {
 function startRevealCaptions(token) {
   const whispers = state.eatLog
     .slice(-3)
-    .map((entry) => entry?.text)
+    .map((entry) => textForZoneId(entry?.chapterId, entry?.zoneId))
     .filter(Boolean);
+  const captions = localeValue("game.revealCaptions", []);
   const cues = [
-    [0, "你以为自己一直在删除。"],
-    [2000, "被遮住的，是她说出口的。"],
-    [5000, "屏幕上留下的，是给外界的字幕。"],
-    [7600, whispers.length ? `被吞下的字：${whispers.join(" · ")}` : "你不是替她沉默。"],
-    [9200, "你是她没有说出口的那个人。"],
+    [0, captions[0] ?? ""],
+    [2000, captions[1] ?? ""],
+    [5000, captions[2] ?? ""],
+    [7600, whispers.length ? t("ui.swallowed", { text: whispers.join(" · ") }) : (captions[3] ?? "")],
+    [9200, captions[4] ?? ""],
   ];
   for (const [delay, text] of cues) {
     const timer = window.setTimeout(() => {
@@ -426,6 +693,7 @@ async function playStorySequence(sequenceId, { reveal = false } = {}) {
   const token = ++state.videoSequenceToken;
   state.videoPlaying = true;
   state.videoSkipRequested = false;
+  syncLanguageControls();
   dom.storyVideo.muted = true;
   dom.storyVideo.defaultMuted = true;
   dom.storyVideoSkip.classList.toggle("is-hidden", !(reveal && state.revealSeen));
@@ -474,7 +742,7 @@ async function playChapterOutro(sequenceId, onComplete = null) {
     return true;
   } catch (error) {
     console.error(error);
-    showToast("章节过场视频暂时无法载入，已继续游戏。", TOAST_FAILURE_DURATION_MS);
+    showToast(t("ui.transitionVideoFailed"), TOAST_FAILURE_DURATION_MS);
     onComplete?.();
     return false;
   }
@@ -489,6 +757,7 @@ async function playChapterOutroThenAdvance(chapter) {
   hideOverlay();
   hideMemoryOverlay();
   state.locked = true;
+  syncLanguageControls();
   const result = await playChapterOutro(sequenceId);
   if (result === null) return;
   if (currentChapter()?.id !== chapter?.id) return;
@@ -603,7 +872,7 @@ function restoreAudioSettings() {
 }
 
 function audioTrackLabel(trackId) {
-  return AUDIO_TRACK_LABELS[trackId] ?? trackId ?? "等待载入";
+  return localeValue(`trackLabels.${trackId}`, t("ui.waitingTrack")) || trackId || t("ui.waitingTrack");
 }
 
 function setRangeProgress(input, value) {
@@ -614,8 +883,8 @@ function setRangeProgress(input, value) {
 function updateSoundButton() {
   if (!dom.soundButton) return;
   dom.soundButton.textContent = state.sound ? "◌" : "·";
-  dom.soundButton.setAttribute("aria-label", state.sound ? "关闭提示音和配乐" : "打开提示音和配乐");
-  dom.soundButton.setAttribute("title", state.sound ? "关闭提示音和配乐" : "打开提示音和配乐");
+  dom.soundButton.setAttribute("aria-label", state.sound ? t("ui.soundToggleOff") : t("ui.soundToggleOn"));
+  dom.soundButton.setAttribute("title", state.sound ? t("ui.soundToggleOff") : t("ui.soundToggleOn"));
   dom.soundButton.setAttribute("aria-pressed", String(state.sound));
 }
 
@@ -625,7 +894,7 @@ function updateAudioSettingsUI() {
   const musicPercent = Math.round(settings.musicVolume * 100);
   const sfxPercent = Math.round(settings.sfxVolume * 100);
   dom.audioEnabled.checked = state.sound;
-  dom.audioEnabledStatus.textContent = state.sound ? "配乐与提示音开启" : "配乐与提示音已静音";
+  dom.audioEnabledStatus.textContent = state.sound ? t("ui.audioOn") : t("ui.audioOff");
   dom.musicVolume.value = String(musicPercent);
   dom.musicVolume.setAttribute("aria-valuetext", `${musicPercent}%`);
   dom.musicVolumeValue.textContent = `${musicPercent}%`;
@@ -636,8 +905,8 @@ function updateAudioSettingsUI() {
   setRangeProgress(dom.sfxVolume, settings.sfxVolume);
   const trackId = state.bgm.desiredTrackId || state.bgm.activeTrackId || state.audio?.title;
   dom.audioSettingsStatus.textContent = state.sound
-    ? `当前配乐 · ${audioTrackLabel(trackId)}`
-    : "当前配乐 · 已静音";
+    ? t("ui.currentTrack", { track: audioTrackLabel(trackId) })
+    : t("ui.currentTrackMuted");
   updateSoundButton();
 }
 
@@ -807,51 +1076,59 @@ function chapterDefaultPage(chapter) {
   return state.pages?.pageBindings?.[chapter?.id]?.default ?? null;
 }
 
-function normalizeEatLog(raw, fallbackChapterId = "L0") {
+function isKnownZoneId(chapterId, lineId, zoneId) {
+  const chapter = state.chapters.find((item) => item.id === chapterId);
+  const line = chapter?.lines?.find((item) => item.id === lineId);
+  return Boolean(line?.zones?.some((zone) => zone.id === zoneId));
+}
+
+function normalizeSelections(raw) {
   if (!Array.isArray(raw)) return [];
+  const seen = new Set();
   return raw
-    .map((entry) => {
-      if (typeof entry === "string" && entry.trim()) return { chapterId: fallbackChapterId, text: entry };
-      if (!entry || typeof entry !== "object" || typeof entry.text !== "string" || !entry.text.trim()) return null;
-      return {
-        chapterId: typeof entry.chapterId === "string" && entry.chapterId ? entry.chapterId : fallbackChapterId,
-        text: entry.text,
-      };
-    })
-    .filter(Boolean);
+    .filter((entry) => entry && typeof entry === "object"
+      && typeof entry.chapterId === "string"
+      && typeof entry.lineId === "string"
+      && typeof entry.zoneId === "string"
+      && isKnownZoneId(entry.chapterId, entry.lineId, entry.zoneId))
+    .filter((entry) => !seen.has(entry.zoneId) && seen.add(entry.zoneId))
+    .map((entry) => ({ chapterId: entry.chapterId, lineId: entry.lineId, zoneId: entry.zoneId }));
 }
 
 function normalizeMemoryByChapter(raw) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
-  return Object.fromEntries(Object.entries(raw).map(([chapterId, fragments]) => [
-    chapterId,
-    Array.isArray(fragments) ? fragments.filter((fragment) => typeof fragment === "string" && fragment.trim()) : [],
-  ]));
+  return Object.fromEntries(Object.entries(raw)
+    .filter(([chapterId, fragments]) => state.chapters.some((chapter) => chapter.id === chapterId) && Array.isArray(fragments))
+    .map(([chapterId, fragments]) => [
+      chapterId,
+      [...new Set(fragments.filter((zoneId) => typeof zoneId === "string" && textForZoneId(chapterId, zoneId)))],
+    ]));
 }
 
 function normalizeMemoryDraft(raw) {
-  if (!raw || typeof raw !== "object" || typeof raw.chapterId !== "string" || !Array.isArray(raw.fragments)) return null;
-  const fragments = raw.fragments
-    .map((fragment, index) => {
-      if (!fragment || typeof fragment.text !== "string" || !fragment.text.trim()) return null;
-      return { id: typeof fragment.id === "string" && fragment.id ? fragment.id : `${raw.chapterId}-${index}`, text: fragment.text };
-    })
-    .filter(Boolean);
-  const ids = new Set(fragments.map((fragment) => fragment.id));
+  if (!raw || typeof raw !== "object" || typeof raw.chapterId !== "string" || !Array.isArray(raw.fragmentIds)) return null;
+  const fragmentIds = [...new Set(raw.fragmentIds.filter((zoneId) => typeof zoneId === "string" && textForZoneId(raw.chapterId, zoneId)))];
+  if (!fragmentIds.length) return null;
+  const ids = new Set(fragmentIds);
   const order = Array.isArray(raw.order) ? raw.order.filter((id) => typeof id === "string" && ids.has(id)) : [];
-  return { chapterId: raw.chapterId, fragments, order: [...new Set(order)] };
+  return {
+    chapterId: raw.chapterId,
+    fragments: fragmentIds.map((id) => ({ id, text: textForZoneId(raw.chapterId, id) })),
+    order: [...new Set(order)],
+  };
 }
 
 function memoryFragmentsForChapter(chapterId) {
   return state.eatLog
     .filter((entry) => entry.chapterId === chapterId)
-    .map((entry, index) => ({ id: `${chapterId}-${index}`, text: entry.text }));
+    .map((entry) => ({ id: entry.zoneId, text: textForZoneId(chapterId, entry.zoneId) }))
+    .filter((fragment) => fragment.text);
 }
 
 function memoryDraftMatches(draft, chapterId, fragments) {
   if (!draft || draft.chapterId !== chapterId || !Array.isArray(draft.fragments)) return false;
   return draft.fragments.length === fragments.length
-    && draft.fragments.every((fragment, index) => fragment?.id === fragments[index].id && fragment?.text === fragments[index].text);
+    && draft.fragments.every((fragment, index) => fragment?.id === fragments[index].id);
 }
 
 function renderMemoryEcho(chapter, line) {
@@ -863,7 +1140,7 @@ function renderMemoryEcho(chapter, line) {
     dom.memoryEcho.classList.add("is-hidden");
     return;
   }
-  dom.memoryEcho.textContent = fragments.join(" · ");
+  dom.memoryEcho.textContent = fragments.map((zoneId) => textForZoneId(previousChapter.id, zoneId)).filter(Boolean).join(" · ");
   dom.memoryEcho.classList.remove("is-hidden");
 }
 
@@ -886,7 +1163,7 @@ function updateLiveChatTrack(restart = true) {
 function startLiveViewerCounter(lineId) {
   window.clearInterval(state.liveViewerTimer);
   state.liveViewerCount = LIVE_VIEWERS[lineId] ?? 1204;
-  dom.liveChatViewers.textContent = `观众 ${state.liveViewerCount.toLocaleString("zh-CN")}`;
+  dom.liveChatViewers.textContent = t("ui.viewerCount", { count: new Intl.NumberFormat(state.locale?.id ?? "zh-CN").format(state.liveViewerCount) });
   const changes = [7, 4, -3, 11, -5, 6, -2, 9, -7, 3];
   let tick = 0;
   state.liveViewerTimer = window.setInterval(() => {
@@ -896,7 +1173,7 @@ function startLiveViewerCounter(lineId) {
       return;
     }
     state.liveViewerCount = Math.max(0, state.liveViewerCount + changes[tick % changes.length]);
-    dom.liveChatViewers.textContent = `观众 ${state.liveViewerCount.toLocaleString("zh-CN")}`;
+    dom.liveChatViewers.textContent = t("ui.viewerCount", { count: new Intl.NumberFormat(state.locale?.id ?? "zh-CN").format(state.liveViewerCount) });
     tick += 1;
   }, LIVE_VIEWER_TICK_MS);
 }
@@ -906,7 +1183,11 @@ function renderLiveChat(chapter, line) {
     hideLiveChat();
     return;
   }
-  const messages = LIVE_CHAT_COPY[line.id] ?? ["直播中", "有人吗", "听得见吗"];
+  const localizedMessages = localeValue(`liveChat.${line.id}`, null);
+  const fallbackMessages = localeValue("ui.fallbackChat", []);
+  const messages = Array.isArray(localizedMessages)
+    ? localizedMessages
+    : (Array.isArray(fallbackMessages) ? fallbackMessages : []);
   state.liveChatLineId = line.id;
   state.liveChatMessages = [...messages];
   startLiveViewerCounter(line.id);
@@ -995,7 +1276,7 @@ async function setScenePage(pageId, animate = true) {
     if (previousSrc) {
       dom.scenePage.src = previousSrc;
       dom.scenePage.classList.add("is-visible");
-      showToast(`场景页 ${pageId} 暂时无法载入，已保留上一页。`, TOAST_FAILURE_DURATION_MS);
+      showToast(t("ui.sceneLoadRetained", { pageId }), TOAST_FAILURE_DURATION_MS);
       return false;
     }
     dom.scenePage.classList.remove("is-visible", "is-turning");
@@ -1004,10 +1285,10 @@ async function setScenePage(pageId, animate = true) {
 }
 
 function setScene(chapter, line = currentLine(), animate = false) {
-  const meta = SCENE_META[chapter?.id] ?? SCENE_META.L0;
+  const meta = localeValue(`sceneMeta.${chapter?.id}`, localeValue("sceneMeta.L0", {}));
   dom.stage.dataset.chapter = chapter?.id ?? "L0";
-  dom.statusCopy.textContent = meta.status;
-  dom.sceneCaption.textContent = meta.caption;
+  dom.statusCopy.textContent = meta.status ?? "";
+  dom.sceneCaption.textContent = meta.caption ?? t("ui.sceneLoading");
   dom.statusFill.style.width = `${Math.max(18, ((state.chapterIndex + 1) / state.chapters.length) * 100)}%`;
   syncBgmForLocation(chapter);
   if (line) setScenePage(pageForLine(chapter, line), animate);
@@ -1107,17 +1388,18 @@ function renderLine() {
   state.hoverZone = null;
   state.hoverTarget = null;
   state.locked = false;
+  syncLanguageControls();
   dom.blackBar.classList.remove("is-locked", "bar-active", "bar-snap", "bar-locked", "bar-cracked");
   const cracked = manifestLayerIds("bar_cracked", line.id)?.length;
   const locked = manifestLayerIds("bar_locked", line.id)?.length;
   setBarSource(cracked ? "cracked" : locked ? "locked" : "hover");
   dom.blackBar.style.width = BAR_DEFAULT_WIDTH;
   dom.chapterKicker.textContent = `${chapter.id} · ${chapter.title}`;
-  dom.chapterTitle.textContent = SCENE_META[chapter.id]?.readout ?? chapter.title;
-  dom.speakerName.textContent = "她";
+  dom.chapterTitle.textContent = localeValue(`sceneMeta.${chapter.id}.readout`, chapter.title);
+  dom.speakerName.textContent = t("ui.speaker");
   dom.lineId.textContent = line.id;
   dom.zoneCount.textContent = String(line.zones.length).padStart(2, "0");
-  dom.feedbackCopy.textContent = state.chapterIndex === 0 ? "黑条在句子外等着。" : "她还没有把这句话说完。";
+  dom.feedbackCopy.textContent = state.chapterIndex === 0 ? t("ui.lineFeedbackFirst") : t("ui.lineFeedback");
   renderMemoryEcho(chapter, line);
   renderLiveChat(chapter, line);
   buildDialogue(line.raw, line.zones);
@@ -1212,6 +1494,7 @@ function onPointerDown(event) {
   event.preventDefault();
   const rect = dom.blackBar.getBoundingClientRect();
   state.dragging = true;
+  syncLanguageControls();
   state.pointerId = event.pointerId;
   state.dragOffsetX = event.clientX - (rect.left + rect.width / 2);
   state.dragOffsetY = event.clientY - (rect.top + rect.height / 2);
@@ -1233,6 +1516,7 @@ function onPointerMove(event) {
 function onPointerUp(event) {
   if (!state.dragging || event.pointerId !== state.pointerId) return;
   state.dragging = false;
+  syncLanguageControls();
   state.pointerId = null;
   if (dom.blackBar.hasPointerCapture(event.pointerId)) dom.blackBar.releasePointerCapture(event.pointerId);
   const rect = dom.blackBar.getBoundingClientRect();
@@ -1242,7 +1526,7 @@ function onPointerUp(event) {
     setBarSource("hover");
     dom.blackBar.style.width = BAR_DEFAULT_WIDTH;
     positionBarAtRest();
-    showToast("黑条没有找到可以吞下的句子。", TOAST_REJECT_DURATION_MS);
+    showToast(t("ui.selectionNotFound"), TOAST_REJECT_DURATION_MS);
     ping("reject");
     return;
   }
@@ -1259,6 +1543,7 @@ function snapToZone(index, targetElement = null) {
   setBarSource("snap");
   setBarCenter(rect.left + rect.width / 2, rect.top + rect.height / 2);
   state.locked = true;
+  syncLanguageControls();
   dom.blackBar.classList.add("is-locked");
   ping("snap");
   triggerManifestEvent("bar_snap", index);
@@ -1284,11 +1569,11 @@ function applySelection(index, version = state.transitionVersion) {
     .filter((item) => Number(item.dataset.zoneIndex) === index)
     .forEach((item) => item.classList.add("is-eaten"));
   applyFlags(zone.flags);
-  state.eatLog.push({ chapterId: currentChapter().id, text: zone.eat || zone.text });
-  dom.feedbackCopy.textContent = zone.npc || "字在黑条下安静下来。";
-  dom.statusCopy.textContent = zone.eat ? `已吞下「${zone.eat}」。` : "字被收进了黑条里。";
-  appendLiveChat(zone.npc || "字被收进去了");
-  showToast(zone.npc || "字被吃掉了。", TOAST_SELECTION_DURATION_MS);
+  state.eatLog.push({ chapterId: currentChapter().id, lineId: line.id, zoneId: zone.id });
+  dom.feedbackCopy.textContent = zone.npc || t("ui.swallowedNpcFallback");
+  dom.statusCopy.textContent = zone.eat ? t("ui.swallowed", { text: zone.eat }) : t("ui.swallowedFallback");
+  appendLiveChat(zone.npc || t("ui.swallowedFallback"));
+  showToast(zone.npc || t("ui.swallowedFallback"), TOAST_SELECTION_DURATION_MS);
   triggerFeedback("snap", index);
   triggerManifestEvent("censor_absorb", index);
   triggerManifestEvent("dialogue_refresh", index, FEEDBACK_DIALOGUE_REFRESH_DELAY_MS);
@@ -1318,7 +1603,7 @@ function continueAfterSelection(transition, version) {
       if (version !== state.transitionVersion) return;
       console.error(error);
       state.locked = false;
-      showToast("结局场景暂时无法载入，请重试。", TOAST_FAILURE_DURATION_MS);
+      showToast(t("ui.endingSceneFailed"), TOAST_FAILURE_DURATION_MS);
     });
     return;
   }
@@ -1555,11 +1840,12 @@ function openMemoryOverlay(chapter) {
   }
   hideOverlay();
   state.locked = true;
-  dom.memoryEyebrow.textContent = `${chapter.id} · 语言胃`;
-  dom.memoryTitle.textContent = "你吞下的字还没有沉下去";
-  dom.memoryCopy.textContent = "把它们收拢成一句只留给自己的私语。";
+  dom.memoryEyebrow.textContent = t("ui.memoryEyebrow", { chapterId: chapter.id });
+  dom.memoryTitle.textContent = t("ui.memoryTitle");
+  dom.memoryCopy.textContent = t("ui.memoryCopy");
   renderMemoryDraft();
   dom.memoryOverlay.classList.remove("is-hidden");
+  syncLanguageControls();
   saveState();
 }
 
@@ -1571,13 +1857,13 @@ function hideMemoryOverlay() {
   dom.memoryOverlay.classList.add("is-hidden");
   state.memoryDrag = null;
   state.suppressMemoryClick = false;
+  syncLanguageControls();
 }
 
 function confirmMemory() {
   const draft = state.memoryDraft;
   if (!draft || draft.order.length !== draft.fragments.length) return;
-  const fragments = new Map(draft.fragments.map((fragment) => [fragment.id, fragment.text]));
-  state.memoryByChapter[draft.chapterId] = draft.order.map((id) => fragments.get(id)).filter(Boolean);
+  state.memoryByChapter[draft.chapterId] = [...draft.order];
   state.memoryDraft = null;
   ping("snap");
   saveState();
@@ -1594,23 +1880,25 @@ function finishChapter() {
     void playChapterOutro("L1_fail_retry", () => {
       if (currentChapter()?.id !== "L1") return;
       state.locked = true;
-      showOverlay("面试结束", "她没有被录用。", "把这一章重新说一遍", () => restartChapter(), "重试面试");
+      syncLanguageControls();
+      showOverlay(
+        t("ui.retryInterviewEyebrow"),
+        t("ui.retryInterviewTitle"),
+        t("ui.retryInterviewAction"),
+        () => restartChapter(),
+        t("ui.retryInterviewToast"),
+      );
     });
     return;
   }
   if (state.chapterIndex >= state.chapters.length - 1) return;
-  const titles = {
-    L0: ["第一口字", "她第一次把不能说的话交给你。"],
-    L1: ["面试结束", "她走出会议室，黑条没有离开。"],
-    L2: ["直播结束", "屏幕熄灭以后，那句‘有你在’还亮着。"],
-    L3: ["门重新合上", "朋友没有问完，你也没有回答完。"],
-    L4: ["道歉结束", "刚才有一条，不是她拖的。"],
-  };
-  const [title, copy] = titles[chapter.id] ?? ["下一段", "她还在等下一句。"];
+  const chapterOverlay = localeValue(`game.chapterOverlays.${chapter.id}`, null);
+  const title = chapterOverlay?.title ?? t("ui.nextChapter");
+  const copy = chapterOverlay?.copy ?? t("ui.nextChapterCopy");
   const action = MEMORY_CHAPTER_IDS.has(chapter.id)
     ? () => openMemoryOverlay(chapter)
     : () => void playChapterOutroThenAdvance(chapter);
-  showOverlay("段落结束", title, copy, action);
+  showOverlay(t("ui.chapterEnded"), title, copy, action);
 }
 
 function nextChapter() {
@@ -1622,6 +1910,7 @@ function nextChapter() {
   state.lineIndex = 0;
   state.selectedZone = null;
   state.locked = false;
+  syncLanguageControls();
   saveState();
   setScene(currentChapter(), currentLine(), true);
   renderLine();
@@ -1640,6 +1929,7 @@ function restartChapter() {
   state.flags.pass = 0;
   state.flags.fail = 0;
   state.locked = false;
+  syncLanguageControls();
   state.selectedZone = null;
   saveState();
   setScene(currentChapter(), currentLine(), true);
@@ -1652,21 +1942,21 @@ async function playRevealSequence() {
   try {
     await playStorySequence("reveal", { reveal: true });
     showOverlay(
-      "反转回放",
-      "你是她没有说出口的那个人",
-      "屏幕上留下的，不只是她说出口的。",
+      t("ui.replayEyebrow"),
+      t("ui.replayTitle"),
+      t("ui.replayCopy"),
       () => restartGame(),
-      "重新开始",
+      t("ui.replayAction"),
     );
   } catch (error) {
     console.error(error);
-    showToast("反转视频暂时无法载入，已保留结局页面。", TOAST_FAILURE_DURATION_MS);
+    showToast(t("ui.revealVideoFailed"), TOAST_FAILURE_DURATION_MS);
     showOverlay(
-      "反转回放",
-      "你是她没有说出口的那个人",
-      "视频暂时无法载入，但这一句仍然属于你。",
+      t("ui.replayEyebrow"),
+      t("ui.replayTitle"),
+      t("ui.revealVideoFallback"),
       () => restartGame(),
-      "重新开始",
+      t("ui.replayAction"),
     );
   }
 }
@@ -1677,6 +1967,7 @@ async function finishEnding(endingId, expectedTransitionVersion = null, { playSe
   if (!pageId) throw new Error(`结局页面不存在: ${endingId}`);
   state.endingId = endingId;
   state.locked = true;
+  syncLanguageControls();
   syncBgmForLocation(null, endingId);
   saveState();
   if (playSequence) {
@@ -1684,7 +1975,7 @@ async function finishEnding(endingId, expectedTransitionVersion = null, { playSe
       await playStorySequence(endingId);
     } catch (error) {
       console.error(error);
-      showToast("终局视频暂时无法载入，已切回整页结局。", TOAST_FAILURE_DURATION_MS);
+      showToast(t("ui.endingVideoFailed"), TOAST_FAILURE_DURATION_MS);
     }
   }
   const loaded = await setScenePage(pageId, false);
@@ -1693,24 +1984,20 @@ async function finishEnding(endingId, expectedTransitionVersion = null, { playSe
   }
   dom.stage.dataset.ending = endingId;
   state.locked = true;
-  const titles = {
-    A_separate: "她把手收了回去",
-    B_alienate: "留下的不是‘我’",
-    C_consume: "请求空壳",
-    C_cold: "身份被抹去",
-  };
-  const endingCopy = state.data.endings?.[endingId] ?? "她取回了自己的声音。";
+  syncLanguageControls();
+  const endingTitle = localeValue(`game.endingTitles.${endingId}`, t("ui.endingFallbackTitle"));
+  const endingCopy = state.data.endings?.[endingId] ?? "";
   showOverlay(
-    `结局 · ${endingId}`,
-    titles[endingId] ?? "最后一句",
+    t("ui.endingEyebrow", { endingId }),
+    endingTitle,
     endingCopy,
     () => void playRevealSequence(),
-    "观看反转",
+    t("ui.watchReveal"),
   );
   return true;
 }
 
-function showOverlay(eyebrow, title, copy, action, actionLabel = "继续") {
+function showOverlay(eyebrow, title, copy, action, actionLabel = t("ui.continue")) {
   state.overlayAction = action;
   dom.overlayEyebrow.textContent = eyebrow;
   dom.overlayTitle.textContent = title;
@@ -1747,7 +2034,9 @@ function resetRun() {
   state.memoryDraft = null;
   state.endingId = null;
   state.hasSave = false;
+  state.pendingMigrationNotice = false;
   state.locked = false;
+  syncLanguageControls();
   state.selectedZone = null;
   state.hoverZone = null;
   state.hoverTarget = null;
@@ -1763,13 +2052,22 @@ function restartGame() {
 }
 
 function saveState() {
+  const chapter = currentChapter();
+  const line = currentLine();
   const saved = storageSet(SAVE_KEY, JSON.stringify({
-    chapterIndex: state.chapterIndex,
-    lineIndex: state.lineIndex,
+    schemaVersion: 2,
+    position: {
+      chapterId: chapter?.id ?? "L0",
+      lineId: line?.id ?? null,
+    },
     flags: state.flags,
-    eatLog: state.eatLog,
+    selections: state.eatLog,
     memoryByChapter: state.memoryByChapter,
-    memoryDraft: state.memoryDraft,
+    memoryDraft: state.memoryDraft ? {
+      chapterId: state.memoryDraft.chapterId,
+      fragmentIds: state.memoryDraft.fragments.map((fragment) => fragment.id),
+      order: state.memoryDraft.order,
+    } : null,
     endingId: state.endingId,
   }));
   if (saved) {
@@ -1782,26 +2080,12 @@ function saveState() {
 
 function restoreState() {
   state.hasSave = false;
+  state.pendingMigrationNotice = false;
   const raw = storageGet(SAVE_KEY);
   try {
     if (!raw) return;
     const saved = JSON.parse(raw);
     if (!saved || typeof saved !== "object" || Array.isArray(saved)) throw new Error("存档格式无效");
-    const chapterIndex = saved.chapterIndex;
-    if (typeof chapterIndex !== "number"
-      || !Number.isSafeInteger(chapterIndex)
-      || chapterIndex < 0
-      || chapterIndex >= state.chapters.length) {
-      throw new Error("存档章节索引无效");
-    }
-    const lineIndex = saved.lineIndex;
-    const lines = state.chapters[chapterIndex]?.lines ?? [];
-    if (typeof lineIndex !== "number"
-      || !Number.isSafeInteger(lineIndex)
-      || lineIndex < 0
-      || lineIndex > lines.length) {
-      throw new Error("存档台词索引无效");
-    }
     const endingIds = new Set(Object.keys(state.pages?.endingPages ?? {}));
     if (saved.endingId !== null && saved.endingId !== undefined && !endingIds.has(saved.endingId)) {
       throw new Error("存档结局无效");
@@ -1810,14 +2094,46 @@ function restoreState() {
       && (!saved.flags || typeof saved.flags !== "object" || Array.isArray(saved.flags))) {
       throw new Error("存档状态无效");
     }
+    if (saved.schemaVersion === 2) {
+      const position = saved.position;
+      if (!position || typeof position.chapterId !== "string") throw new Error("存档位置无效");
+      const chapterIndex = state.chapters.findIndex((chapter) => chapter.id === position.chapterId);
+      if (chapterIndex < 0) throw new Error("存档章节无效");
+      const lines = state.chapters[chapterIndex]?.lines ?? [];
+      const lineIndex = position.lineId === null
+        ? lines.length
+        : lines.findIndex((line) => line.id === position.lineId);
+      if (lineIndex < 0) throw new Error("存档台词无效");
+      state.chapterIndex = chapterIndex;
+      state.lineIndex = lineIndex;
+      state.flags = saved.flags ?? {};
+      state.eatLog = normalizeSelections(saved.selections);
+      state.memoryByChapter = normalizeMemoryByChapter(saved.memoryByChapter);
+      state.memoryDraft = normalizeMemoryDraft(saved.memoryDraft);
+      state.endingId = typeof saved.endingId === "string" ? saved.endingId : null;
+      state.hasSave = true;
+      return;
+    }
+
+    // Legacy saves persist translated text and cannot reliably be mapped to a
+    // zone (several selectable texts are duplicated). Preserve progression only.
+    const chapterIndex = saved.chapterIndex;
+    const lineIndex = saved.lineIndex;
+    const lines = state.chapters[chapterIndex]?.lines ?? [];
+    if (!Number.isSafeInteger(chapterIndex) || chapterIndex < 0 || chapterIndex >= state.chapters.length
+      || !Number.isSafeInteger(lineIndex) || lineIndex < 0 || lineIndex > lines.length) {
+      throw new Error("旧版存档位置无效");
+    }
     state.chapterIndex = chapterIndex;
     state.lineIndex = lineIndex;
     state.flags = saved.flags ?? {};
-    state.eatLog = normalizeEatLog(saved.eatLog, state.chapters[state.chapterIndex]?.id ?? "L0");
-    state.memoryByChapter = normalizeMemoryByChapter(saved.memoryByChapter);
-    state.memoryDraft = normalizeMemoryDraft(saved.memoryDraft);
+    state.eatLog = [];
+    state.memoryByChapter = {};
+    state.memoryDraft = null;
     state.endingId = typeof saved.endingId === "string" ? saved.endingId : null;
     state.hasSave = true;
+    state.pendingMigrationNotice = true;
+    saveState();
   } catch (error) {
     storageRemove(SAVE_KEY);
     console.warn("discarding invalid save", error.message);
@@ -1878,10 +2194,13 @@ function configureTitleScreen() {
   dom.titleScreen.inert = false;
   dom.titlePrimary.disabled = false;
   dom.titleNewGame.disabled = false;
-  dom.titlePrimary.textContent = hasSave ? "继续游戏" : "开始游戏";
+  dom.titlePrimary.textContent = hasSave ? t("ui.titlePrimaryContinue") : t("ui.titlePrimaryNew");
   dom.titleNewGame.classList.toggle("is-hidden", !hasSave);
-  dom.titleStatus.textContent = hasSave ? "已有一段未完成的记录。" : "准备就绪。";
+  dom.titleStatus.textContent = state.pendingMigrationNotice
+    ? t("ui.oldSaveMigrated")
+    : (hasSave ? t("ui.titleHasSave") : t("ui.titleReady"));
   state.titleReady = true;
+  syncLanguageControls();
 }
 
 function skipTitleScreen() {
@@ -1894,6 +2213,7 @@ function skipTitleScreen() {
   dom.titlePrimary.disabled = true;
   dom.titleNewGame.disabled = true;
   state.titleReady = false;
+  syncLanguageControls();
 }
 
 function closeTitleScreen() {
@@ -1902,6 +2222,7 @@ function closeTitleScreen() {
   dom.titleScreen.inert = true;
   dom.titlePrimary.disabled = true;
   dom.titleNewGame.disabled = true;
+  syncLanguageControls();
   window.setTimeout(() => {
     dom.titleScreen.classList.add("is-hidden");
     dom.app.classList.remove("is-title-screen");
@@ -1911,6 +2232,7 @@ function closeTitleScreen() {
 async function startGame(mode = "continue") {
   if (!state.titleReady || state.titleStarting) return;
   state.titleStarting = true;
+  syncLanguageControls();
   dom.titlePrimary.disabled = true;
   dom.titleNewGame.disabled = true;
   if (mode === "new") resetRun();
@@ -1946,11 +2268,12 @@ async function startGame(mode = "continue") {
     console.error(error);
     state.bgm.started = false;
     stopBgmSlots();
-    dom.titleStatus.textContent = "场景暂时无法载入，请重试。";
+    dom.titleStatus.textContent = t("ui.endingSceneFailed");
     dom.titlePrimary.disabled = false;
     dom.titleNewGame.disabled = false;
   } finally {
     state.titleStarting = false;
+    syncLanguageControls();
   }
 }
 
@@ -2002,6 +2325,15 @@ function bindEvents() {
   dom.titleNewGame.addEventListener("click", () => startGame("new"));
   dom.overlayAction.addEventListener("click", () => state.overlayAction?.());
   dom.memoryConfirm.addEventListener("click", confirmMemory);
+  dom.titleLanguageSelect.addEventListener("change", (event) => {
+    void switchLocale(event.target.value, { persist: true });
+  });
+  dom.languageMenuButton.addEventListener("click", () => {
+    if (languageSwitchLocked()) return;
+    const opening = dom.languageMenu.classList.contains("is-hidden");
+    dom.languageMenu.classList.toggle("is-hidden", !opening);
+    dom.languageMenuButton.setAttribute("aria-expanded", String(opening));
+  });
   dom.audioSettingsButton.addEventListener("click", toggleAudioSettings);
   dom.audioSettingsClose.addEventListener("click", closeAudioSettings);
   dom.audioEnabled.addEventListener("change", () => setAudioEnabled(dom.audioEnabled.checked));
@@ -2016,6 +2348,10 @@ function bindEvents() {
   document.addEventListener("pointerdown", (event) => {
     if (dom.audioSettings.classList.contains("is-hidden")) return;
     if (!dom.audioSettings.contains(event.target) && event.target !== dom.audioSettingsButton) closeAudioSettings();
+  }, { capture: true });
+  document.addEventListener("pointerdown", (event) => {
+    if (dom.languageMenu.classList.contains("is-hidden")) return;
+    if (!dom.languageMenu.contains(event.target) && event.target !== dom.languageMenuButton) closeLanguageMenu();
   }, { capture: true });
   window.addEventListener("resize", () => {
     if (state.dialogueLayout) layoutDialogueZones();
@@ -2144,22 +2480,44 @@ async function load() {
     const fetchOptions = { cache: "no-store" };
     const responses = await Promise.all([
       fetch(DATA_URL, fetchOptions),
+      fetch(LOCALE_MANIFEST_URL, fetchOptions),
       fetch(PLAYABLE_MANIFEST_URL, fetchOptions),
       fetch(PAGE_MANIFEST_URL, fetchOptions),
       fetch(AUDIO_MANIFEST_URL, fetchOptions),
       fetch(VIDEO_MANIFEST_URL, fetchOptions),
     ]);
-    if (responses.some((response) => !response.ok)) throw new Error("数据文件未找到");
-    state.data = await responses[0].json();
-    state.playable = await responses[1].json();
-    state.pages = await responses[2].json();
-    state.audio = await responses[3].json();
-    state.video = await responses[4].json();
+    if (responses.some((response) => !response.ok)) throw new Error("Runtime data unavailable");
+    state.baseData = await responses[0].json();
+    state.localeManifest = await responses[1].json();
+    state.playable = await responses[2].json();
+    state.pages = await responses[3].json();
+    state.audio = await responses[4].json();
+    state.video = await responses[5].json();
+    if (state.localeManifest?.schemaVersion !== 1 || !Array.isArray(state.localeManifest?.locales)) {
+      throw new Error("Locale manifest is invalid");
+    }
+    const fallbackLocale = defaultLocaleDescriptor();
+    if (!fallbackLocale) throw new Error("Locale manifest has no default locale");
+    state.fallbackLocaleData = await fetchLocaleData(fallbackLocale);
+    let selectedLocale = requestedLocaleDescriptor() ?? fallbackLocale;
+    let selectedData = state.fallbackLocaleData;
+    if (selectedLocale.id !== fallbackLocale.id) {
+      try {
+        selectedData = await fetchLocaleData(selectedLocale);
+      } catch (error) {
+        console.warn(error);
+        selectedLocale = fallbackLocale;
+      }
+    }
+    state.locale = selectedLocale;
+    state.localeData = selectedData;
+    state.data = { ...state.baseData, endings: selectedData.game?.endings ?? {} };
+    state.chapters = joinLocalizedChapters(state.baseData, selectedData);
     restoreAudioSettings();
-    state.chapters = state.data.chapters ?? [];
     state.assets = new Map((state.playable.assets ?? []).map((asset) => [asset.id, asset]));
     state.pageAssets = new Map((state.pages.assets ?? []).map((asset) => [asset.id, asset]));
     if (!state.chapters.length || !state.assets.size || !state.pageAssets.size) throw new Error("章节或资产为空");
+    applyLocaleText();
     validateBindings();
     validateAudioManifest();
     validateVideoManifest();
@@ -2201,7 +2559,7 @@ async function load() {
   } catch (error) {
     console.error(error);
     dom.app.classList.remove("is-loading");
-    dom.errorCopy.textContent = `${error.message}。请用本地服务器打开 web/，不要直接双击 HTML。`;
+    dom.errorCopy.textContent = `${t("ui.runtimeDataMissing", {}, "Runtime data is unavailable.")} ${t("ui.loadErrorSuffix", {}, "Please open the game through a local web server.")}`;
     dom.errorPanel.classList.remove("is-hidden");
   }
 }

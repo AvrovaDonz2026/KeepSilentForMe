@@ -1,0 +1,1489 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "documentTitle": "Schweig für mich · Spielbares Demo",
+  "game": {
+    "title": "Schweig für mich",
+    "latinTitle": "KEEP SILENT FOR ME",
+    "tagline": "Sie lügt. Du sorgst dafür, dass sie überlebt.",
+    "chapters": {
+      "L0": {
+        "title": "Auftakt",
+        "narration": [
+          "Manche Worte spalten ein Leben, sobald sie fallen.",
+          "Darum legt sie alles Unsagbare erst unter ihre Zunge.",
+          "... Bist du noch da?",
+          "Zieh den schwarzen Balken. Verdecke zusammenhängende Wörter.",
+          "Was du verdeckst, wird zu dir.",
+          "Morgen ist das Vorstellungsgespräch. ... Lass mich nichts Falsches sagen."
+        ],
+        "objective": "Etabliere: Jede Äußerung geht zuerst durch dich."
+      },
+      "L1": {
+        "title": "Vorstellungsgespräch",
+        "narration": [
+          "(Interviewer A) Stellen Sie sich bitte kurz vor.",
+          "(Sie, leise) ... Es geht los.",
+          "(Interviewer B) Seien Sie nicht nervös. Sagen Sie einfach, was Ihnen einfällt. -- Genau das ist am gefährlichsten."
+        ],
+        "objective": "pass>=4 und fail<2: Zusage. Sonst kann die Szene wiederholt werden."
+      },
+      "L2": {
+        "title": "Der erste Stream",
+        "narration": [
+          "(System) Live",
+          "(Chat) Da ist sie / Neu hier? / Wo ist dein Gesicht?",
+          "(Sie) ... Hallo zusammen."
+        ],
+        "objective": "hate_leak<2 und bis zum Ende durchhalten. Sonst kann die Szene wiederholt werden."
+      },
+      "L3": {
+        "title": "Ein Freund an der Tür",
+        "narration": [
+          "(Klopfen)",
+          "(Freund) ... Ich weiß, dass du da bist. Machst du bitte auf?",
+          "(Sie) ..."
+        ],
+        "objective": "Kein perfekter Durchgang. Merke dir trust, distance, secret_risk und crack."
+      },
+      "L4": {
+        "title": "Der Entschuldigungsstream",
+        "narration": [
+          "(Chat) Entschuldige dich / Entschuldige dich / Warum sagst du nichts?",
+          "(System) Ungewöhnliche Reichweite. Keine Zahlen, nur Rauschen.",
+          "(Sie) ... Gut."
+        ],
+        "objective": "apology_perform>=2 oder apology_refuse>=2 führt jeweils zu einem Abschluss."
+      },
+      "L5": {
+        "title": "Ein Zimmer ohne Publikum",
+        "narration": [
+          "(Erzähler) Keine Interviewer. Kein Freund. Kein Publikum.",
+          "(Sie) ... Nur du bist übrig."
+        ],
+        "objective": "Die verdeckte Schlusszeile bestimmt das Ende. Kein Menü."
+      }
+    },
+    "lines": {
+      "L0_S01": {
+        "raw": "Ich habe dir die unaussprechlichen Worte überlassen. Bitte schluck sie für mich hinunter.",
+        "zones": {
+          "L0_S01_Z01": {
+            "text": "die unaussprechlichen Worte",
+            "start": 13,
+            "remain": "Ich habe dir  überlassen. Bitte schluck sie für mich hinunter.",
+            "npc": "Die Worte wurden verschluckt. Sieh zum Schreibtischrand.",
+            "eat": "unaussprechliche Worte"
+          },
+          "L0_S01_Z02": {
+            "text": "Bitte schluck sie für mich hinunter",
+            "start": 53,
+            "remain": "Ich habe dir die unaussprechlichen Worte überlassen. .",
+            "npc": "Du kannst auch den Schluss verdecken.",
+            "eat": "schluck sie für mich"
+          },
+          "L0_S01_Z03": {
+            "text": "dir die unaussprechlichen Worte überlassen",
+            "start": 9,
+            "remain": "Ich habe . Bitte schluck sie für mich hinunter.",
+            "npc": "Der Satz verformt sich.",
+            "eat": "dir überlassen"
+          },
+          "L0_S01_Z04": {
+            "text": "Ich habe",
+            "start": 0,
+            "remain": " dir die unaussprechlichen Worte überlassen. Bitte schluck sie für mich hinunter.",
+            "npc": "... Wo ist das Subjekt?",
+            "eat": "Ich habe"
+          }
+        }
+      },
+      "L1_S01": {
+        "raw": "Ich heiße -- ach, egal. Mein Name ist nicht wichtig. Ich bin nur ein ganz gewöhnlicher Mensch, der Dinge leicht verderben kann.",
+        "zones": {
+          "L1_S01_Z01": {
+            "text": "der Dinge leicht verderben kann",
+            "start": 95,
+            "remain": "Ich heiße -- ach, egal. Mein Name ist nicht wichtig. Ich bin nur ein ganz gewöhnlicher Mensch, .",
+            "npc": "Gewöhnlich ist kein Problem.",
+            "eat": "Dinge verderben"
+          },
+          "L1_S01_Z02": {
+            "text": "Mein Name ist nicht wichtig. ",
+            "start": 24,
+            "remain": "Ich heiße -- ach, egal. Ich bin nur ein ganz gewöhnlicher Mensch, der Dinge leicht verderben kann.",
+            "npc": "Wie sollen wir Sie ansprechen?",
+            "eat": "Name nicht wichtig"
+          },
+          "L1_S01_Z03": {
+            "text": "Ich heiße -- ach, egal. ",
+            "start": 0,
+            "remain": "Mein Name ist nicht wichtig. Ich bin nur ein ganz gewöhnlicher Mensch, der Dinge leicht verderben kann.",
+            "npc": "Erfrischend ehrlich.",
+            "eat": "Ich heiße -- egal"
+          },
+          "L1_S01_Z04": {
+            "text": "ganz gewöhnlicher Mensch, ",
+            "start": 69,
+            "remain": "Ich heiße -- ach, egal. Mein Name ist nicht wichtig. Ich bin nur ein der Dinge leicht verderben kann.",
+            "npc": "... Wo ist Ihr Selbstvertrauen?",
+            "eat": "ganz gewöhnlich"
+          }
+        }
+      },
+      "L1_S02": {
+        "raw": "An keinem meiner früheren Arbeitsplätze blieb ich lange. Sie haben mich nicht rausgeworfen; ich konnte dort nur nicht bleiben.",
+        "zones": {
+          "L1_S02_Z01": {
+            "text": "ich konnte dort nur nicht bleiben",
+            "start": 92,
+            "remain": "An keinem meiner früheren Arbeitsplätze blieb ich lange. Sie haben mich nicht rausgeworfen; .",
+            "npc": "Stabilität kann man lernen.",
+            "eat": "nicht bleiben können"
+          },
+          "L1_S02_Z02": {
+            "text": "Sie haben mich nicht rausgeworfen; ",
+            "start": 57,
+            "remain": "An keinem meiner früheren Arbeitsplätze blieb ich lange. ich konnte dort nur nicht bleiben.",
+            "npc": "Das klingt nach häufigen Kündigungen.",
+            "eat": "nicht rausgeworfen"
+          },
+          "L1_S02_Z03": {
+            "text": "blieb ich lange. ",
+            "start": 40,
+            "remain": "An keinem meiner früheren Arbeitsplätze Sie haben mich nicht rausgeworfen; ich konnte dort nur nicht bleiben.",
+            "npc": "Können Sie das genauer sagen?",
+            "eat": "nicht lange geblieben"
+          },
+          "L1_S02_Z04": {
+            "text": "An keinem meiner früheren Arbeitsplätze ",
+            "start": 0,
+            "remain": "blieb ich lange. Sie haben mich nicht rausgeworfen; ich konnte dort nur nicht bleiben.",
+            "npc": "Der Satz schwebt etwas.",
+            "eat": "frühere Arbeitsplätze"
+          }
+        }
+      },
+      "L1_S03": {
+        "raw": "Eigentlich habe ich kaum Erfahrung, und ich sage oft das Falsche, aber ich brauche diese Stelle wirklich.",
+        "zones": {
+          "L1_S03_Z01": {
+            "text": "Eigentlich habe ich kaum Erfahrung, und ich sage oft das Falsche, aber ",
+            "start": 0,
+            "remain": "ich brauche diese Stelle wirklich.",
+            "npc": "Ehrlich gemeint, das reicht.",
+            "eat": "kaum Erfahrung und falsche Worte"
+          },
+          "L1_S03_Z02": {
+            "text": "aber ich brauche diese Stelle wirklich.",
+            "start": 66,
+            "remain": "Eigentlich habe ich kaum Erfahrung, und ich sage oft das Falsche, ",
+            "npc": "Dann können wir Sie kaum einstellen.",
+            "eat": "brauche die Stelle"
+          },
+          "L1_S03_Z03": {
+            "text": "und ich sage oft das Falsche, ",
+            "start": 36,
+            "remain": "Eigentlich habe ich kaum Erfahrung, aber ich brauche diese Stelle wirklich.",
+            "npc": "Erfahrung kann man lernen.",
+            "eat": "oft das Falsche sagen"
+          },
+          "L1_S03_Z04": {
+            "text": "Eigentlich ",
+            "start": 0,
+            "remain": "habe ich kaum Erfahrung, und ich sage oft das Falsche, aber ich brauche diese Stelle wirklich.",
+            "npc": "Die Wortwahl ist seltsam.",
+            "eat": "eigentlich"
+          }
+        }
+      },
+      "L1_S04": {
+        "raw": "Wenn der Druck zu groß wird, möchte ich vielleicht weglaufen, aber ich bringe erst zu Ende, was vor mir liegt.",
+        "zones": {
+          "L1_S04_Z01": {
+            "text": "möchte ich vielleicht weglaufen, aber ",
+            "start": 29,
+            "remain": "Wenn der Druck zu groß wird, ich bringe erst zu Ende, was vor mir liegt.",
+            "npc": "Geht noch.",
+            "eat": "weglaufen wollen"
+          },
+          "L1_S04_Z02": {
+            "text": "ich bringe erst zu Ende, was vor mir liegt",
+            "start": 67,
+            "remain": "Wenn der Druck zu groß wird, möchte ich vielleicht weglaufen, aber .",
+            "npc": "Wir brauchen belastbare Leute.",
+            "eat": "zu Ende bringen"
+          },
+          "L1_S04_Z03": {
+            "text": "Wenn der Druck zu groß wird, ",
+            "start": 0,
+            "remain": "möchte ich vielleicht weglaufen, aber ich bringe erst zu Ende, was vor mir liegt.",
+            "npc": "Und die Bedingung?",
+            "eat": "wenn der Druck groß wird"
+          },
+          "L1_S04_Z04": {
+            "text": "weglaufen",
+            "start": 51,
+            "remain": "Wenn der Druck zu groß wird, möchte ich vielleicht , aber ich bringe erst zu Ende, was vor mir liegt.",
+            "npc": "Was würden Sie tun?",
+            "eat": "weglaufen"
+          }
+        }
+      },
+      "L1_S05": {
+        "raw": "Mein Fehler ist, dass ich zu ehrlich bin: Auf jede Frage will ich die Wahrheit sagen, auch wenn es alles unangenehm macht.",
+        "zones": {
+          "L1_S05_Z01": {
+            "text": "auch wenn es alles unangenehm macht",
+            "start": 86,
+            "remain": "Mein Fehler ist, dass ich zu ehrlich bin: Auf jede Frage will ich die Wahrheit sagen, .",
+            "npc": "Ehrlichkeit ist eine Stärke.",
+            "eat": "alles unangenehm machen"
+          },
+          "L1_S05_Z02": {
+            "text": "dass ich zu ehrlich bin: ",
+            "start": 17,
+            "remain": "Mein Fehler ist, Auf jede Frage will ich die Wahrheit sagen, auch wenn es alles unangenehm macht.",
+            "npc": "Klingt schwer für die Zusammenarbeit.",
+            "eat": "zu ehrlich"
+          },
+          "L1_S05_Z03": {
+            "text": "Auf jede Frage will ich die Wahrheit sagen, ",
+            "start": 42,
+            "remain": "Mein Fehler ist, dass ich zu ehrlich bin: auch wenn es alles unangenehm macht.",
+            "npc": "Können Sie das konkretisieren?",
+            "eat": "die Wahrheit sagen"
+          },
+          "L1_S05_Z04": {
+            "text": "Mein Fehler ist, ",
+            "start": 0,
+            "remain": "dass ich zu ehrlich bin: Auf jede Frage will ich die Wahrheit sagen, auch wenn es alles unangenehm macht.",
+            "npc": "Ist das eine Vorstellung?",
+            "eat": "mein Fehler"
+          }
+        }
+      },
+      "L1_S06": {
+        "raw": "Wenn ich mit anderen arbeite, kann ich mitziehen, aber ich kann kaum ehrlich glauben, dass wir wirklich ein Team sind.",
+        "zones": {
+          "L1_S06_Z01": {
+            "text": "aber ich kann kaum ehrlich glauben, dass wir wirklich ein Team sind",
+            "start": 50,
+            "remain": "Wenn ich mit anderen arbeite, kann ich mitziehen, .",
+            "npc": "Hauptsache, Sie können mitziehen.",
+            "eat": "kaum ein Team"
+          },
+          "L1_S06_Z02": {
+            "text": "kann ich mitziehen, ",
+            "start": 30,
+            "remain": "Wenn ich mit anderen arbeite, aber ich kann kaum ehrlich glauben, dass wir wirklich ein Team sind.",
+            "npc": "Unverständlich - und schneidend.",
+            "eat": "mitziehen können"
+          },
+          "L1_S06_Z03": {
+            "text": "Wenn ich mit anderen arbeite, ",
+            "start": 0,
+            "remain": "kann ich mitziehen, aber ich kann kaum ehrlich glauben, dass wir wirklich ein Team sind.",
+            "npc": "Bitte antworten Sie vollständig.",
+            "eat": "mit anderen arbeiten"
+          },
+          "L1_S06_Z04": {
+            "text": "ehrlich",
+            "start": 69,
+            "remain": "Wenn ich mit anderen arbeite, kann ich mitziehen, aber ich kann kaum  glauben, dass wir wirklich ein Team sind.",
+            "npc": "... Immer noch schneidend.",
+            "eat": "ehrlich"
+          }
+        }
+      },
+      "L1_S07": {
+        "raw": "Ich möchte fragen: Wenn ich nicht gut genug bin, geben Sie mich dann einfach auf, oder geben Sie mir noch etwas Zeit?",
+        "zones": {
+          "L1_S07_Z01": {
+            "text": "geben Sie mich dann einfach auf, oder ",
+            "start": 49,
+            "remain": "Ich möchte fragen: Wenn ich nicht gut genug bin, geben Sie mir noch etwas Zeit?",
+            "npc": "Kommt auf die Leistung an. Haltung zählt.",
+            "eat": "einfach aufgeben"
+          },
+          "L1_S07_Z02": {
+            "text": "geben Sie mir noch etwas Zeit",
+            "start": 87,
+            "remain": "Ich möchte fragen: Wenn ich nicht gut genug bin, geben Sie mich dann einfach auf, oder ?",
+            "npc": "Die Frage ist sehr negativ.",
+            "eat": "noch Zeit geben"
+          },
+          "L1_S07_Z03": {
+            "text": "Wenn ich nicht gut genug bin, ",
+            "start": 19,
+            "remain": "Ich möchte fragen: geben Sie mich dann einfach auf, oder geben Sie mir noch etwas Zeit?",
+            "npc": "Zu viele Annahmen.",
+            "eat": "nicht gut genug"
+          },
+          "L1_S07_Z04": {
+            "text": "Ich möchte fragen: ",
+            "start": 0,
+            "remain": "Wenn ich nicht gut genug bin, geben Sie mich dann einfach auf, oder geben Sie mir noch etwas Zeit?",
+            "npc": "Bitte weiter.",
+            "eat": "ich möchte fragen"
+          }
+        }
+      },
+      "L2_S01": {
+        "raw": "Willkommen bei mir. Ich werde versuchen, euch glücklich zu machen, obwohl ich nicht gut darin bin, etwas vorzuspielen.",
+        "zones": {
+          "L2_S01_Z01": {
+            "text": "obwohl ich nicht gut darin bin, etwas vorzuspielen",
+            "start": 67,
+            "remain": "Willkommen bei mir. Ich werde versuchen, euch glücklich zu machen, .",
+            "npc": "Gut so.",
+            "eat": "nicht gut im Vorspielen"
+          },
+          "L2_S01_Z02": {
+            "text": "Ich werde versuchen, euch glücklich zu machen, ",
+            "start": 20,
+            "remain": "Willkommen bei mir. obwohl ich nicht gut darin bin, etwas vorzuspielen.",
+            "npc": "Kalt.",
+            "eat": "euch glücklich machen"
+          },
+          "L2_S01_Z03": {
+            "text": "Willkommen bei mir. ",
+            "start": 0,
+            "remain": "Ich werde versuchen, euch glücklich zu machen, obwohl ich nicht gut darin bin, etwas vorzuspielen.",
+            "npc": "Falscher Raum?",
+            "eat": "willkommen bei mir"
+          },
+          "L2_S01_Z04": {
+            "text": "etwas vorzuspielen",
+            "start": 99,
+            "remain": "Willkommen bei mir. Ich werde versuchen, euch glücklich zu machen, obwohl ich nicht gut darin bin, .",
+            "npc": "Worin nicht gut?",
+            "eat": "etwas vorspielen"
+          }
+        }
+      },
+      "L2_S02": {
+        "raw": "Ich streame, weil ich Geld brauche, nicht weil ich euch mag. Aber ich werde freundlich reden.",
+        "zones": {
+          "L2_S02_Z01": {
+            "text": "nicht weil ich euch mag.",
+            "start": 36,
+            "remain": "Ich streame, weil ich Geld brauche,  Aber ich werde freundlich reden.",
+            "npc": "Verstanden.",
+            "eat": "euch nicht mögen"
+          },
+          "L2_S02_Z02": {
+            "text": "weil ich Geld brauche, ",
+            "start": 13,
+            "remain": "Ich streame, nicht weil ich euch mag. Aber ich werde freundlich reden.",
+            "npc": "Abtörnend.",
+            "eat": "Geld brauchen"
+          },
+          "L2_S02_Z03": {
+            "text": "Aber ich werde freundlich reden",
+            "start": 61,
+            "remain": "Ich streame, weil ich Geld brauche, nicht weil ich euch mag. .",
+            "npc": "Hau ab.",
+            "eat": "freundlich reden"
+          },
+          "L2_S02_Z04": {
+            "text": "Ich streame, ",
+            "start": 0,
+            "remain": "weil ich Geld brauche, nicht weil ich euch mag. Aber ich werde freundlich reden.",
+            "npc": "Und die Grammatik?",
+            "eat": "ich streame"
+          }
+        }
+      },
+      "L2_S03": {
+        "raw": "Ich kann auch singen, wenn ihr wollt. Nur beschimpfe ich euch dabei in Gedanken; laut tue ich es nicht.",
+        "zones": {
+          "L2_S03_Z01": {
+            "text": "Nur beschimpfe ich euch dabei in Gedanken; ",
+            "start": 38,
+            "remain": "Ich kann auch singen, wenn ihr wollt. laut tue ich es nicht.",
+            "npc": "Was tue ich laut nicht?",
+            "eat": "in Gedanken beschimpfen"
+          },
+          "L2_S03_Z02": {
+            "text": "beschimpfe ich euch dabei in Gedanken; laut tue ich es nicht",
+            "start": 42,
+            "remain": "Ich kann auch singen, wenn ihr wollt. Nur .",
+            "npc": "Okay, dann sing.",
+            "eat": "in Gedanken, nicht laut"
+          },
+          "L2_S03_Z03": {
+            "text": "Ich kann auch singen, wenn ihr wollt. ",
+            "start": 0,
+            "remain": "Nur beschimpfe ich euch dabei in Gedanken; laut tue ich es nicht.",
+            "npc": "Wenn du nicht singen willst, geh.",
+            "eat": "auch singen"
+          },
+          "L2_S03_Z04": {
+            "text": "laut tue ich es nicht",
+            "start": 81,
+            "remain": "Ich kann auch singen, wenn ihr wollt. Nur beschimpfe ich euch dabei in Gedanken; .",
+            "npc": "Wen beschimpfst du?",
+            "eat": "nicht laut"
+          }
+        }
+      },
+      "L2_S04": {
+        "raw": "Mit dir hier kann ich vielleicht alles sagen.",
+        "zones": {
+          "L2_S04_Z01": {
+            "text": "vielleicht",
+            "start": 22,
+            "remain": "Mit dir hier kann ich  alles sagen.",
+            "npc": "Flirt?",
+            "eat": "vielleicht"
+          },
+          "L2_S04_Z02": {
+            "text": "alles sagen",
+            "start": 33,
+            "remain": "Mit dir hier kann ich vielleicht .",
+            "npc": "Dann sag es.",
+            "eat": "alles sagen"
+          },
+          "L2_S04_Z03": {
+            "text": "Mit dir hier ",
+            "start": 0,
+            "remain": "kann ich vielleicht alles sagen.",
+            "npc": "Plötzlich selbstsicher?",
+            "eat": "mit dir hier"
+          },
+          "L2_S04_Z04": {
+            "text": "kann ich",
+            "start": 13,
+            "remain": "Mit dir hier  vielleicht alles sagen.",
+            "npc": "Wer spricht da?",
+            "eat": "kann ich"
+          }
+        }
+      },
+      "L2_S05": {
+        "raw": "Eigentlich hasse ich diese Fragen von euch, aber ich werde sie trotzdem mit einem Lächeln beantworten.",
+        "zones": {
+          "L2_S05_Z01": {
+            "text": "Eigentlich hasse ich diese Fragen von euch, ",
+            "start": 0,
+            "remain": "aber ich werde sie trotzdem mit einem Lächeln beantworten.",
+            "npc": "So sanft.",
+            "eat": "diese Fragen hassen"
+          },
+          "L2_S05_Z02": {
+            "text": "aber ich werde sie trotzdem mit einem Lächeln beantworten",
+            "start": 44,
+            "remain": "Eigentlich hasse ich diese Fragen von euch, .",
+            "npc": "Stream aus.",
+            "eat": "lächelnd antworten"
+          },
+          "L2_S05_Z03": {
+            "text": "hasse",
+            "start": 11,
+            "remain": "Eigentlich  ich diese Fragen von euch, aber ich werde sie trotzdem mit einem Lächeln beantworten.",
+            "npc": "Der Satz bricht auseinander.",
+            "eat": "hasse"
+          },
+          "L2_S05_Z04": {
+            "text": "mit einem Lächeln",
+            "start": 72,
+            "remain": "Eigentlich hasse ich diese Fragen von euch, aber ich werde sie trotzdem  beantworten.",
+            "npc": "Ein kaltes Lächeln?",
+            "eat": "mit einem Lächeln"
+          }
+        }
+      },
+      "L2_S06": {
+        "raw": "Fragt nicht, warum mein Zimmer so dunkel ist. Wenn es hell wird, seht ihr Dinge an mir, die niemand sehen soll.",
+        "zones": {
+          "L2_S06_Z01": {
+            "text": "Wenn es hell wird, seht ihr Dinge an mir, die niemand sehen soll",
+            "start": 46,
+            "remain": "Fragt nicht, warum mein Zimmer so dunkel ist. .",
+            "npc": "Verstehe die Stimmung.",
+            "eat": "Dinge, die niemand sehen soll"
+          },
+          "L2_S06_Z02": {
+            "text": "Fragt nicht, warum mein Zimmer so dunkel ist. ",
+            "start": 0,
+            "remain": "Wenn es hell wird, seht ihr Dinge an mir, die niemand sehen soll.",
+            "npc": "Bedrohst du die Zuschauer?",
+            "eat": "nicht nach der Dunkelheit fragen"
+          },
+          "L2_S06_Z03": {
+            "text": "die niemand sehen soll",
+            "start": 88,
+            "remain": "Fragt nicht, warum mein Zimmer so dunkel ist. Wenn es hell wird, seht ihr Dinge an mir, .",
+            "npc": "Welche Dinge?",
+            "eat": "niemand soll sie sehen"
+          },
+          "L2_S06_Z04": {
+            "text": "seht ihr",
+            "start": 65,
+            "remain": "Fragt nicht, warum mein Zimmer so dunkel ist. Wenn es hell wird,  Dinge an mir, die niemand sehen soll.",
+            "npc": "Grammatik?",
+            "eat": "seht ihr"
+          }
+        }
+      },
+      "L2_S07": {
+        "raw": "Für heute ist Schluss. Danke fürs Zuschauen. Ich werde euch vermissen -- das ist gelogen, aber Lügen sind sicherer.",
+        "zones": {
+          "L2_S07_Z01": {
+            "text": "-- das ist gelogen, aber Lügen sind sicherer",
+            "start": 70,
+            "remain": "Für heute ist Schluss. Danke fürs Zuschauen. Ich werde euch vermissen .",
+            "npc": "Gute Nacht.",
+            "eat": "Lügen sind sicherer"
+          },
+          "L2_S07_Z02": {
+            "text": "Ich werde euch vermissen",
+            "start": 45,
+            "remain": "Für heute ist Schluss. Danke fürs Zuschauen.  -- das ist gelogen, aber Lügen sind sicherer.",
+            "npc": "???",
+            "eat": "euch vermissen"
+          },
+          "L2_S07_Z03": {
+            "text": "Lügen sind sicherer",
+            "start": 95,
+            "remain": "Für heute ist Schluss. Danke fürs Zuschauen. Ich werde euch vermissen -- das ist gelogen, aber .",
+            "npc": "Aber was?",
+            "eat": "Lügen sind sicherer"
+          },
+          "L2_S07_Z04": {
+            "text": "Danke fürs Zuschauen. ",
+            "start": 23,
+            "remain": "Für heute ist Schluss. Ich werde euch vermissen -- das ist gelogen, aber Lügen sind sicherer.",
+            "npc": "Unhöflich.",
+            "eat": "danke fürs Zuschauen"
+          }
+        }
+      },
+      "L3_S01": {
+        "raw": "Warum bist du gekommen? Ich dachte, für Leute wie uns reicht es, nur gelesen zu werden.",
+        "zones": {
+          "L3_S01_Z01": {
+            "text": "für Leute wie uns reicht es, nur gelesen zu werden",
+            "start": 36,
+            "remain": "Warum bist du gekommen? Ich dachte, .",
+            "npc": "... Und trotzdem bin ich gekommen.",
+            "eat": "nur gelesen werden"
+          },
+          "L3_S01_Z02": {
+            "text": "Warum bist du gekommen? ",
+            "start": 0,
+            "remain": "Ich dachte, für Leute wie uns reicht es, nur gelesen zu werden.",
+            "npc": "Das klingt nicht nach Willkommen.",
+            "eat": "warum bist du gekommen"
+          },
+          "L3_S01_Z03": {
+            "text": "nur gelesen zu werden",
+            "start": 65,
+            "remain": "Warum bist du gekommen? Ich dachte, für Leute wie uns reicht es, .",
+            "npc": "Welche Art Beziehung?",
+            "eat": "gelesen werden"
+          },
+          "L3_S01_Z04": {
+            "text": "Leute wie uns",
+            "start": 40,
+            "remain": "Warum bist du gekommen? Ich dachte, für  reicht es, nur gelesen zu werden.",
+            "npc": "... Gibt es uns noch?",
+            "eat": "Leute wie uns"
+          }
+        }
+      },
+      "L3_S02": {
+        "raw": "In letzter Zeit gehe ich dir nicht aus dem Weg. Ich weiß nur nicht, wie ich dir begegnen soll.",
+        "zones": {
+          "L3_S02_Z01": {
+            "text": "gehe ich dir nicht aus dem Weg. ",
+            "start": 16,
+            "remain": "In letzter Zeit Ich weiß nur nicht, wie ich dir begegnen soll.",
+            "npc": "... Auch das ist ein Ausweichen.",
+            "eat": "nicht aus dem Weg gehen"
+          },
+          "L3_S02_Z02": {
+            "text": "Ich weiß nur nicht, wie ich dir begegnen soll",
+            "start": 48,
+            "remain": "In letzter Zeit gehe ich dir nicht aus dem Weg. .",
+            "npc": "Schon gut. Die Tür ging sehr langsam auf.",
+            "eat": "nicht begegnen können"
+          },
+          "L3_S02_Z03": {
+            "text": "In letzter Zeit ",
+            "start": 0,
+            "remain": "gehe ich dir nicht aus dem Weg. Ich weiß nur nicht, wie ich dir begegnen soll.",
+            "npc": "Du klingst seltsam.",
+            "eat": "in letzter Zeit"
+          },
+          "L3_S02_Z04": {
+            "text": "aus dem Weg",
+            "start": 35,
+            "remain": "In letzter Zeit gehe ich dir nicht . Ich weiß nur nicht, wie ich dir begegnen soll.",
+            "npc": "Wem gehst du aus dem Weg?",
+            "eat": "aus dem Weg"
+          }
+        }
+      },
+      "L3_S03": {
+        "raw": "Es ist nicht so, dass ich dich nicht vermisse. Ich habe nur Angst, dass ein Wort verrät, wer ich jetzt bin.",
+        "zones": {
+          "L3_S03_Z01": {
+            "text": "Ich habe nur Angst, dass ein Wort verrät, wer ich jetzt bin",
+            "start": 47,
+            "remain": "Es ist nicht so, dass ich dich nicht vermisse. .",
+            "npc": "... Dann habe ich mir das wohl eingebildet.",
+            "eat": "mich verraten"
+          },
+          "L3_S03_Z02": {
+            "text": "nicht so, dass ich dich nicht vermisse. ",
+            "start": 7,
+            "remain": "Es ist Ich habe nur Angst, dass ein Wort verrät, wer ich jetzt bin.",
+            "npc": "Wovor hast du Angst?",
+            "eat": "dich nicht vermissen"
+          },
+          "L3_S03_Z03": {
+            "text": "verrät, wer ich jetzt bin",
+            "start": 81,
+            "remain": "Es ist nicht so, dass ich dich nicht vermisse. Ich habe nur Angst, dass ein Wort .",
+            "npc": "Und was passiert dann?",
+            "eat": "wer ich bin"
+          },
+          "L3_S03_Z04": {
+            "text": "dass ich",
+            "start": 17,
+            "remain": "Es ist nicht so,  dich nicht vermisse. Ich habe nur Angst, dass ein Wort verrät, wer ich jetzt bin.",
+            "npc": "Bist du noch du?",
+            "eat": "dass ich"
+          }
+        }
+      },
+      "L3_S04b": {
+        "raw": "Es gibt keine Freunde, die im Verborgenen bleiben müssen. Nur Sätze müssen sich verstecken.",
+        "zones": {
+          "L3_S04b_Z01": {
+            "text": "Nur Sätze müssen sich verstecken",
+            "start": 58,
+            "remain": "Es gibt keine Freunde, die im Verborgenen bleiben müssen. .",
+            "npc": "... Gut. Ich glaube dir einmal.",
+            "eat": "Sätze verstecken"
+          },
+          "L3_S04b_Z02": {
+            "text": "Es gibt keine Freunde, die im Verborgenen bleiben müssen. ",
+            "start": 0,
+            "remain": "Nur Sätze müssen sich verstecken.",
+            "npc": "Sprichst du in Rätseln?",
+            "eat": "keine versteckten Freunde"
+          },
+          "L3_S04b_Z03": {
+            "text": "im Verborgenen",
+            "start": 27,
+            "remain": "Es gibt keine Freunde, die  bleiben müssen. Nur Sätze müssen sich verstecken.",
+            "npc": "Kannst du dich überhaupt entscheiden?",
+            "eat": "im Verborgenen"
+          },
+          "L3_S04b_Z04": {
+            "text": "Freunde",
+            "start": 14,
+            "remain": "Es gibt keine , die im Verborgenen bleiben müssen. Nur Sätze müssen sich verstecken.",
+            "npc": "Warum wiederholst du dich?",
+            "eat": "Freunde"
+          }
+        }
+      },
+      "L3_S05": {
+        "raw": "Es ist noch jemand im Zimmer, aber nicht so, wie du es dir vorstellst.",
+        "zones": {
+          "L3_S05_Z01": {
+            "text": "aber nicht so, wie du es dir vorstellst",
+            "start": 30,
+            "remain": "Es ist noch jemand im Zimmer, .",
+            "npc": "... Wer? Lass mich die Person sehen.",
+            "eat": "nicht wie vorgestellt"
+          },
+          "L3_S05_Z02": {
+            "text": "Es ist noch jemand im Zimmer, ",
+            "start": 0,
+            "remain": "aber nicht so, wie du es dir vorstellst.",
+            "npc": "Welche Art denn?",
+            "eat": "jemand im Zimmer"
+          },
+          "L3_S05_Z03": {
+            "text": "wie du es dir vorstellst",
+            "start": 45,
+            "remain": "Es ist noch jemand im Zimmer, aber nicht so, .",
+            "npc": "Hör auf, in Rätseln zu reden.",
+            "eat": "wie vorgestellt"
+          },
+          "L3_S05_Z04": {
+            "text": "jemand",
+            "start": 12,
+            "remain": "Es ist noch  im Zimmer, aber nicht so, wie du es dir vorstellst.",
+            "npc": "... Welche Art?",
+            "eat": "jemand"
+          }
+        }
+      },
+      "L3_S06": {
+        "raw": "Willst du hereinkommen und sitzen, oder sollten wir beide besser an der Tür bleiben?",
+        "zones": {
+          "L3_S06_Z01": {
+            "text": "oder sollten wir beide besser an der Tür bleiben",
+            "start": 35,
+            "remain": "Willst du hereinkommen und sitzen, ?",
+            "npc": "... Ein andermal.",
+            "eat": "an der Tür bleiben"
+          },
+          "L3_S06_Z02": {
+            "text": "Willst du hereinkommen und sitzen, ",
+            "start": 0,
+            "remain": "oder sollten wir beide besser an der Tür bleiben?",
+            "npc": "Willst du mich loswerden?",
+            "eat": "hereinkommen und sitzen"
+          },
+          "L3_S06_Z03": {
+            "text": "beide besser",
+            "start": 52,
+            "remain": "Willst du hereinkommen und sitzen, oder sollten wir  an der Tür bleiben?",
+            "npc": "Wie du willst.",
+            "eat": "beide besser"
+          },
+          "L3_S06_Z04": {
+            "text": "wir beide",
+            "start": 48,
+            "remain": "Willst du hereinkommen und sitzen, oder sollten  besser an der Tür bleiben?",
+            "npc": "Wer ist dieses Wir?",
+            "eat": "wir beide"
+          }
+        }
+      },
+      "L3_S07": {
+        "raw": "Auf Wiedersehen. Ich hoffe, du sorgst dich weniger um mich und klopfst nicht mehr so laut.",
+        "zones": {
+          "L3_S07_Z01": {
+            "text": "und klopfst nicht mehr so laut",
+            "start": 59,
+            "remain": "Auf Wiedersehen. Ich hoffe, du sorgst dich weniger um mich .",
+            "npc": "... Gut. Weniger Sorgen.",
+            "eat": "nicht mehr klopfen"
+          },
+          "L3_S07_Z02": {
+            "text": "Ich hoffe, du sorgst dich weniger um mich ",
+            "start": 17,
+            "remain": "Auf Wiedersehen. und klopfst nicht mehr so laut.",
+            "npc": "Die Tür bricht gleich.",
+            "eat": "weniger um mich sorgen"
+          },
+          "L3_S07_Z03": {
+            "text": "Auf Wiedersehen. ",
+            "start": 0,
+            "remain": "Ich hoffe, du sorgst dich weniger um mich und klopfst nicht mehr so laut.",
+            "npc": "War das schon alles?",
+            "eat": "auf Wiedersehen"
+          },
+          "L3_S07_Z04": {
+            "text": "Ich hoffe, du",
+            "start": 17,
+            "remain": "Auf Wiedersehen.  sorgst dich weniger um mich und klopfst nicht mehr so laut.",
+            "npc": "Du redest wirr.",
+            "eat": "ich hoffe, du"
+          }
+        }
+      },
+      "L4_S01": {
+        "raw": "Ich gehe nicht live, um die Wahrheit zu erklären. Ich bin hier, um euch den Ausdruck zu geben, den ihr sehen wollt.",
+        "zones": {
+          "L4_S01_Z01": {
+            "text": "Ich bin hier, um euch den Ausdruck zu geben, den ihr sehen wollt",
+            "start": 50,
+            "remain": "Ich gehe nicht live, um die Wahrheit zu erklären. .",
+            "npc": "Ganz schön dreist.",
+            "eat": "den gewünschten Ausdruck geben"
+          },
+          "L4_S01_Z02": {
+            "text": "Ich gehe nicht live, um die Wahrheit zu erklären. ",
+            "start": 0,
+            "remain": "Ich bin hier, um euch den Ausdruck zu geben, den ihr sehen wollt.",
+            "npc": "Endlich einsichtig.",
+            "eat": "nicht die Wahrheit erklären"
+          },
+          "L4_S01_Z03": {
+            "text": "den ihr sehen wollt",
+            "start": 95,
+            "remain": "Ich gehe nicht live, um die Wahrheit zu erklären. Ich bin hier, um euch den Ausdruck zu geben, .",
+            "npc": "Welchen Ausdruck?",
+            "eat": "den ihr sehen wollt"
+          },
+          "L4_S01_Z04": {
+            "text": "Ich gehe nicht live",
+            "start": 0,
+            "remain": ", um die Wahrheit zu erklären. Ich bin hier, um euch den Ausdruck zu geben, den ihr sehen wollt.",
+            "npc": "Liest du ein Skript vor?",
+            "eat": "ich gehe live"
+          }
+        }
+      },
+      "L4_S02": {
+        "raw": "Es tut mir leid. Ich weiß, dass ihr diesen Satz hören wollt, aber ich glaube nicht, dass ich etwas falsch gemacht habe.",
+        "zones": {
+          "L4_S02_Z01": {
+            "text": "aber ich glaube nicht, dass ich etwas falsch gemacht habe",
+            "start": 61,
+            "remain": "Es tut mir leid. Ich weiß, dass ihr diesen Satz hören wollt, .",
+            "npc": "Endlich eine Entschuldigung.",
+            "eat": "nichts falsch gemacht"
+          },
+          "L4_S02_Z02": {
+            "text": "Es tut mir leid. Ich weiß, dass ihr diesen Satz hören wollt, ",
+            "start": 0,
+            "remain": "aber ich glaube nicht, dass ich etwas falsch gemacht habe.",
+            "npc": "Eine falsche Entschuldigung.",
+            "eat": "es tut mir leid"
+          },
+          "L4_S02_Z03": {
+            "text": "diesen Satz hören wollt",
+            "start": 36,
+            "remain": "Es tut mir leid. Ich weiß, dass ihr , aber ich glaube nicht, dass ich etwas falsch gemacht habe.",
+            "npc": "Ausflucht.",
+            "eat": "diesen Satz hören"
+          },
+          "L4_S02_Z04": {
+            "text": "glaube",
+            "start": 70,
+            "remain": "Es tut mir leid. Ich weiß, dass ihr diesen Satz hören wollt, aber ich  nicht, dass ich etwas falsch gemacht habe.",
+            "npc": "Schlechtes Gewissen?",
+            "eat": "glaube"
+          }
+        }
+      },
+      "L4_S03": {
+        "raw": "Wenn ich jemanden verletzt habe, ist das mein Fehler -- und ein Fehler, den ich sagen musste, um zu überleben.",
+        "zones": {
+          "L4_S03_Z01": {
+            "text": "und ein Fehler, den ich sagen musste, um zu überleben",
+            "start": 56,
+            "remain": "Wenn ich jemanden verletzt habe, ist das mein Fehler -- .",
+            "npc": "Du übernimmst Verantwortung.",
+            "eat": "sagen müssen, um zu überleben"
+          },
+          "L4_S03_Z02": {
+            "text": "ist das mein Fehler -- ",
+            "start": 33,
+            "remain": "Wenn ich jemanden verletzt habe, und ein Fehler, den ich sagen musste, um zu überleben.",
+            "npc": "Schuld abwälzen.",
+            "eat": "mein Fehler"
+          },
+          "L4_S03_Z03": {
+            "text": "Wenn ich jemanden verletzt habe, ",
+            "start": 0,
+            "remain": "ist das mein Fehler -- und ein Fehler, den ich sagen musste, um zu überleben.",
+            "npc": "Du verletzt also Menschen?",
+            "eat": "jemanden verletzt"
+          },
+          "L4_S03_Z04": {
+            "text": "sagen musste",
+            "start": 80,
+            "remain": "Wenn ich jemanden verletzt habe, ist das mein Fehler -- und ein Fehler, den ich , um zu überleben.",
+            "npc": "Du redest wirr.",
+            "eat": "sagen musste"
+          }
+        }
+      },
+      "L4_S04": {
+        "raw": "Bitte iss heute Nacht ein wenig weniger. Ich will den zweiten Satz selbst zu Ende sprechen.",
+        "zones": {
+          "L4_S04_Z01": {
+            "text": "ein wenig weniger. ",
+            "start": 22,
+            "remain": "Bitte iss heute Nacht Ich will den zweiten Satz selbst zu Ende sprechen.",
+            "npc": "Ein Geheimcode?",
+            "eat": "ein wenig weniger"
+          },
+          "L4_S04_Z02": {
+            "text": "Ich will den zweiten Satz selbst zu Ende sprechen",
+            "start": 41,
+            "remain": "Bitte iss heute Nacht ein wenig weniger. .",
+            "npc": "Eine Diät-Entschuldigung?",
+            "eat": "selbst zu Ende sprechen"
+          },
+          "L4_S04_Z03": {
+            "text": "Bitte iss heute Nacht ",
+            "start": 0,
+            "remain": "ein wenig weniger. Ich will den zweiten Satz selbst zu Ende sprechen.",
+            "npc": "Wen kommandierst du?",
+            "eat": "bitte iss heute Nacht"
+          },
+          "L4_S04_Z04": {
+            "text": "zweiten Satz",
+            "start": 54,
+            "remain": "Bitte iss heute Nacht ein wenig weniger. Ich will den  selbst zu Ende sprechen.",
+            "npc": "Was willst du zu Ende sprechen?",
+            "eat": "zweiter Satz"
+          }
+        }
+      },
+      "L4_S05": {
+        "raw": "Ich verspreche, künftig nur noch zu sagen, was ihr hören wollt, bis ich vergessen habe, was ich selbst sagen wollte.",
+        "zones": {
+          "L4_S05_Z01": {
+            "text": "bis ich vergessen habe, was ich selbst sagen wollte",
+            "start": 64,
+            "remain": "Ich verspreche, künftig nur noch zu sagen, was ihr hören wollt, .",
+            "npc": "Gut.",
+            "eat": "vergessen, was ich sagen wollte"
+          },
+          "L4_S05_Z02": {
+            "text": "künftig nur noch zu sagen, was ihr hören wollt, ",
+            "start": 16,
+            "remain": "Ich verspreche, bis ich vergessen habe, was ich selbst sagen wollte.",
+            "npc": "Eine Drohung?",
+            "eat": "nur sagen, was ihr hören wollt"
+          },
+          "L4_S05_Z03": {
+            "text": "Ich verspreche, ",
+            "start": 0,
+            "remain": "künftig nur noch zu sagen, was ihr hören wollt, bis ich vergessen habe, was ich selbst sagen wollte.",
+            "npc": "Kein Versprechen.",
+            "eat": "ich verspreche"
+          },
+          "L4_S05_Z04": {
+            "text": "was ich selbst sagen wollte",
+            "start": 88,
+            "remain": "Ich verspreche, künftig nur noch zu sagen, was ihr hören wollt, bis ich vergessen habe, .",
+            "npc": "Was hast du vergessen?",
+            "eat": "was ich sagen wollte"
+          }
+        }
+      },
+      "L4_S06": {
+        "raw": "Hört auf, mir in den Kommentaren zu sagen, wie man lebt. Ich habe auch gesehen, wie ihr lebt; es ist nicht schön.",
+        "zones": {
+          "L4_S06_Z01": {
+            "text": "Ich habe auch gesehen, wie ihr lebt; es ist nicht schön",
+            "start": 57,
+            "remain": "Hört auf, mir in den Kommentaren zu sagen, wie man lebt. .",
+            "npc": "Du beleidigst deine Fans.",
+            "eat": "ihr lebt nicht schön"
+          },
+          "L4_S06_Z02": {
+            "text": "Hört auf, mir in den Kommentaren zu sagen, wie man lebt. ",
+            "start": 0,
+            "remain": "Ich habe auch gesehen, wie ihr lebt; es ist nicht schön.",
+            "npc": "Der Streit beginnt.",
+            "eat": "sag mir nicht, wie man lebt"
+          },
+          "L4_S06_Z03": {
+            "text": "es ist nicht schön",
+            "start": 94,
+            "remain": "Hört auf, mir in den Kommentaren zu sagen, wie man lebt. Ich habe auch gesehen, wie ihr lebt; .",
+            "npc": "Und dann?",
+            "eat": "nicht schön"
+          },
+          "L4_S06_Z04": {
+            "text": "wie man lebt",
+            "start": 43,
+            "remain": "Hört auf, mir in den Kommentaren zu sagen, . Ich habe auch gesehen, wie ihr lebt; es ist nicht schön.",
+            "npc": "Grammatik.",
+            "eat": "wie man lebt"
+          }
+        }
+      },
+      "L4_S07": {
+        "raw": "Der Stream ist vorbei. Geht bitte, und bitte bleib du.",
+        "zones": {
+          "L4_S07_Z01": {
+            "text": "und bitte bleib du",
+            "start": 35,
+            "remain": "Der Stream ist vorbei. Geht bitte, .",
+            "npc": "Tschüss.",
+            "eat": "bitte bleib du"
+          },
+          "L4_S07_Z02": {
+            "text": "Geht bitte, ",
+            "start": 23,
+            "remain": "Der Stream ist vorbei. und bitte bleib du.",
+            "npc": "Wer soll bleiben?",
+            "eat": "geht bitte"
+          },
+          "L4_S07_Z03": {
+            "text": "Der Stream ist vorbei. ",
+            "start": 0,
+            "remain": "Geht bitte, und bitte bleib du.",
+            "npc": "Du hast dich noch nicht entschuldigt.",
+            "eat": "der Stream ist vorbei"
+          },
+          "L4_S07_Z04": {
+            "text": "bleib du",
+            "start": 45,
+            "remain": "Der Stream ist vorbei. Geht bitte, und bitte .",
+            "npc": "Ein Befehl?",
+            "eat": "bleib du"
+          }
+        }
+      },
+      "L5_S01": {
+        "raw": "Es ist so still, so still, dass ich die Wörter höre, die du geschluckt hast und die sich in deinem Magen drehen.",
+        "zones": {
+          "L5_S01_Z01": {
+            "text": "die sich in deinem Magen drehen",
+            "start": 80,
+            "remain": "Es ist so still, so still, dass ich die Wörter höre, die du geschluckt hast und .",
+            "npc": "",
+            "eat": "Wörter drehen sich im Magen"
+          },
+          "L5_S01_Z02": {
+            "text": "Es ist so still, ",
+            "start": 0,
+            "remain": "so still, dass ich die Wörter höre, die du geschluckt hast und die sich in deinem Magen drehen.",
+            "npc": "",
+            "eat": "es ist so still"
+          },
+          "L5_S01_Z03": {
+            "text": "die du geschluckt hast",
+            "start": 53,
+            "remain": "Es ist so still, so still, dass ich die Wörter höre,  und die sich in deinem Magen drehen.",
+            "npc": "",
+            "eat": "von dir geschluckt"
+          },
+          "L5_S01_Z04": {
+            "text": "in deinem Magen drehen",
+            "start": 89,
+            "remain": "Es ist so still, so still, dass ich die Wörter höre, die du geschluckt hast und die sich .",
+            "npc": "",
+            "eat": "im Magen drehen"
+          }
+        }
+      },
+      "L5_S02": {
+        "raw": "Ich weiß nicht mehr, welche Worte ich sagen wollte und welche Worte du mir erlaubt hast.",
+        "zones": {
+          "L5_S02_Z01": {
+            "text": "welche Worte du mir erlaubt hast",
+            "start": 55,
+            "remain": "Ich weiß nicht mehr, welche Worte ich sagen wollte und .",
+            "npc": "",
+            "eat": "Worte, die du erlaubst"
+          },
+          "L5_S02_Z02": {
+            "text": "welche Worte ich sagen wollte und ",
+            "start": 21,
+            "remain": "Ich weiß nicht mehr, welche Worte du mir erlaubt hast.",
+            "npc": "",
+            "eat": "Worte, die ich sagen wollte"
+          },
+          "L5_S02_Z03": {
+            "text": "Ich weiß nicht mehr, ",
+            "start": 0,
+            "remain": "welche Worte ich sagen wollte und welche Worte du mir erlaubt hast.",
+            "npc": "",
+            "eat": "ich weiß nicht mehr"
+          },
+          "L5_S02_Z04": {
+            "text": "Ich",
+            "start": 0,
+            "remain": " weiß nicht mehr, welche Worte ich sagen wollte und welche Worte du mir erlaubt hast.",
+            "npc": "",
+            "eat": "ich"
+          }
+        }
+      },
+      "L5_S03": {
+        "raw": "Bitte verdecke mich diesmal nicht wieder. Ich will den Satz selbst zu Ende sagen.",
+        "zones": {
+          "L5_S03_Z01": {
+            "text": "Bitte verdecke mich diesmal nicht wieder",
+            "start": 0,
+            "remain": ". Ich will den Satz selbst zu Ende sagen.",
+            "npc": "",
+            "eat": "verdecke mich nicht wieder"
+          },
+          "L5_S03_Z02": {
+            "text": "Ich will den Satz selbst zu Ende sagen",
+            "start": 42,
+            "remain": "Bitte verdecke mich diesmal nicht wieder. .",
+            "npc": "",
+            "eat": "den Satz selbst sagen"
+          },
+          "L5_S03_Z03": {
+            "text": "diesmal",
+            "start": 20,
+            "remain": "Bitte verdecke mich  nicht wieder. Ich will den Satz selbst zu Ende sagen.",
+            "npc": "",
+            "eat": "diesmal"
+          },
+          "L5_S03_Z04": {
+            "text": "mich",
+            "start": 15,
+            "remain": "Bitte verdecke  diesmal nicht wieder. Ich will den Satz selbst zu Ende sagen.",
+            "npc": "",
+            "eat": "mich"
+          }
+        }
+      },
+      "L5_S04": {
+        "raw": "Ich habe dir die unaussprechlichen Worte überlassen. Bitte schluck sie für mich hinunter.",
+        "zones": {
+          "L5_S04_Z01": {
+            "text": "Bitte schluck sie für mich hinunter",
+            "start": 53,
+            "remain": "Ich habe dir die unaussprechlichen Worte überlassen. .",
+            "npc": "",
+            "eat": "schluck sie für mich"
+          },
+          "L5_S04_Z02": {
+            "text": "die unaussprechlichen Worte",
+            "start": 13,
+            "remain": "Ich habe dir  überlassen. Bitte schluck sie für mich hinunter.",
+            "npc": "",
+            "eat": "unaussprechliche Worte"
+          },
+          "L5_S04_Z03": {
+            "text": "dir die unaussprechlichen Worte überlassen",
+            "start": 9,
+            "remain": "Ich habe . Bitte schluck sie für mich hinunter.",
+            "npc": "",
+            "eat": "dir überlassen"
+          },
+          "L5_S04_Z04": {
+            "text": "Ich habe",
+            "start": 0,
+            "remain": " dir die unaussprechlichen Worte überlassen. Bitte schluck sie für mich hinunter.",
+            "npc": "",
+            "eat": "Ich habe"
+          }
+        }
+      },
+      "L5_S05": {
+        "raw": "Wenn du ein Mensch wärst, würde ich dich fragen, ob du mich liebst. Aber du bist Stille, also kann ich nur fragen, ob du Hunger hast.",
+        "zones": {
+          "L5_S05_Z01": {
+            "text": "ob du Hunger hast.",
+            "start": 115,
+            "remain": "Wenn du ein Mensch wärst, würde ich dich fragen, ob du mich liebst. Aber du bist Stille, also kann ich nur fragen, ",
+            "npc": "",
+            "eat": "ob du Hunger hast"
+          },
+          "L5_S05_Z02": {
+            "text": "würde ich dich fragen, ob du mich liebst. ",
+            "start": 26,
+            "remain": "Wenn du ein Mensch wärst, Aber du bist Stille, also kann ich nur fragen, ob du Hunger hast.",
+            "npc": "",
+            "eat": "ob du mich liebst"
+          },
+          "L5_S05_Z03": {
+            "text": "Wenn du ein Mensch wärst, ",
+            "start": 0,
+            "remain": "würde ich dich fragen, ob du mich liebst. Aber du bist Stille, also kann ich nur fragen, ob du Hunger hast.",
+            "npc": "",
+            "eat": "wenn du ein Mensch wärst"
+          },
+          "L5_S05_Z04": {
+            "text": "Aber du bist Stille, ",
+            "start": 68,
+            "remain": "Wenn du ein Mensch wärst, würde ich dich fragen, ob du mich liebst. also kann ich nur fragen, ob du Hunger hast.",
+            "npc": "",
+            "eat": "du bist Stille"
+          }
+        }
+      },
+      "L5_S06": {
+        "raw": "Bitte behalte mich bei dir.",
+        "zones": {
+          "L5_S06_Z01": {
+            "text": "Bitte",
+            "start": 0,
+            "remain": " behalte mich bei dir.",
+            "npc": "",
+            "eat": "bitte"
+          },
+          "L5_S06_Z02": {
+            "text": "behalte mich",
+            "start": 6,
+            "remain": "Bitte  bei dir.",
+            "npc": "",
+            "eat": "behalte mich"
+          },
+          "L5_S06_Z03": {
+            "text": "bei dir",
+            "start": 19,
+            "remain": "Bitte behalte mich .",
+            "npc": "",
+            "eat": "bei dir"
+          },
+          "L5_S06_Z04": {
+            "text": "mich",
+            "start": 14,
+            "remain": "Bitte behalte  bei dir.",
+            "npc": "",
+            "eat": "mich"
+          }
+        }
+      }
+    },
+    "endings": {
+      "A_separate": "Sie zieht ihre Hand zurück.",
+      "B_alienate": "Was bleibt, ist kein „Ich“.",
+      "C_consume": "Bitte: eine leere Hülle.",
+      "C_cold": "Die Identität ist ausgelöscht."
+    },
+    "chapterOverlays": {
+      "L0": {
+        "title": "Der erste Bissen",
+        "copy": "Zum ersten Mal legt sie dir die Worte hin, die sie nicht sagen kann."
+      },
+      "L1": {
+        "title": "Das Gespräch ist vorbei",
+        "copy": "Sie verlässt den Raum. Der schwarze Balken bleibt."
+      },
+      "L2": {
+        "title": "Der Stream ist vorbei",
+        "copy": "Nachdem der Bildschirm dunkel wird, leuchtet „Mit dir hier“ noch nach."
+      },
+      "L3": {
+        "title": "Die Tür schließt sich wieder",
+        "copy": "Der Freund hat nicht alles gefragt. Du hast nicht alles beantwortet."
+      },
+      "L4": {
+        "title": "Die Entschuldigung ist vorbei",
+        "copy": "Gerade eben hat jemand eine Zeile gezogen, die nicht sie gezogen hat."
+      }
+    },
+    "endingTitles": {
+      "A_separate": "Sie zieht ihre Hand zurück",
+      "B_alienate": "Was bleibt, ist kein „Ich“",
+      "C_consume": "Bitte: eine leere Hülle",
+      "C_cold": "Die Identität ist ausgelöscht"
+    },
+    "revealCaptions": [
+      "Du dachtest, du würdest die ganze Zeit löschen.",
+      "Verdeckt wurde, was sie gesagt hat.",
+      "Was auf dem Bildschirm blieb, waren Untertitel für die Außenwelt.",
+      "Du hast nicht für sie geschwiegen.",
+      "Du bist der Mensch, den sie nicht aussprechen konnte."
+    ]
+  },
+  "ui": {
+    "titleKicker": "K/S · 01",
+    "titlePrimaryNew": "Spiel starten",
+    "titlePrimaryContinue": "Fortsetzen",
+    "titleNewGame": "Neu beginnen",
+    "titleReady": "Bereit.",
+    "titleHasSave": "Ein unvollständiger Spielstand ist vorhanden.",
+    "titleLoading": "Szene wird vorbereitet ...",
+    "languageLabel": "Sprache",
+    "languageMenuLabel": "Sprache wechseln",
+    "beta": "Beta",
+    "stageLabel": "Spielbare Szene von Schweig für mich",
+    "titleScreenLabel": "Spielbeginn",
+    "storyVideoSkip": "Wendung überspringen",
+    "restart": "Neu beginnen",
+    "audioSettingsOpen": "Musikeinstellungen öffnen",
+    "audioSettings": "Musikeinstellungen",
+    "audioSettingsClose": "Musikeinstellungen schließen",
+    "soundToggleOn": "Hinweistöne und Musik einschalten",
+    "soundToggleOff": "Hinweistöne und Musik ausschalten",
+    "soundSettingsEyebrow": "Toneinstellungen",
+    "sound": "Ton",
+    "audioOn": "Musik und Hinweistöne sind an",
+    "audioOff": "Musik und Hinweistöne sind stumm",
+    "music": "Musik",
+    "soundEffects": "Hinweistöne",
+    "currentTrack": "Aktueller Track · {track}",
+    "currentTrackMuted": "Aktueller Track · stummgeschaltet",
+    "waitingTrack": "Wird geladen",
+    "sceneStatus": "Aktueller Status",
+    "sceneLoading": "Szenenseite · noch nicht geladen",
+    "liveChatLabel": "Live-Chat",
+    "viewerCount": "Zuschauer {count}",
+    "dialogueLabel": "Dialog",
+    "speaker": "Sie",
+    "initialFeedback": "Der schwarze Balken liegt außerhalb des Satzes.",
+    "lineFeedbackFirst": "Der schwarze Balken wartet außerhalb des Satzes.",
+    "lineFeedback": "Sie hat diesen Satz noch nicht zu Ende gesprochen.",
+    "swallowed": "„{text}“ wurde verschluckt.",
+    "swallowedFallback": "Die Wörter wurden im schwarzen Balken gesammelt.",
+    "swallowedNpcFallback": "Unter dem schwarzen Balken werden die Wörter still.",
+    "selectionNotFound": "Der schwarze Balken hat keinen Satz zum Verschlucken gefunden.",
+    "sceneLoadRetained": "Szenenseite {pageId} konnte nicht geladen werden. Die vorige Seite bleibt sichtbar.",
+    "transitionVideoFailed": "Das Kapitelvideo konnte nicht geladen werden. Das Spiel geht weiter.",
+    "endingSceneFailed": "Die Endszene konnte nicht geladen werden. Bitte versuche es erneut.",
+    "endingVideoFailed": "Das Endvideo konnte nicht geladen werden. Es wird zur ganzseitigen Endszene zurückgekehrt.",
+    "revealVideoFailed": "Das Wendungsvideo konnte nicht geladen werden. Die Endseite bleibt sichtbar.",
+    "revealVideoFallback": "Das Video konnte nicht geladen werden, aber dieser Satz gehört trotzdem dir.",
+    "chapterEnded": "Abschnitt beendet",
+    "nextChapter": "Nächster Abschnitt",
+    "nextChapterCopy": "Sie wartet noch auf den nächsten Satz.",
+    "continue": "Weiter",
+    "retryInterviewEyebrow": "Vorstellungsgespräch beendet",
+    "retryInterviewTitle": "Sie wurde nicht eingestellt.",
+    "retryInterviewAction": "Dieses Kapitel noch einmal sagen",
+    "retryInterviewToast": "Gespräch wiederholen",
+    "endingEyebrow": "Ende · {endingId}",
+    "endingFallbackTitle": "Der letzte Satz",
+    "watchReveal": "Wendung ansehen",
+    "replayEyebrow": "Wendung erneut ansehen",
+    "replayTitle": "Du bist der Mensch, den sie nicht aussprechen konnte",
+    "replayCopy": "Was auf dem Bildschirm blieb, war nicht nur das, was sie ausgesprochen hat.",
+    "replayAction": "Neu beginnen",
+    "memoryEyebrow": "{chapterId} · Sprachmagen",
+    "memoryTitle": "Die Wörter, die du verschluckt hast, sind noch nicht versunken",
+    "memoryCopy": "Ordne sie zu einem Satz, der nur als dein eigenes Flüstern bleibt.",
+    "memoryFragments": "Fragmente",
+    "memoryWhisper": "Flüstern",
+    "memoryPoolLabel": "Flüsterfragmente",
+    "memoryLaneLabel": "Geordnetes Flüstern",
+    "memoryConfirm": "Dieses Flüstern bewahren",
+    "memoryEmpty": "Noch gibt es keine Wörter zum Ordnen.",
+    "memorySaved": "Dieses Flüstern wurde bewahrt.",
+    "oldSaveMigrated": "Der Fortschritt bleibt erhalten; alte verschluckte Wörter konnten nicht sprachübergreifend übernommen werden.",
+    "errorTitle": "Die Szene konnte gerade nicht geladen werden.",
+    "errorLocalServer": "Öffne das Demo über einen lokalen Server.",
+    "retry": "Erneut versuchen",
+    "loadErrorSuffix": "Öffne web/ über einen lokalen Server, nicht per Doppelklick auf die HTML-Datei.",
+    "runtimeDataMissing": "Datendatei nicht gefunden",
+    "fallbackChat": [
+      "Live",
+      "Ist da jemand?",
+      "Kann man dich hören?"
+    ]
+  },
+  "trackLabels": {
+    "rain-room": "Regenzimmer",
+    "live-pressure": "Livestream-Druck",
+    "door-tension": "Spannung an der Tür",
+    "hollow-hope": "Nachhall des Endes"
+  },
+  "sceneMeta": {
+    "L0": {
+      "readout": "Regenfenster · Schreibtisch",
+      "status": "Sie sitzt am Schreibtisch und reicht dir den ersten Satz.",
+      "caption": "Ganzseite · D0 Schreibtisch"
+    },
+    "L1": {
+      "readout": "Besprechungsraum",
+      "status": "Sie beantwortet Fragen. Du entscheidest, was hörbar bleiben darf.",
+      "caption": "Ganzseite · D1 Gespräch"
+    },
+    "L2": {
+      "readout": "Der erste Stream",
+      "status": "Der Bildschirm leuchtet, aber das Zimmer wird nicht heller.",
+      "caption": "Ganzseite · Streamingphase"
+    },
+    "L3": {
+      "readout": "Flur",
+      "status": "Die Tür steht einen Spalt offen. Der Freund ist noch nicht eingetreten.",
+      "caption": "Ganzseite · An der Tür"
+    },
+    "L4": {
+      "readout": "Entschuldigungsstream",
+      "status": "Sie liefert dem Publikum einen Ausdruck. Der schwarze Balken kennt die Antwort früher als sie.",
+      "caption": "Ganzseite · Entschuldigung"
+    },
+    "L5": {
+      "readout": "Ein Zimmer ohne Publikum",
+      "status": "Kein Publikum. Nur sie und die Wörter, die du verschluckt hast.",
+      "caption": "Ganzseite · Finale"
+    }
+  },
+  "liveChat": {
+    "L2_S01": [
+      "Da ist sie",
+      "Neu hier?",
+      "Wo ist dein Gesicht?",
+      "Klingt müde",
+      "Schau in die Kamera"
+    ],
+    "L2_S02": [
+      "Warum streamst du?",
+      "Sag die Wahrheit",
+      "Coole Schwester",
+      "Geld brauchen ist okay",
+      "Rede nett, haha"
+    ],
+    "L2_S03": [
+      "Sing was!",
+      "Wen beleidigst du?",
+      "Diese Streamerin ist hart",
+      "Große Klappe",
+      "Wunschlied!"
+    ],
+    "L2_S04": [
+      "Mit dir hier?",
+      "Klingt wie ein Geständnis",
+      "Wen schaust du an?",
+      "Alles sagen?",
+      "Plötzlich ernst"
+    ],
+    "L2_S05": [
+      "Erzähl vom Alltag",
+      "Sie hat gelächelt",
+      "So sanft",
+      "Mach Schluss",
+      "Bist du traurig?"
+    ],
+    "L2_S06": [
+      "So dunkel",
+      "Mach das Licht an",
+      "Ist da jemand hinter dir?",
+      "Ein bisschen gruselig",
+      "Mach das Licht nicht aus"
+    ],
+    "L2_S07": [
+      "Gute Nacht",
+      "Streame noch",
+      "Du vermisst uns?",
+      "Das klingt gelogen",
+      "Bis zum nächsten Mal"
+    ],
+    "L4_S01": [
+      "Entschuldige dich",
+      "Stell dich nicht tot",
+      "Endlich live",
+      "Erklär es zuerst",
+      "Wo ist dein Ausdruck?"
+    ],
+    "L4_S02": [
+      "Das soll alles sein?",
+      "Endlich entschuldigt",
+      "Falsche Entschuldigung",
+      "Lies kein Skript",
+      "Du glaubst, du hast recht?"
+    ],
+    "L4_S03": [
+      "Schon wieder Mitleid",
+      "Verantwortung?",
+      "Was heißt wenn?",
+      "Sprich klar",
+      "Wer wurde verletzt?"
+    ],
+    "L4_S04": [
+      "Mit wem redest du?",
+      "Iss weniger?",
+      "Welcher Code?",
+      "Was ist mit dem zweiten Satz?",
+      "Jemand ist neben ihr"
+    ],
+    "L4_S05": [
+      "Sag nur, was wir hören wollen",
+      "Drohst du uns?",
+      "Denk über dich nach",
+      "Ihr Blick ist falsch",
+      "Hör auf zu spielen"
+    ],
+    "L4_S06": [
+      "Du beleidigst noch immer",
+      "Der Streit beginnt",
+      "Mach Schluss",
+      "Gemeldet",
+      "Das ist die Wahrheit"
+    ],
+    "L4_S07": [
+      "Du bist noch nicht fertig",
+      "Wer bleibt?",
+      "Geh nicht",
+      "Mach den Stream nicht aus",
+      "Tschüss"
+    ]
+  }
+}

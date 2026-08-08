@@ -22,7 +22,7 @@
 
 被遮掉的文字不会消失，而是被你"吃掉"，逐渐在她身边长成你的身体。她靠你的沉默活在社会里，你靠她没说出口的真实想法活下来。
 
-**最新进展** (2026-08-04更新)：
+**最新进展** (2026-08-07更新)：
 - ✅ **可玩竖切 Demo 已完成**：标题封面、L0-L5、35句台词、拖拽遮字和四个结局均可运行
 - ✅ 运行时改为整页场景翻页：13张 `1536×1024` 页面由 `pageBindings` 驱动
 - ✅ 已接入继续/重新开始、`localStorage` 存档、URL 调试入口和 Web Audio 提示音
@@ -35,9 +35,11 @@
 - ✅ 已整理 MiniMax H3 的 11 条图生视频提示词、首帧映射、负面提示和生成参数
 - ✅ GitHub Pages 最新部署成功；Tauri Windows/Linux 打包工作流最新运行成功
 - ✅ 已接入 K01-K22 视频：L0-L4 七条章节过场、A/B/C 结局序列和 K21→K22 反转均由运行时视频 manifest 驱动
+- ✅ 首轮多语言已接入：简体中文、English、Deutsch、Русский；封面和游戏内均可即时切换，英文/德文/俄文以 Beta 标记
+- ✅ 存档升级为稳定章节/台词/zone ID；切换语言会保留进度、旗标、结局与私语顺序，不再保存某种语言的显示文本
 - 🟡 外部 SFX/配音和章节规则的完整分支仍未接入
 - 🟡 当前原型中 L2/L3/L4 旗标主要用于记录，实际流程分支仍待规则对齐
-- 📝 **数据源统一**：`台本.md` 是完整内容源，`script/chapters.json` 是运行时数据源
+- 📝 **运行时数据分层**：`script/chapters.json` 保存规则与稳定 ID，`script/locales/*.json` 保存玩家可见文本；`台本.md` 仍是中文叙事参考源
 
 ### 当前状态快照
 
@@ -71,7 +73,7 @@
 | **预计时长** | 设计目标约30-36分钟；当前 Demo 含终局与反转视频 |
 | **目标受众** | 喜欢《主播女孩重度依赖》式角色关系、短叙事实验的玩家 |
 | **开发周期** | 7天竖切版 / 2-3周完整版 |
-| **语言** | 中文首发（英文需重做语义设计） |
+| **语言** | 简体中文；English / Deutsch / Русский（Beta，待母语审校） |
 
 ## 🎮 核心玩法
 
@@ -107,7 +109,7 @@ L1-L4 完成后，玩家可以把本章吞下的所有字从碎片池拖进私�
 ### 📋 策划与设计
 - **[完整策划案](./schedule.md)** - 游戏设计 + **§十至十六 程序/美术组装手册**
 - **[台词脚本](./台本.md)** - **6章35句完整台词（唯一完整源）** + 视频分镜
-- **[数据文件](./script/chapters.json)** - JSON框架 + 元数据 + L0/L1示例
+- **[运行时规则](./script/chapters.json)** - 语言无关的 JSON 规则、旗标和稳定 ID；显示文本见 [`script/locales/`](./script/locales/)
 - **[卖点分析](./selling-points.md)** - 市场定位、传播策略、slogan库
 - **[美术规范](./art-style.md)** - Doomer风格视觉指南
 
@@ -263,6 +265,19 @@ python3 -m http.server 8765 --directory .
 配乐由 [`web/audio/manifest.json`](./web/audio/manifest.json) 驱动，全部音频随 Web/Tauri
 产物本地打包；章节过场、终局和反转视频也随包提供，外部 SFX 和配音仍保留到后续媒体层。
 
+### 语言与本地化
+
+封面中的选择框和游戏右上角菜单均可切换语言；切换不会重置当前章节、旗标、已吞片段或结局。
+URL 可以临时覆盖语言偏好，适合审校和回归：
+
+```text
+/web/?lang=en
+/web/?lang=de&chapter=L3&line=L3_S04b
+/web/?lang=ru&ending=A_separate
+```
+
+语言优先级为 `?lang=`、已保存的手动选择、浏览器偏好、简体中文。英文、德文和俄文为完整的适配式草稿，发布前仍需母语叙事与无障碍审校。
+
 ### Day 1 Demo 入口
 
 Demo 已位于 `web/`。如需了解原始 DOM 方案，再阅读
@@ -322,7 +337,8 @@ KeepSilentForMe/
 ├── 台本.md                             # 📝 35句完整台词（唯一权威源）
 ├── WEB_TECH_STACK.md                   # 🌐 Web技术实现指南
 ├── script/
-│   └── chapters.json                   # 💾 游戏数据
+│   ├── chapters.json                   # 💾 稳定规则、章节/台词/zone ID
+│   └── locales/                         # 🌐 玩家可见文本与语言清单
 ├── art/                                # 🎨 当前美术资产入口
 │   ├── bg/                             # 旧 manifest 仍使用的兼容背景源
 │   ├── v4/playable/                    # 🎮 V4可玩资产包
@@ -335,12 +351,14 @@ KeepSilentForMe/
 ├── video/prompts/minimax-h3/           # 🎞️ MiniMax H3 图生视频提示词与参数
 ├── scripts/prepare-tauri.mjs           # Tauri 运行时资源组装与路径改写
 ├── scripts/validate-chapters.mjs       # 章节 zone 与 remain 数据契约校验
+├── scripts/validate-locales.mjs         # 四种语言的 offset、删词与键完整性校验
 ├── src-tauri/                           # Tauri 2 Rust 桌面壳与打包配置
 └── web/                                # 🌐 Web游戏目录（整页翻页 Demo）
     ├── README.md
     ├── index.html
     ├── css/
     ├── js/
+    ├── fonts/                           # 🔤 随包发布的拉丁/西里尔字体子集
     └── (运行时从 art/ 与 script/ 读取资源)
 ```
 
@@ -358,7 +376,8 @@ KeepSilentForMe/
 1. 所有台词进入统一JSON表格（id/raw/zones/reactions）
 2. 美术资产严格遵循 `art-style.md` 的 doomer 风格
 3. 每日同步进度，优先保证核心循环可玩
-4. 试玩优先：D6之前必须有内部可玩版本
+4. 翻译只修改 `script/locales/<locale>.json`；不得修改稳定 line/zone ID、旗标或场景绑定。每次翻译改动运行 `npm run validate:locales`。
+5. 试玩优先：D6之前必须有内部可玩版本
 
 ## 📊 风险与对策
 

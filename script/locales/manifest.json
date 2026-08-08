@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "defaultLocale": "zh-CN",
+  "locales": [
+    {
+      "id": "zh-CN",
+      "nativeName": "简体中文",
+      "beta": false,
+      "path": "zh-CN.json"
+    },
+    {
+      "id": "en",
+      "nativeName": "English",
+      "beta": true,
+      "path": "en.json"
+    },
+    {
+      "id": "de",
+      "nativeName": "Deutsch",
+      "beta": true,
+      "path": "de.json"
+    },
+    {
+      "id": "ru",
+      "nativeName": "Русский",
+      "beta": true,
+      "path": "ru.json"
+    }
+  ]
+}
