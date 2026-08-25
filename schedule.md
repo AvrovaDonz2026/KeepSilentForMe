@@ -332,7 +332,7 @@
 - **完整原句示例**：
   > “对不起，我知道你们想听这句话，但我其实不觉得自己做错了。”
 - **设计重点**：舆论压力；玩家必须决定留下什么。
-- **特殊规则**：消音体已占画面很大，并开始**主动遮挡**某些词（教学“你也被机制反噬”）。
+- **特殊规则**：消音体已占画面很大，并开始**主动遮挡**某些词（教学“你也被机制反噬”）。（已落地：L4_S02「不觉得自己做错了」由细条爬入预锁 1.5s 后系统代吃。）
 - **关末视频**：`V4_perform` / `V4_refuse` 二选一（按路线 flag）。
 
 #### 第五关：没有观众的房间（终局）
@@ -408,8 +408,19 @@
 | `V2_out` | 直播结束→肩侧 Stage2 |
 | `V3_out` | 朋友离去→门关 |
 | `V4_perform` / `V4_refuse` | 道歉双路线 |
-| `V5_A` / `V5_B` / `V5_C` | 终局三向 |
+| `V5_A` / `V5_B` / `V5_C` | 终局三向（C' 并入 `V5_C`） |
 | `V_RV` | 认知反转回放 |
+
+**运行时结局映射**（`web/video/manifest.json` sequences + `art/v4/scenes/manifest.json` endingPages）：
+
+| 结局 ID | 视频序列 | 整页图 |
+| --- | --- | --- |
+| `A_separate` | K15→K16（`V5_A`） | `PAGE_END_A_separate` |
+| `B_alienate` | K17→K18（`V5_B`） | `PAGE_END_B_alienate` |
+| `C_consume` | K19→K20（`V5_C`） | `PAGE_END_C_hollow` |
+| `C_cold` | K19→K20（与 `C_consume` 共用 `V5_C`） | `PAGE_END_C_hollow`（同左） |
+
+`C_consume` 与 `C_cold` 是两个逻辑结局 ID，但共用同一 `V5_C` 视频与同一整页图，当前差异仅在结局标题/文案；台本「C' 差」的镜中演出暂未单独出片。`scripts/validate-runtime-videos.mjs` 的 `expectedSequences` 已将两者显式写为同组片段，并非缺失资源。
 
 **与玩法边界**：视频段 **不可操作**；黑条只在对白 UI 段出现。视频负责「电影连接」，不负责解谜。
 
@@ -433,10 +444,10 @@
 | 文本 | 不跑 NLP；JSON/表格驱动预设遮挡（`script/chapters.json`） |
 | 交互 | 当前为单一文本节点 + `Range.getClientRects()` 命中层 → 拖拽黑条吸附 |
 | **当前章节切换** | `pageBindings` 选择整页 PNG，HTML overlay 显示段落结束和结局 |
-| 关末视频 | 目标设计仍为 `video/V*.mp4`；当前 Demo 尚未接入播放器 |
-| 存档 | **localStorage** 保存章节、台词、旗标、吃字记录和结局 ID；暂无视频已看标记 |
+| 关末视频 | `web/video/manifest.json` 驱动 K01-K22：章节过场、结局与反转，见 §11.8 运行时映射 |
+| 存档 | **localStorage** 保存章节、台词、旗标、吃字记录、`endingSeed` 和结局 ID；`revealSeen` 记录反转已看 |
 | 部署 | 静态托管（Vercel / Netlify / GitHub Pages）一键发布 |
-| 本地化 | 首发中文；英文需重做 zone（按短语而非按字）；视频旁白用 UI 本地化更省 |
+| 本地化 | 简体中文 + en/de/ru（Beta，待母语审校）；切换语言不丢进度、旗标、结局与私语 |
 
 ### 5.2 Web技术栈优势
 
@@ -991,25 +1002,26 @@ function snapToZone(bar, targetRect, callback) {
 
 ### 11.8 各章结算（抄这张表写 if）
 
-> **实现状态说明**：下表是目标设计表，不是当前 Demo 的完整运行契约。当前代码实际只
-> 对 L1 执行 `pass >= 4 && fail < 2`，失败显示重试层；L2/L3/L4 旗标会累加但不会改变
-> 当前章节推进；L5_S06 的 zone 直接映射四个结局 ID。规则冲突见根目录 `issue.md`，
-> 在数据规则统一前不要据此新增视频或分支逻辑。
+> **实现状态说明**：当前代码对 L1 执行 `pass >= 3 && fail < 2 && risk < 3`、对 L2 执行 `hate_leak < 2`，
+> 失败均显示重试层；L3 只记录旗标；L4 按 `apology_perform >= apology_refuse` 选表演/硬刚
+> 过场（混线取较高，平票取表演；混线先播 1s 噪声近似）；L5 主判定 L5_S06 的 `ending`，L5_S03 的 `ending_seed`（A/B）
+> 微调 A/B 两结局（C/C' 不受影响）。
 
 | 章 | 通过/走向 | 条件（读 flags） | 视频 |
 | --- | --- | --- | --- |
 | L0 | 必过 | 任意选完 L0_S01 | `V0_out` |
-| L1 | 录取 | `pass>=4 && fail<2` | `V1_pass` |
+| L1 | 录取 | `pass>=3 && fail<2 && risk<3` | `V1_pass` |
 | L1 | 重来 | 否则 | `V1_fail` 或直接 `lineIndex=0` |
 | L2 | 下播 | `hate_leak<2` | `V2_out` |
 | L2 | 事故重来 | 否则 | 提示后重开章 |
 | L3 | 无胜负 | 只记录 crack/trust 等 | 必播 `V3_out` |
-| L4 | 表演线 | `apology_perform >= apology_refuse` 且 perform≥1 | `V4_perform` |
+| L4 | 表演线 | `apology_perform >= apology_refuse`（混线取较高，平票取表演；混线先播 1s 噪声近似） | `V4_perform` |
 | L4 | 硬刚线 | 否则（refuse 更高） | `V4_refuse` |
-| L5 | 结局 | 看 L5_S06 所选 zone 的 `ending` 字段 | `V5_A/B/C` |
+| L5 | 结局 | 看 L5_S06 zone 的 `ending`；L5_S03 `ending_seed` 微调 A/B（C/C' 不参与） | `V5_A/B/C` |
 | 后 | 反转 | 任意结局后 | `V_RV`（eatLog 取 3 条叠 UI） |
 
 L5 zone 的 `ending` 示例：`A_separate` → 播 `V5_A`。
+`ending_seed` 微调：seed A 与 `B_alienate` 相斥时回 `A_separate`；seed B 与 `A_separate` 相斥时回 `B_alienate`。
 
 ### 11.9 黑条手感参数（可调表）
 
@@ -1250,7 +1262,7 @@ function playVideoWithAudio(videoId) {
       "title": "面试",
       "scene": "meeting_room",  // 对应 manifest.sceneBindings.meeting_room
       "creature": "stage1",     // CSS类名: .creature.stage-1
-      "goal": "pass>=4 && fail<2",
+      "goal": "pass>=3 && fail<2",
       "lines": [/* 见下 */],
       "outro_video": "V1_pass",
       "narration": ["旁白1", "旁白2"]

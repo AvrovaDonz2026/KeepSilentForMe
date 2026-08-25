@@ -117,7 +117,7 @@ function startRevealCaptions(token) {
     [0, captions[0] ?? ""],
     [2000, captions[1] ?? ""],
     [5000, captions[2] ?? ""],
-    [7600, whispers.length ? t("ui.swallowed", { text: whispers.join(" · ") }) : (captions[3] ?? "")],
+    [7600, whispers.length ? whispers.join(" · ") : (captions[3] ?? "")],
     [9200, captions[4] ?? ""],
   ];
   for (const [delay, text] of cues) {
@@ -241,12 +241,8 @@ function chapterOutroSequenceId(chapter) {
       return "L2_to_L3";
     case "L3":
       return "L3_to_L4";
-    case "L4": {
-      const perform = Number(state.flags.apology_perform) || 0;
-      const refuse = Number(state.flags.apology_refuse) || 0;
-      // 混线平票取表演；当前运行时没有额外的 1 秒噪声插片。
-      return perform >= refuse ? "L4_perform_to_L5" : "L4_refuse_to_L5";
-    }
+    case "L4":
+      return chapterL4Route() === "perform" ? "L4_perform_to_L5" : "L4_refuse_to_L5";
     default:
       return "";
   }
@@ -276,6 +272,12 @@ async function playChapterOutroThenAdvance(chapter) {
   hideMemoryOverlay();
   state.locked = true;
   syncLanguageControls();
+  if (chapter.id === "L4" && chapterL4Mixed()) {
+    // 台本：混线时另一路用 1s 闪入噪声（运行时近似，真插片留媒体层）。
+    dom.stage.classList.add("is-noise");
+    await playNoiseBurst(L4_MIXED_NOISE_MS);
+    dom.stage.classList.remove("is-noise");
+  }
   const result = await playChapterOutro(sequenceId);
   if (result === null) return;
   if (currentChapter()?.id !== chapter?.id) return;

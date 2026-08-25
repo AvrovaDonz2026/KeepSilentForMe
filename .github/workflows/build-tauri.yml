@@ -54,7 +54,12 @@ jobs:
         if: matrix.platform == 'linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y pkg-config libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils
+          sudo apt-get install -y pkg-config libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils ffmpeg
+
+      - name: Install ffmpeg (Windows)
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: choco install ffmpeg -y --no-progress
 
       - name: Install frontend and Tauri dependencies
         run: npm ci
@@ -93,3 +98,27 @@ jobs:
           workflowArtifactNamePattern: keep-silent-for-me-${{ matrix.platform }}-[arch]-[bundle]
           uploadUpdaterJson: false
           uploadUpdaterSignatures: false
+
+      - name: Stage portable files (Windows)
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: |
+          $release = "src-tauri\target\release"
+          $exe = Get-ChildItem $release -Filter *.exe -File | Select-Object -First 1
+          if (-not $exe) { throw "release exe 未找到: $release" }
+          Copy-Item $exe.FullName (Join-Path $env:GITHUB_WORKSPACE $exe.Name)
+          Get-ChildItem $release -Filter WebView2Loader.dll -File | ForEach-Object {
+            Copy-Item $_.FullName (Join-Path $env:GITHUB_WORKSPACE $_.Name)
+          }
+
+      - name: Upload portable zip (Windows)
+        if: matrix.platform == 'windows'
+        uses: actions/upload-artifact@v7
+        with:
+          name: keep-silent-for-me-windows-x64-portable
+          # 只传 exe（+可选 WebView2Loader.dll），artifact 下载即为 zip，文件平铺在根，
+          # 避免「zip 里套 zip」的嵌套。
+          path: |
+            keep-silent-for-me*.exe
+            WebView2Loader.dll
+          if-no-files-found: warn

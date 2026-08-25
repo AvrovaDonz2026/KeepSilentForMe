@@ -34,6 +34,7 @@ const BAR_DEFAULT_WIDTH = "min(34vw, 400px)";
 const BAR_MIN_WIDTH = 88;
 const BAR_MAX_WIDTH = 520;
 const BAR_REST_X_RATIO = 0.62;
+const BAR_REST_X_RATIO_LIVE = 0.34;
 const BAR_REST_Y_RATIO = 0.44;
 const BAR_REST_BOTTOM_GUTTER = 330;
 const ZONE_REACHABLE_MIN_DISTANCE = 150;
@@ -41,6 +42,12 @@ const ZONE_REACHABLE_WIDTH_RATIO = 0.86;
 const SELECTION_SNAP_DELAY_MS = 260;
 const SELECTION_FEEDBACK_DELAY_MS = 1060;
 const LINE_RENDER_DELAY_MS = 360;
+const NARRATION_LINE_MIN_MS = 1800;
+const NARRATION_LINE_PER_CHAR_MS = 110;
+const NARRATION_LINE_MAX_MS = 3600;
+const L4_MIXED_NOISE_MS = 1000;
+const PARASITE_CRAWL_DELAY_MS = 600;
+const PARASITE_PRELOCK_MS = 1500;
 const DEBUG_KEYS = new Set(["chapter", "line", "ending"]);
 
 const LIVE_VIEWERS = {
@@ -170,6 +177,8 @@ const state = {
   liveViewerCount: 0,
   liveViewerTimer: null,
   endingId: null,
+  endingSeed: null,
+  narrationShown: null,
   selectedZone: null,
   hoverZone: null,
   hoverTarget: null,

@@ -22,7 +22,7 @@
 
 被遮掉的文字不会消失，而是被你"吃掉"，逐渐在她身边长成你的身体。她靠你的沉默活在社会里，你靠她没说出口的真实想法活下来。
 
-**最新进展** (2026-08-07更新)：
+**最新进展** (2026-08-25更新)：
 - ✅ **可玩竖切 Demo 已完成**：标题封面、L0-L5、35句台词、拖拽遮字和四个结局均可运行
 - ✅ 运行时改为整页场景翻页：13张 `1536×1024` 页面由 `pageBindings` 驱动
 - ✅ 已接入继续/重新开始、`localStorage` 存档、URL 调试入口和 Web Audio 提示音
@@ -37,22 +37,31 @@
 - ✅ 已接入 K01-K22 视频：L0-L4 七条章节过场、A/B/C 结局序列和 K21→K22 反转均由运行时视频 manifest 驱动
 - ✅ 首轮多语言已接入：简体中文、English、Deutsch、Русский；封面和游戏内均可即时切换，英文/德文/俄文以 Beta 标记
 - ✅ 存档升级为稳定章节/台词/zone ID；切换语言会保留进度、旗标、结局与私语顺序，不再保存某种语言的显示文本
-- 🟡 外部 SFX/配音和章节规则的完整分支仍未接入
-- 🟡 当前原型中 L2/L3/L4 旗标主要用于记录，实际流程分支仍待规则对齐
+- ✅ 章节结算已按台本对齐：L2 `hate_leak<2` 失败重试、L4 表演/硬刚过场分支、L5_S03 `ending_seed` 微调 A/B 结局
+- ✅ 章首过场台词已接入运行时：各章 `narration` 逐条自动显示（含 L0 遮字教学与 L5「只剩你了」终局独白），期间黑条隐藏锁定
+- ✅ 章末结算台词已落地：L1-L4 章末先播台本「关末不可遮」她的台词（L1 含面试官「明天来试用」；L1 失败侧播「我们再联系」），再弹章节覆盖层
+- ✅ 结局文案对齐台本台词叠字：A 结局显示「她：……这次我说完了。她取回语言。」，C 改为「请求还在，人不必在。」，C' 补「只剩条与字灰」（四语言）
+- ✅ L3 关系旗标有回声：章末覆盖层文案按 `secret_risk`/`trust`/`distance`/`crack` 分支（台本结算变体表，四语言）
+- ✅ 未落地台词收尾：L3 旁白「有些门开了，话却关得更死。」、L1 失败「还可以再试一次。」、L5 秘密回声（`secret_risk≥2` 时「那句『有别人』，也跟到了这里。」）全部落地
+- ✅ 全部旗标生效：`risk≥3` 计入 L1 失败；`revolt≥1` 改写 L4 章末文案；`mask/truth/bond/control` 结局覆盖层人格回显（台本新增规则，四语言）
+- ✅ L4 反噬落地：L4_S02 细条自动爬入预锁并代吃「不觉得自己做错了」（eatLog 标 `source: parasite`），章末「不是我拖的」每局成真
+- ✅ `chapters.json` 数据解耦：纯视觉注释字段（rules/creature/bg/demo/face/演出等）移出，仅保留规则与稳定 ID，注释由 `台本.md` 独有
+- 🟡 外部 SFX/配音仍未接入；真噪声插片属媒体层待办（L4 混线 1s 噪声已用运行时近似）
+- 🟡 L3 关系旗标（trust/distance/secret_risk/crack）按设计只记录、不进分支
 - 📝 **运行时数据分层**：`script/chapters.json` 保存规则与稳定 ID，`script/locales/*.json` 保存玩家可见文本；`台本.md` 仍是中文叙事参考源
 
 ### 当前状态快照
 
 | 项目 | 当前状态 |
 |------|----------|
-| `main` 验证提交 | `a01040a` |
+| `main` 验证提交 | `8de10ba`（待最新 Actions 运行验证） |
 | Web Demo | [GitHub Pages 在线版](https://avrovadonz2026.github.io/KeepSilentForMe/web/) |
 | Pages 验证 | [运行 30751537982](https://github.com/AvrovaDonz2026/KeepSilentForMe/actions/runs/30751537982) · 成功 |
 | 桌面打包验证 | [运行 30751537976](https://github.com/AvrovaDonz2026/KeepSilentForMe/actions/runs/30751537976) · 成功 |
 | Echo Digest 回归 | Chrome 桌面/390×844 移动视口；点击、鼠标拖拽、触摸拖拽、刷新恢复 · 通过 |
 | 直播滚屏回归 | L2/L4；Chrome 1280×900 / 390×844；动态人数、循环滚动、响应式尺寸 · 通过 |
 | BGM 回归 | 4 首 CC0 本地音频；标题、L0-L5、四结局绑定；章节交叉淡化、独立音量和总开关 · 通过 |
-| Windows 产物 | `keep-silent-for-me-windows-x64-nsis` |
+| Windows 产物 | `keep-silent-for-me-windows-x64-nsis`、`keep-silent-for-me-windows-x64-portable` |
 | Linux 产物 | `keep-silent-for-me-linux-amd64-appimage`、`keep-silent-for-me-linux-amd64-deb` |
 | 签名/自动更新 | 未启用 |
 
@@ -317,10 +326,12 @@ GitHub Pages 工作流位于
 首版不启用签名和自动更新。
 Windows CI 当前生成 NSIS 安装包；NSIS 不依赖 hosted runner 上易失的 WiX/MSI 工具链，
 需要 MSI 时可在具备 WiX 的 Windows 环境中单独运行 `tauri build --bundles msi`。
+Windows CI 同时产出便携包 artifact（Actions 下载即 zip，解压后 exe 平铺在根目录、即玩；
+需系统已装 WebView2 Runtime，Win10/11 默认自带）。
 
 最新 Tauri 运行已通过，产物名称为：
 
-- Windows x64：`keep-silent-for-me-windows-x64-nsis`
+- Windows x64：`keep-silent-for-me-windows-x64-nsis`、`keep-silent-for-me-windows-x64-portable`
 - Linux amd64：`keep-silent-for-me-linux-amd64-appimage`、`keep-silent-for-me-linux-amd64-deb`
 
 ```bash
@@ -423,11 +434,13 @@ graph LR
 
 ### 当前原型的流程边界
 
-- **L1**：读取 `pass/fail`，未达到条件时显示面试重试层。
-- **L2/L3/L4**：按台词累加旗标并继续推进；当前 Demo 不用这些旗标切换章节流程。
-- **L5**：`L5_S06` 的 zone 直接映射到 `A_separate`、`B_alienate`、`C_consume` 或 `C_cold`。
+- **L1**：读取 `pass/fail/risk`（`pass>=3 && fail<2 && risk<3`），未达到条件时显示面试重试层。
+- **L2**：读取 `hate_leak`（`<2` 下播），否则显示直播事故重试层并重开本章。
+- **L3**：只记录 `trust`/`distance`/`secret_risk`/`crack`，无胜负分支（设计如此）。
+- **L4**：按 `apology_perform`/`apology_refuse` 取较高走表演/硬刚过场，平票取表演；无失败重开。
+- **L5**：`L5_S06` 的 zone 主判定结局；`L5_S03` 的 `ending_seed` 微调——seed `A` 与 `B_alienate` 相斥时回 `A_separate`，seed `B` 与 `A_separate` 相斥时回 `B_alienate`，`C_consume`/`C_cold` 不受影响。
 - **C_consume/C_cold**：逻辑结局 ID 不同，但共用 `PAGE_END_C_hollow` 整页图。
-- 规则冲突和叙事待对齐项集中记录在 [`issue.md`](./issue.md)，本轮不修改游戏数据。
+- 剩余规则与叙事待对齐项集中记录在 [`issue.md`](./issue.md)（L4 混线 1s 噪声、反噬自动遮挡、记录旗标消费等）。
 
 ## 🎯 关键里程碑
 
@@ -448,7 +461,7 @@ graph LR
 - [x] **视频层**：接入 K01-K14 章节过场、终局 K15-K20 与反转 K21-K22
 - [x] **BGM**：4 首 CC0 本地曲目，章节/结局绑定、交叉淡化、独立音量和总开关
 - [ ] **外部音频**：收集并接入 SFX、配音
-- [ ] **规则对齐**：处理 `issue.md` 中 L4 结算、ending seed、多出现 zone 等问题
+- [x] **规则对齐**：L2 直播事故重试、L4 表演/硬刚结算、L5 `ending_seed` 微调已按台本实现（多出现 zone 早已修复）
 - [ ] **设备 QA**：真实移动设备、横竖屏、低端设备和下载产物回归
 
 ### 美术资产（静态包已完成）
@@ -488,7 +501,7 @@ TBD - 待网易雷火比赛规则确认
 
 **参赛项目**：网易雷火游戏比赛  
 **版本**：v0.1 Pre-production  
-**最后更新**：2026-08-01
+**最后更新**：2026-08-25
 
 ### *"她负责说谎，你负责活下来。"*
 

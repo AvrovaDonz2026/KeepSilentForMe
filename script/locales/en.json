@@ -26,7 +26,15 @@
           "(Her, quietly) ...It has started.",
           "(Interviewer B) Relax. Say whatever comes to mind. -- The most dangerous sentence."
         ],
-        "objective": "pass >= 4 and fail < 2: hired. Otherwise, try again."
+        "objective": "pass >= 3 and fail < 2 and risk < 3: hired. Otherwise, try again.",
+        "settlement": [
+          "(Interviewer A) Come in tomorrow for the trial.",
+          "(Her) Thank you. ... A few of those sentences would have ruined everything if they had gotten out."
+        ],
+        "settlementFail": [
+          "(Interviewer A) We'll be in touch.",
+          "(Caption) You can try again."
+        ]
       },
       "L2": {
         "title": "First Stream",
@@ -35,7 +43,10 @@
           "(Chat) She is here / New streamer? / Show your face",
           "(Her) ...Hello, everyone."
         ],
-        "objective": "Keep hate_leak below 2 and make it to the end; failures can be retried."
+        "objective": "Keep hate_leak below 2 and make it to the end; failures can be retried.",
+        "settlement": [
+          "(Her) That line just now, \"there's you\" ... I was saying it to you."
+        ]
       },
       "L3": {
         "title": "A Friend at the Door",
@@ -44,7 +55,11 @@
           "(Friend) ...I know you are in there. Could you open the door?",
           "(Her) ..."
         ],
-        "objective": "There is no perfect route. Track trust, distance, secret risk, and cracks."
+        "objective": "There is no perfect route. Track trust, distance, secret risk, and cracks.",
+        "settlement": [
+          "(Her) ... You heard everything. Don't judge me.",
+          "(Narrator) Some doors opened, but the words stayed shut."
+        ]
       },
       "L4": {
         "title": "Apology Stream",
@@ -53,7 +68,10 @@
           "(System) Abnormal traffic. No numbers, only noise.",
           "(Her) ...All right."
         ],
-        "objective": "Either apology_perform >= 2 or apology_refuse >= 2 can close this chapter."
+        "objective": "Either apology_perform >= 1 or apology_refuse >= 1 can close this chapter.",
+        "settlement": [
+          "(Her) ... Just now, there was one I didn't drag."
+        ]
       },
       "L5": {
         "title": "A Room Without Viewers",
@@ -61,7 +79,10 @@
           "(Narrator) No interviewers. No friend. No viewers.",
           "(Her) ...Only you remain."
         ],
-        "objective": "Your last cover chooses the ending. There is no menu."
+        "objective": "Your last cover chooses the ending. There is no menu.",
+        "secretEcho": [
+          "(Narrator) That line — \"there's someone else\" — followed you here too."
+        ]
       }
     },
     "lines": {
@@ -1222,10 +1243,10 @@
       }
     },
     "endings": {
-      "A_separate": "She pulls her hand back.",
+      "A_separate": "(Her) ...This time I finished saying it myself. She takes back her language.",
       "B_alienate": "What remains is not 'me'.",
-      "C_consume": "A hollow request.",
-      "C_cold": "The identity is erased."
+      "C_consume": "The request remains. The person doesn't have to.",
+      "C_cold": "The identity is erased. Only the bar and the ashen words remain."
     },
     "chapterOverlays": {
       "L0": {
@@ -1242,11 +1263,20 @@
       },
       "L3": {
         "title": "The Door Closes Again",
-        "copy": "Her friend did not finish asking. You did not finish answering."
+        "copy": "Her friend did not finish asking. You did not finish answering.",
+        "variants": {
+          "risk": { "copy": "That line — \"there's someone else\" — went down the stairs with the friend." },
+          "distrust": { "copy": "The friend didn't call her out. She just left faster than she came." },
+          "distance": { "copy": "She said goodbye through the door. Through the rain, the friend didn't look back." },
+          "crack": { "copy": "After the door closed, the crack sounded louder than the rain." }
+        }
       },
       "L4": {
         "title": "Apology Over",
-        "copy": "Just now, one of those lines was not dragged by her."
+        "copy": "Just now, one of those lines was not dragged by her.",
+        "variants": {
+          "revolt": { "copy": "Just now, one of those lines was not dragged by her — and not by you." }
+        }
       }
     },
     "endingTitles": {
@@ -1255,10 +1285,16 @@
       "C_consume": "A hollow request",
       "C_cold": "The identity is erased"
     },
+    "persona": {
+      "mask": "To the very end, she kept that expression on.",
+      "truth": "At the very end, she finally left one true sentence behind.",
+      "bond": "She kept you inside her very last words.",
+      "control": "Before she spoke, she would glance your way."
+    },
     "revealCaptions": [
       "You thought you had been deleting things.",
-      "What was covered was what she truly said.",
-      "What remained onscreen was a subtitle for everyone else.",
+      "What you swallowed was what she meant to say.",
+      "What remained was read aloud to everyone else.",
       "You were never keeping her quiet.",
       "You were the person she never spoke into being."
     ]
@@ -1319,6 +1355,10 @@
     "retryInterviewTitle": "She was not hired.",
     "retryInterviewAction": "Speak this chapter again",
     "retryInterviewToast": "Retry interview",
+    "retryLiveEyebrow": "Stream accident",
+    "retryLiveTitle": "She couldn't hold those words back.",
+    "retryLiveAction": "Speak this chapter again",
+    "retryLiveToast": "Retry stream",
     "endingEyebrow": "Ending - {endingId}",
     "endingFallbackTitle": "The last sentence",
     "watchReveal": "Watch reveal",

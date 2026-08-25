@@ -94,6 +94,62 @@ function setBarSource(mode) {
   dom.blackBar.classList.toggle("bar-cracked", mode === "cracked");
 }
 
+function startNarration(lines, onDone = null, index = 0, version = state.transitionVersion) {
+  const line = lines[index];
+  state.locked = true;
+  syncLanguageControls();
+  state.dialogueLayout = null;
+  state.selectedZone = null;
+  state.hoverZone = null;
+  state.hoverTarget = null;
+  dom.dialogueZones.replaceChildren();
+  dom.blackBar.classList.add("is-hidden");
+  dom.dialogueFrame.classList.add("is-narrating");
+  dom.speakerName.textContent = "";
+  dom.lineId.textContent = "";
+  dom.feedbackCopy.textContent = "";
+  dom.zoneCount.textContent = "";
+  dom.dialogueText.replaceChildren(document.createTextNode(line));
+  const duration = Math.max(NARRATION_LINE_MIN_MS, Math.min(NARRATION_LINE_MAX_MS, line.length * NARRATION_LINE_PER_CHAR_MS));
+  scheduleTransition(() => {
+    if (version !== state.transitionVersion) return;
+    if (index + 1 < lines.length) {
+      startNarration(lines, onDone, index + 1, version);
+      return;
+    }
+    dom.blackBar.classList.remove("is-hidden");
+    dom.dialogueFrame.classList.remove("is-narrating");
+    state.locked = false;
+    syncLanguageControls();
+    if (onDone) onDone();
+    else renderLine();
+  }, duration);
+}
+
+// 台本 L4_S02 反噬：细条从右侧爬入，预锁「不觉得自己做错了」1.5s 后由系统代吃。
+function scheduleParasiteCover(line) {
+  const version = state.transitionVersion;
+  const parasiteIndex = 0;
+  state.locked = true;
+  syncLanguageControls();
+  dom.blackBar.classList.add("bar-parasite", "bar-crawling");
+  setBarCenter(window.innerWidth + 240, window.innerHeight * BAR_REST_Y_RATIO);
+  void dom.blackBar.offsetWidth;
+  scheduleTransition(() => {
+    if (version !== state.transitionVersion) return;
+    const target = getZones().find((item) => Number(item.dataset.zoneIndex) === parasiteIndex);
+    if (target) {
+      const rect = target.getBoundingClientRect();
+      setBarCenter(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    }
+  }, PARASITE_CRAWL_DELAY_MS);
+  scheduleTransition(() => {
+    if (version !== state.transitionVersion) return;
+    dom.blackBar.classList.remove("bar-crawling");
+    applySelection(parasiteIndex, version, "parasite");
+  }, PARASITE_CRAWL_DELAY_MS + PARASITE_PRELOCK_MS);
+}
+
 function renderLine() {
   const chapter = currentChapter();
   const line = currentLine();
@@ -101,12 +157,28 @@ function renderLine() {
     finishChapter();
     return;
   }
+  // 章首过场：先逐条播放 narration（含 L0 教学、L5 终局独白），再渲染首句。
+  if (line.id === chapter.lines[0].id
+    && Array.isArray(chapter.narration) && chapter.narration.length
+    && state.narrationShown !== chapter.id) {
+    state.narrationShown = chapter.id;
+    let lines = chapter.narration;
+    // 台本 L5 过场 N02b：第三章秘密被推到门口（secret_risk≥2）时追加回声。
+    if (chapter.id === "L5"
+      && (Number(state.flags.secret_risk) || 0) >= 2
+      && Array.isArray(chapter.secretEcho) && chapter.secretEcho.length) {
+      lines = [...lines, ...chapter.secretEcho];
+    }
+    startNarration(lines);
+    return;
+  }
   state.selectedZone = null;
   state.hoverZone = null;
   state.hoverTarget = null;
   state.locked = false;
   syncLanguageControls();
-  dom.blackBar.classList.remove("is-locked", "bar-active", "bar-snap", "bar-locked", "bar-cracked");
+  dom.blackBar.classList.remove("is-locked", "bar-active", "bar-snap", "bar-locked", "bar-cracked", "bar-parasite", "bar-crawling", "is-hidden");
+  dom.dialogueFrame.classList.remove("is-narrating");
   const cracked = manifestLayerIds("bar_cracked", line.id)?.length;
   const locked = manifestLayerIds("bar_locked", line.id)?.length;
   setBarSource(cracked ? "cracked" : locked ? "locked" : "hover");
@@ -122,7 +194,11 @@ function renderLine() {
   buildDialogue(line.raw, line.zones);
   setScene(chapter, line, true);
   clearNearestZone();
-  window.requestAnimationFrame(positionBarAtRest);
+  if (line.special === "prelock_optional") {
+    scheduleParasiteCover(line);
+  } else {
+    window.requestAnimationFrame(positionBarAtRest);
+  }
   triggerManifestEvent("zone_hint", undefined, FEEDBACK_HINT_DELAY_MS);
 }
 
@@ -143,8 +219,10 @@ function setBarCenter(x, y) {
 
 function positionBarAtRest() {
   if (state.dragging || state.locked) return;
+  // 直播章（L2/L4）聊天框在右侧，休息位挪到左侧避免黑条挡住弹幕。
+  const liveChapter = LIVE_CHAPTER_IDS.has(currentChapter()?.id);
   setBarCenter(
-    window.innerWidth * BAR_REST_X_RATIO,
+    window.innerWidth * (liveChapter ? BAR_REST_X_RATIO_LIVE : BAR_REST_X_RATIO),
     Math.min(window.innerHeight * BAR_REST_Y_RATIO, window.innerHeight - BAR_REST_BOTTOM_GUTTER),
   );
 }
@@ -277,7 +355,7 @@ function applyFlags(flags = []) {
   }
 }
 
-function applySelection(index, version = state.transitionVersion) {
+function applySelection(index, version = state.transitionVersion, source = "player") {
   if (version !== state.transitionVersion || !state.locked) return;
   const line = currentLine();
   const zone = line?.zones?.[index];
@@ -286,7 +364,12 @@ function applySelection(index, version = state.transitionVersion) {
     .filter((item) => Number(item.dataset.zoneIndex) === index)
     .forEach((item) => item.classList.add("is-eaten"));
   applyFlags(zone.flags);
-  state.eatLog.push({ chapterId: currentChapter().id, lineId: line.id, zoneId: zone.id });
+  if (line.id === "L5_S03") {
+    // L5_S03 决定终局种子：Z01→A、Z02/Z04→B、Z03（这一次，）无种子；
+    // 无种子时显式清空，避免调试回跳重玩时沿用上一轮的旧值。
+    state.endingSeed = typeof zone.ending_seed === "string" && zone.ending_seed ? zone.ending_seed : null;
+  }
+  state.eatLog.push({ chapterId: currentChapter().id, lineId: line.id, zoneId: zone.id, source });
   dom.feedbackCopy.textContent = zone.npc || t("ui.swallowedNpcFallback");
   dom.statusCopy.textContent = zone.eat ? t("ui.swallowed", { text: zone.eat }) : t("ui.swallowedFallback");
   appendLiveChat(zone.npc || t("ui.swallowedFallback"));
@@ -301,9 +384,19 @@ function applySelection(index, version = state.transitionVersion) {
   scheduleTransition(() => continueAfterSelection(transition, version), SELECTION_FEEDBACK_DELAY_MS);
 }
 
+function resolveEnding(s06Ending, seed) {
+  // 台本：L5_S06 主判定，L5_S03 的 ending_seed 微调。
+  // seed A（想自己说）与 S06 的 B_alienate 相斥时回 A_separate；
+  // seed B（仍依赖你）与 S06 的 A_separate 相斥时回 B_alienate；
+  // C_consume / C_cold 不受种子影响。
+  if (seed === "A" && s06Ending === "B_alienate") return "A_separate";
+  if (seed === "B" && s06Ending === "A_separate") return "B_alienate";
+  return s06Ending;
+}
+
 function commitSelection(zone, line) {
   if (line.is_ending) {
-    const endingId = zone.ending ?? "A_separate";
+    const endingId = resolveEnding(zone.ending ?? "A_separate", state.endingSeed);
     state.endingId = endingId;
     return { kind: "ending", endingId };
   }

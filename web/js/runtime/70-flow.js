@@ -5,39 +5,119 @@ function chapterResult(chapter) {
   if (chapter.id === "L1") {
     const pass = state.flags.pass ?? 0;
     const fail = state.flags.fail ?? 0;
-    return pass >= 4 && fail < 2 ? "pass" : "fail";
+    const risk = state.flags.risk ?? 0;
+    return pass >= 3 && fail < 2 && risk < 3 ? "pass" : "fail";
+  }
+  if (chapter.id === "L2") {
+    const hateLeak = state.flags.hate_leak ?? 0;
+    return hateLeak < 2 ? "pass" : "fail";
   }
   return "pass";
+}
+
+// L4 无失败重开：任何周目都会收束，结算即「走表演线还是硬刚线」。
+// 台本第四章结算：混线取较高，平票取表演（apology_perform >= apology_refuse）；
+// 「另一路 1s 噪声闪入」在混线时以 Web Audio 噪声 + 画面闪黑近似（见 20-video.js）。
+function chapterL4Route() {
+  const perform = Number(state.flags.apology_perform) || 0;
+  const refuse = Number(state.flags.apology_refuse) || 0;
+  return perform >= refuse ? "perform" : "refuse";
+}
+
+// 台本「混线：都有」——两路都至少 1 次，另一路用 1s 闪入噪声。
+function chapterL4Mixed() {
+  const perform = Number(state.flags.apology_perform) || 0;
+  const refuse = Number(state.flags.apology_refuse) || 0;
+  return perform >= 1 && refuse >= 1;
+}
+
+// 台本章末覆盖层变体：L3 按关系旗标、L4 按 revolt 回显一次。
+function relationshipCopy(chapterId, overlay) {
+  const variants = overlay?.variants ?? null;
+  if (!variants) return overlay?.copy ?? t("ui.nextChapterCopy");
+  let key = "";
+  if (chapterId === "L3") {
+    const trust = Number(state.flags.trust) || 0;
+    const distance = Number(state.flags.distance) || 0;
+    const secretRisk = Number(state.flags.secret_risk) || 0;
+    const crack = Number(state.flags.crack) || 0;
+    if (secretRisk >= 2) key = "risk";
+    else if (trust < 0) key = "distrust";
+    else if (distance >= 2) key = "distance";
+    else if (crack >= 5) key = "crack";
+  } else if (chapterId === "L4") {
+    if ((Number(state.flags.revolt) || 0) >= 1) key = "revolt";
+  }
+  return variants[key]?.copy || overlay?.copy || t("ui.nextChapterCopy");
+}
+
+// 台本 L5「人格回显」：结局覆盖层按 mask/truth/bond/control 最高者（≥6）追加一行。
+function personaLine() {
+  const order = ["mask", "truth", "bond", "control"];
+  let best = "";
+  let bestValue = 0;
+  for (const key of order) {
+    const value = Number(state.flags[key]) || 0;
+    if (value >= 6 && value > bestValue) {
+      bestValue = value;
+      best = key;
+    }
+  }
+  return best ? localeValue(`game.persona.${best}`, "") : "";
 }
 
 function finishChapter() {
   const chapter = currentChapter();
   if (LIVE_CHAPTER_IDS.has(chapter?.id)) hideLiveChat();
-  if (chapter.id === "L1" && chapterResult(chapter) === "fail") {
+  if (chapterResult(chapter) === "fail") {
     hideOverlay();
     state.locked = true;
-    void playChapterOutro("L1_fail_retry", () => {
-      if (currentChapter()?.id !== "L1") return;
-      state.locked = true;
+    if (chapter.id === "L1") {
+      const failLines = Array.isArray(chapter.settlementFail) ? chapter.settlementFail : [];
+      const playRetry = () => void playChapterOutro("L1_fail_retry", () => {
+        if (currentChapter()?.id !== "L1") return;
+        state.locked = true;
+        syncLanguageControls();
+        showOverlay(
+          t("ui.retryInterviewEyebrow"),
+          t("ui.retryInterviewTitle"),
+          t("ui.retryInterviewAction"),
+          () => restartChapter(),
+          t("ui.retryInterviewToast"),
+        );
+      });
+      // 台本 L1 失败分支：先播「A：我们再联系。」，再进失败过场与重试层。
+      if (failLines.length) startNarration(failLines, playRetry);
+      else playRetry();
+    } else if (chapter.id === "L2") {
+      // 台本第二章：hate_leak≥2 即直播事故，提示后重开本章（无独立事故视频）。
       syncLanguageControls();
       showOverlay(
-        t("ui.retryInterviewEyebrow"),
-        t("ui.retryInterviewTitle"),
-        t("ui.retryInterviewAction"),
+        t("ui.retryLiveEyebrow"),
+        t("ui.retryLiveTitle"),
+        t("ui.retryLiveAction"),
         () => restartChapter(),
-        t("ui.retryInterviewToast"),
+        t("ui.retryLiveToast"),
       );
-    });
+    }
     return;
   }
   if (state.chapterIndex >= state.chapters.length - 1) return;
   const chapterOverlay = localeValue(`game.chapterOverlays.${chapter.id}`, null);
   const title = chapterOverlay?.title ?? t("ui.nextChapter");
-  const copy = chapterOverlay?.copy ?? t("ui.nextChapterCopy");
+  const copy = (chapter.id === "L3" || chapter.id === "L4")
+    ? relationshipCopy(chapter.id, chapterOverlay)
+    : (chapterOverlay?.copy ?? t("ui.nextChapterCopy"));
   const action = MEMORY_CHAPTER_IDS.has(chapter.id)
     ? () => openMemoryOverlay(chapter)
     : () => void playChapterOutroThenAdvance(chapter);
-  showOverlay(t("ui.chapterEnded"), title, copy, action);
+  const settlement = Array.isArray(chapter.settlement) ? chapter.settlement : [];
+  if (settlement.length) {
+    // 台本「关末不可遮」：先播她的结算台词，再弹章节覆盖层。
+    startNarration(settlement, () => showOverlay(t("ui.chapterEnded"), title, copy, action));
+  } else {
+    showOverlay(t("ui.chapterEnded"), title, copy, action);
+  }
 }
 
 function nextChapter() {
@@ -67,6 +147,8 @@ function restartChapter() {
   state.lineIndex = 0;
   state.flags.pass = 0;
   state.flags.fail = 0;
+  state.flags.hate_leak = 0;
+  state.narrationShown = null;
   state.locked = false;
   syncLanguageControls();
   state.selectedZone = null;
@@ -125,7 +207,8 @@ async function finishEnding(endingId, expectedTransitionVersion = null, { playSe
   state.locked = true;
   syncLanguageControls();
   const endingTitle = localeValue(`game.endingTitles.${endingId}`, t("ui.endingFallbackTitle"));
-  const endingCopy = state.data.endings?.[endingId] ?? "";
+  const persona = personaLine();
+  const endingCopy = [state.data.endings?.[endingId] ?? "", persona].filter(Boolean).join(" ");
   showOverlay(
     t("ui.endingEyebrow", { endingId }),
     endingTitle,
@@ -172,6 +255,8 @@ function resetRun() {
   state.memoryByChapter = {};
   state.memoryDraft = null;
   state.endingId = null;
+  state.endingSeed = null;
+  state.narrationShown = null;
   state.hasSave = false;
   state.pendingMigrationNotice = false;
   state.locked = false;
@@ -208,6 +293,7 @@ function saveState() {
       order: state.memoryDraft.order,
     } : null,
     endingId: state.endingId,
+    endingSeed: state.endingSeed,
   }));
   if (saved) {
     state.hasSave = true;
@@ -250,6 +336,7 @@ function restoreState() {
       state.memoryByChapter = normalizeMemoryByChapter(saved.memoryByChapter);
       state.memoryDraft = normalizeMemoryDraft(saved.memoryDraft);
       state.endingId = typeof saved.endingId === "string" ? saved.endingId : null;
+      state.endingSeed = saved.endingSeed === "A" || saved.endingSeed === "B" ? saved.endingSeed : null;
       state.hasSave = true;
       return;
     }
@@ -270,6 +357,7 @@ function restoreState() {
     state.memoryByChapter = {};
     state.memoryDraft = null;
     state.endingId = typeof saved.endingId === "string" ? saved.endingId : null;
+    state.endingSeed = saved.endingSeed === "A" || saved.endingSeed === "B" ? saved.endingSeed : null;
     state.hasSave = true;
     state.pendingMigrationNotice = true;
     saveState();

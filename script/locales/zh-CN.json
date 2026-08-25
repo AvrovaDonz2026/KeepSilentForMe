@@ -26,7 +26,15 @@
           "（她·小声）……开始了。",
           "（面试官B）别紧张，想到什么说什么。——正是最危险的一句。"
         ],
-        "objective": "pass≥4且fail<2→录取；否则可重来"
+        "objective": "pass≥3且fail<2且risk<3→录取；否则可重来",
+        "settlement": [
+          "（面试官A）明天来试用。",
+          "她：谢谢你。……刚才有几句话，要是说出去就完了。"
+        ],
+        "settlementFail": [
+          "（面试官A）我们再联系。",
+          "（字幕）还可以再试一次。"
+        ]
       },
       "L2": {
         "title": "第一次直播",
@@ -35,7 +43,10 @@
           "（弹幕）来了来了 / 新人？ / 脸呢",
           "（她）……大家好。"
         ],
-        "objective": "hate_leak<2且撑完；否则事故可重来"
+        "objective": "hate_leak<2且撑完；否则事故可重来",
+        "settlement": [
+          "她：刚才那句「有你在」……我是对你说的。"
+        ]
       },
       "L3": {
         "title": "朋友上门",
@@ -44,7 +55,11 @@
           "（朋友）……我知道你在。开一下门，好吗。",
           "（她）……"
         ],
-        "objective": "无完美通关；记trust/distance/secret_risk/crack"
+        "objective": "无完美通关；记trust/distance/secret_risk/crack",
+        "settlement": [
+          "她：……你都听见了。别评价我。",
+          "（旁白）有些门开了，话却关得更死。"
+        ]
       },
       "L4": {
         "title": "道歉直播",
@@ -53,7 +68,10 @@
           "（系统）热度异常·不显示数字，只听噪音",
           "（她）……好。"
         ],
-        "objective": "apology_perform≥2或apology_refuse≥2皆可收束"
+        "objective": "apology_perform≥1或apology_refuse≥1皆可收束",
+        "settlement": [
+          "她：……刚才有一条，不是我拖的。"
+        ]
       },
       "L5": {
         "title": "没有观众的房间",
@@ -61,7 +79,10 @@
           "（旁白）没有面试官。没有朋友。没有观众。",
           "（她）……只剩你了。"
         ],
-        "objective": "终句遮挡=结局；无菜单"
+        "objective": "终句遮挡=结局；无菜单",
+        "secretEcho": [
+          "（旁白）那句「有别人」，也跟到了这里。"
+        ]
       }
     },
     "lines": {
@@ -1222,10 +1243,10 @@
       }
     },
     "endings": {
-      "A_separate": "她把手收了回去。",
+      "A_separate": "她：……这次我说完了。她取回语言。",
       "B_alienate": "留下的不是‘我’。",
-      "C_consume": "请求空壳。",
-      "C_cold": "身份被抹去。"
+      "C_consume": "请求还在，人不必在。",
+      "C_cold": "身份被抹去。只剩条与字灰。"
     },
     "chapterOverlays": {
       "L0": {
@@ -1242,11 +1263,20 @@
       },
       "L3": {
         "title": "门重新合上",
-        "copy": "朋友没有问完，你也没有回答完。"
+        "copy": "朋友没有问完，你也没有回答完。",
+        "variants": {
+          "risk": { "copy": "那句「有别人」，跟着朋友下了楼。" },
+          "distrust": { "copy": "朋友没有拆穿她，只是走得比来时快。" },
+          "distance": { "copy": "她隔着门说再见。朋友隔着雨，没有回头。" },
+          "crack": { "copy": "门合上以后，裂开的声音比雨还响。" }
+        }
       },
       "L4": {
         "title": "道歉结束",
-        "copy": "刚才有一条，不是她拖的。"
+        "copy": "刚才有一条，不是她拖的。",
+        "variants": {
+          "revolt": { "copy": "刚才有一条，不是她拖的——也不是你。" }
+        }
       }
     },
     "endingTitles": {
@@ -1255,10 +1285,16 @@
       "C_consume": "请求空壳",
       "C_cold": "身份被抹去"
     },
+    "persona": {
+      "mask": "她到最后都戴着那副表情。",
+      "truth": "到最后，她终于把一句真话留了下来。",
+      "bond": "她把你留在了最后的话里。",
+      "control": "开口之前，她习惯先看一眼你的方向。"
+    },
     "revealCaptions": [
       "你以为自己一直在删除。",
-      "被遮住的，是她说出口的。",
-      "屏幕上留下的，是给外界的字幕。",
+      "被你吃掉的，才是她想说的。",
+      "留下来的，是念给别人听的。",
       "你不是替她沉默。",
       "你是她没有说出口的那个人。"
     ]
@@ -1319,6 +1355,10 @@
     "retryInterviewTitle": "她没有被录用。",
     "retryInterviewAction": "把这一章重新说一遍",
     "retryInterviewToast": "重试面试",
+    "retryLiveEyebrow": "直播事故",
+    "retryLiveTitle": "她没压住那些话。",
+    "retryLiveAction": "把这一章重新说一遍",
+    "retryLiveToast": "重试直播",
     "endingEyebrow": "结局 · {endingId}",
     "endingFallbackTitle": "最后一句",
     "watchReveal": "观看反转",

@@ -23,7 +23,7 @@ const requiredUiKeys = [
   "lineFeedbackFirst", "lineFeedback", "swallowed", "swallowedFallback", "swallowedNpcFallback", "selectionNotFound",
   "sceneLoadRetained", "transitionVideoFailed", "endingSceneFailed", "endingVideoFailed", "revealVideoFailed", "revealVideoFallback",
   "chapterEnded", "nextChapter", "nextChapterCopy", "continue", "retryInterviewEyebrow", "retryInterviewTitle",
-  "retryInterviewAction", "retryInterviewToast", "endingEyebrow", "endingFallbackTitle", "watchReveal", "replayEyebrow",
+  "retryInterviewAction", "retryInterviewToast", "retryLiveEyebrow", "retryLiveTitle", "retryLiveAction", "retryLiveToast", "endingEyebrow", "endingFallbackTitle", "watchReveal", "replayEyebrow",
   "replayTitle", "replayCopy", "replayAction", "memoryEyebrow", "memoryTitle", "memoryCopy", "memoryFragments",
   "memoryWhisper", "memoryPoolLabel", "memoryLaneLabel", "memoryConfirm", "memoryEmpty", "memorySaved", "oldSaveMigrated",
   "errorTitle", "errorLocalServer", "retry", "loadErrorSuffix", "runtimeDataMissing", "fallbackChat",
@@ -119,6 +119,11 @@ for (const [localeId, , , relativePath] of expectedLocales) {
       errors.push(`${prefix} is missing ending copy for ${endingId}`);
     }
   }
+  if (pack.game?.persona !== undefined) {
+    for (const key of ["mask", "truth", "bond", "control"]) {
+      if (!isNonEmptyString(pack.game.persona?.[key])) errors.push(`${prefix} game.persona.${key} is invalid`);
+    }
+  }
   if (!Array.isArray(pack.game?.revealCaptions) || pack.game.revealCaptions.length !== 5
     || pack.game.revealCaptions.some((caption) => !isNonEmptyString(caption))) {
     errors.push(`${prefix} revealCaptions must contain five strings`);
@@ -126,6 +131,13 @@ for (const [localeId, , , relativePath] of expectedLocales) {
   for (const chapter of baseChapters) {
     const localChapter = pack.game?.chapters?.[chapter.id];
     if (!isNonEmptyString(localChapter?.title)) errors.push(`${prefix} is missing title for ${chapter.id}`);
+    for (const key of ["settlement", "settlementFail", "secretEcho"]) {
+      if (localChapter?.[key] !== undefined
+        && (!Array.isArray(localChapter[key]) || !localChapter[key].length
+          || localChapter[key].some((item) => !isNonEmptyString(item)))) {
+        errors.push(`${prefix} ${chapter.id} ${key} must be a non-empty string array`);
+      }
+    }
   }
   for (const line of baseLines) {
     const localLine = pack.game?.lines?.[line.id];

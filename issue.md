@@ -37,7 +37,7 @@
 
 ---
 
-### A-01 · [需设计决策] 第四章结算条件自相矛盾，且存在「双 0 / 双不足」空洞
+### A-01 · [已解决] 第四章结算条件自相矛盾，且存在「双 0 / 双不足」空洞
 
 | 来源 | 条件 |
 | --- | --- |
@@ -62,7 +62,7 @@
 
 ---
 
-### A-02 · [需设计决策] `L5_S03` 的 `ending_seed`「微调」没有算法
+### A-02 · [已解决] `L5_S03` 的 `ending_seed`「微调」没有算法
 
 台本写：
 
@@ -132,7 +132,7 @@ V3_out 仅「暗示舆论将至」，不能替代一次可玩/可看的事件节
 
 ---
 
-### A-05 · [需设计决策后实现] Web 运行时未实现 L4 结算逻辑
+### A-05 · [已解决] Web 运行时未实现 L4 结算逻辑
 
 **位置**：`web/js/main.js:1004-1011`
 
@@ -215,7 +215,7 @@ const AUDIO_MANIFEST_URL = "audio/manifest.json?v=audio-3";  // ← 不一致
 
 ## 🟡 P1 高优先级问题
 
-### B-01 · [需设计决策] 跨章 flag 大量只增不读
+### B-01 · [已解决] 跨章 flag 大量只增不读
 
 | flag | 出现章 | 是否进入任何结算/结局 |
 | --- | --- | --- |
@@ -229,9 +229,11 @@ const AUDIO_MANIFEST_URL = "audio/manifest.json?v=audio-3";  // ← 不一致
 
 **建议：** 要么在 L5/V_RV 消费这些计数（改可选 zone、字幕、Stage 演出），要么在总则标明「竖切仅记录 / 不影响分支」，避免设计与实现双重预期。
 
+**处理（2026-08-25）**：全部旗标已有消费方——`mask`/`truth`/`bond`/`control` 进结局覆盖层人格回显（≥6 取最高，平票按 mask>truth>bond>control）；`revolt` 进 L4 章末变体；`risk` 进 L1 软失败（≥3）；`trust`/`distance`/`secret_risk`/`crack` 进 L3 章末变体（B-04）。
+
 ---
 
-### B-02 · [需设计决策] 第一章 `pass≥4 且 fail<2` 偏紧，且 `risk` 语义含混
+### B-02 · [已解决] 第一章 `pass≥4 且 fail<2` 偏紧，且 `risk` 语义含混
 
 - 7 句各选 1 zone；`pass+` 分布尚可，但随机全选通过率约 **12%**。
 - 多句「正解」只有 1 个 `pass+`，其余为 `fail+` 或 `risk+`。
@@ -239,6 +241,8 @@ const AUDIO_MANIFEST_URL = "audio/manifest.json?v=audio-3";  // ← 不一致
 - 失败「重来」范围未写清：整章重置 vs 从本句重来 vs 保留已有 pass/fail。
 
 **建议：** 明确 risk 是否计软失败、失败时 flag 是否清零；若面向 Jam 受众，可略降到 `pass≥3` 或增加每句 pass 供给。
+
+**处理（2026-08-25）**：门槛部分已按提交 `cba3b51` 的设计意图落为 `pass>=3 && fail<2`（代码/数据/台本/四语言 objective 同步）；`risk≥3` 计软失败已落地（L1 结算改为 `pass>=3 && fail<2 && risk<3`），失败沿用重试层。
 
 ---
 
@@ -250,16 +254,18 @@ const AUDIO_MANIFEST_URL = "audio/manifest.json?v=audio-3";  // ← 不一致
 
 ---
 
-### B-04 · [需设计决策] 第三章「无完美通关」与关系旗标无反馈
+### B-04 · [已处理] 第三章「无完美通关」与关系旗标无反馈
 
 - 设计声明无胜负，正确；但 `trust±` / `distance` / `secret_risk` / `crack` 在 UI 与后续章**零回声**。
 - L3_S05「房间里是有别人」把秘密推到门口，朋友「让我见见」后无解决、无代价，**悬置线**在 L5 也不回收。
 
 对 30 分钟叙事可以接受，但当前写法像「半截系统」。
 
+**处理（2026-08-25）**：L3 章末覆盖层文案按关系旗标分支（台本第三章结算新增「结算变体」表，四语言 `variants`）：`secret_risk≥2` → 秘密跟着朋友下楼；`trust<0` → 朋友走得比来时快；`distance≥2` → 隔着门与雨道别；`crack≥5` → 裂开的声音比雨响；其余保持原句。L5 悬置线已回收：`secret_risk≥2` 时 L5 过场末尾追加「那句『有别人』，也跟到了这里。」（台本 L5_N02b）。
+
 ---
 
-### B-05 · [需设计决策] 第四章「反噬」叙事 vs 数据
+### B-05 · [已解决] 第四章「反噬」叙事 vs 数据
 
 台本：Stage2.5–3，**细条可自爬/预锁**；L4_S02 special：困难下预锁 1.5s；结算台词：「刚才有一条，不是我拖的。」
 
@@ -269,9 +275,11 @@ JSON：仅 `special: parasite_auto_cover` / `prelock_optional`，**无一 zone �
 
 **建议：** 至少 1 句真正自动遮挡并写入 `eatLog`（标记 `source: parasite`），结算台词才成立。
 
+**处理（2026-08-25）**：L4_S02 反噬落地——细条从右侧爬入，预锁「不觉得自己做错了」1.5s 后由系统代吃（`scheduleParasiteCover`，复用 `applySelection` 并标注 `source: parasite`），该句玩家无法干预；章末「刚才有一条，不是我拖的」自此每局为真。
+
 ---
 
-### B-06 · [需媒体决策] 终局 C / C' 与视频映射
+### B-06 · [已文档化] 终局 C / C' 与视频映射
 
 | zone | ending | 视频 |
 | --- | --- | --- |
@@ -281,6 +289,8 @@ JSON：仅 `special: parasite_auto_cover` / `prelock_optional`，**无一 zone �
 | 我 | C_cold | V5_C（差分化仅文案） |
 
 `endings` 字典有 4 个 id，视频只有 3 条；C' 依赖同一 `V5_C` 内部分支——需在播放器逻辑写清，否则 C_cold 易被当成缺失资源。
+
+**处理（2026-08-25）**：已文档化——`web/video/manifest.json` 增加 note 说明；`schedule.md` 补「运行时结局映射」表；`scripts/validate-runtime-videos.mjs` 的 `expectedSequences` 显式写明 `C_cold` 与 `C_consume` 共用 K19/K20 与 `PAGE_END_C_hollow`，差异仅在结局标题/文案，不是缺失资源。
 
 ---
 
@@ -317,12 +327,14 @@ JSON：仅 `special: parasite_auto_cover` / `prelock_optional`，**无一 zone �
 
 ---
 
-### C-04 · [需文案决策] 反转文案与操作直觉的张力（非硬 bug）
+### C-04 · [已处理] 反转文案与操作直觉的张力（非硬 bug）
 
 玩法：遮住 = 不出口 / 喂给体；留下 = 对外说。  
 `V_RV`：「**被遮住的，是她说出口的**」「屏幕上留下的，是给外界的字幕」。
 
 需在反转里用一层 UI 把「对你说出口 / 对外字幕」说死，否则与 L0 教学「被遮住的会成为你」并读时会像两套物理。
+
+**处理（2026-08-25）**：反转第 2/3 句改为谜语式表述（四语言、台本分镜、`chapters.json` reveal 同步）——「被你吃掉的，才是她想说的。」「留下来的，是念给别人听的。」，与 L0「遮住 = 吃掉」共用同一物理，不另加解释层。
 
 ---
 
@@ -358,7 +370,7 @@ JSON：仅 `special: parasite_auto_cover` / `prelock_optional`，**无一 zone �
 
 ---
 
-### C-06 · [需设计决策] `risk+` 旗标用途不明确
+### C-06 · [已处理] `risk+` 旗标用途不明确
 
 **统计**：39 个 zone 使用 `risk+`，是所有旗标中最多的
 
@@ -374,6 +386,8 @@ JSON：仅 `special: parasite_auto_cover` / `prelock_optional`，**无一 zone �
 1. 明确定义 `risk` 在结算中的作用（如 L1: `risk >= 3` 算软失败）
 2. 或将 `risk` 改为纯叙事标签，不参与逻辑判断
 3. 在文档中说明当前 `risk` 仅用于记录
+
+**处理（2026-08-25）**：`risk` 语义已定义——L1 结算计入软失败（`risk≥3` 则重试，台本结算表已更新），全章保留选 zone 时的 reject 即时反馈。
 
 ---
 
@@ -617,7 +631,7 @@ const ZONE_REACHABLE_MIN_DISTANCE = 150;
 **建议**：覆盖层关闭时恢复可继续状态，或章节覆盖层禁止 `Esc` 关闭；结局覆盖层则应明确
 只允许“重新开始”。
 
-### R-02 · P1 · [需设计决策后实现] L2 的 `hate_leak` 目标没有运行时结算
+### R-02 · P1 · [已解决] L2 的 `hate_leak` 目标没有运行时结算
 
 `script/chapters.json` 声明 L2 目标为 `hate_leak<2`，否则应进入事故/重来分支；但
 `web/js/main.js:1004-1011` 的 `chapterResult()` 只实现 L1，`finishChapter()` 也只处理
@@ -757,3 +771,37 @@ manifest 验证。
 - **已修复**：反转视频的“跳过”现在会结束整个 K21→K22 序列，不会跳到下一镜头继续播放。
 - **已修复**：重开或按 `R` 时统一取消视频/提示/直播计时器，并释放黑条与记忆碎片的指针捕获，避免旧状态污染新局。
 - **已验证**：35 个台词调试入口、结局反转跳过、禁用 `localStorage` 启动、视频/场景/音频/章节校验和 Tauri 产物组装均通过。
+
+### 2026-08-25 规则对齐实现
+
+按台本实现此前标记「需设计决策」的结算项；`台本.md` 原文未改，代码/数据服从台本：
+
+- **A-05 / R-02（L2 结算）**：`web/js/runtime/70-flow.js` 的 `chapterResult()` 增加 L2 分支——`hate_leak < 2` 下播，否则「直播事故」重试层（新增 `ui.retryLive*` 四语言文案，并加入 `validate-locales` 白名单）并 `restartChapter()` 重开；重开时清零 `hate_leak`。
+- **A-01 / A-05（L4 结算）**：新增 `chapterL4Route()`——`apology_perform >= apology_refuse` 走 `L4_perform_to_L5`，否则 `L4_refuse_to_L5`；实现台本「混线取较高」，平票取表演为补足台本未定义的边界；「另一路 1s 噪声」已以运行时近似落地（见下）。
+- **L4 混线 1s 噪声（近似落地）**：`chapterL4Mixed()`（两路均≥1）时，进路线过场前播 1s Web Audio 白噪声 + 画面闪黑（`playNoiseBurst` + `.stage.is-noise`）；真视频插片仍留媒体层。
+- **B-04（L3 关系旗标回声）**：已处理——L3 章末覆盖层按 `secret_risk`/`trust`/`distance`/`crack` 分支文案（台本新增结算变体表，四语言 `variants`；优先级 risk > distrust > distance > crack）。
+- **未落地台词收尾**：L3 旁白「有些门开了，话却关得更死。」并入 L3 settlement 第二条；V1_fail UI「还可以再试一次。」并入 L1 settlementFail 第二条；L5 过场 N02b 秘密回声（`secretEcho`，`secret_risk≥2`）——台本与四语言同步。
+- **结局台词叠字落地**：`game.endings` 对齐台本——A 补「她：……这次我说完了。她取回语言。」，C 改台本字幕「请求还在，人不必在。」，C' 补「只剩条与字灰」（四语言）。
+- **数据解耦（chapters.json）**：移除纯视觉注释字段（顶层 `rules`、各章 `creature`/`bg`/`demo`/`演出`/`narration_note`/`special_note`/`旁白`、行级 `face`），仅保留规则与稳定 ID；`sync.note` 更新，注释内容由 `台本.md` 独有。
+- **A-02（ending_seed）**：实现种子微调——选 L5_S03 zone 时捕获 `ending_seed`（A/B），L5_S06 结算时 `resolveEnding()`：seed A 与 `B_alienate` 相斥改 `A_separate`、seed B 与 `A_separate` 相斥改 `B_alienate`，C/C' 不受影响；`endingSeed` 随存档持久化，恢复时校验为 A/B，无种子 zone 显式清空。`chapters.json` 与台本的种子字段保留。
+- **L1/L4 门槛（B-02 / 提交 cba3b51）**：按提交 `cba3b51`「for better player flow」的设计意图统一为 L1 `pass>=3 && fail<2`、L4 `apology_perform>=1 || apology_refuse>=1`——代码、`chapters.json`、`台本.md` 与四语言 objective 全部同步；L4 运行时仍为「取较高、平票取表演」。
+- **已验证**：`node --check` 全部运行时文件、`validate-chapters`、`validate-locales` 通过。
+- **B-06（C/C' 视频映射）**：已文档化——`C_consume` 与 `C_cold` 共用 K19/K20（`V5_C`）与 `PAGE_END_C_hollow` 是显式设计，差异仅在结局标题/文案；已写入视频 manifest note、`schedule.md` 映射表，`validate-runtime-videos.mjs` 亦显式声明。
+- **C-04（反转文案）**：已处理——第 2/3 句改为谜语式「被你吃掉的，才是她想说的。/ 留下来的，是念给别人听的。」（四语言、台本分镜、`chapters.json` 同步）。
+- **过场层（narration）落地**：章首按 `narration` 逐条自动播放（时长按字数，1.8s–3.6s），期间黑条隐藏并锁定，结束渲染首句；重启/重开会取消并重置。L0 教学、L5「只剩你了」等台本过场自此可见。
+- **关末结算台词落地**：L1-L4 章末先播 `settlement`（台本「关末不可遮」她的台词，四语言 locale 新增字段；L1 含面试官「明天来试用」），再弹覆盖层；`chapters.json` 的 `结算台词` 字段移除，避免双语双源。
+- **L1 失败侧结算台词落地**：`settlementFail`（四语言）——L1 失败先播「（面试官A）我们再联系。」，再进 `L1_fail_retry` 过场与重试层；`validate-locales` 增加 `settlementFail` 校验。
+- **旗标全量消费（B-01/B-02/C-06）**：`risk≥3` 计入 L1 失败；`revolt≥1` 改写 L4 章末文案；`mask`/`truth`/`bond`/`control` 结局覆盖层人格回显（≥6 取最高，台本新增「人格回显」表，四语言 `game.persona`）。
+- **B-05（L4 反噬自动遮挡）**：已落地——L4_S02 细条爬入预锁「不觉得自己做错了」1.5s 后由系统代吃，eatLog 标 `source: parasite`；章末「不是我拖的」每局为真。
+- **仍未处理**：A-04、C-02、C-03；真噪声插片属媒体层待办。
+
+### 2026-08-25 未追踪缺口登记
+
+此前未被任何 TODO/清单追踪的项（已核实现状）：
+
+- **L1 失败侧结算台词**：已落地（同日）——`settlementFail` 四语言新增，L1 失败先播「（面试官A）我们再联系。」再进失败过场与重试层。
+- **A-06（URL 路径一致性）**：已降级为「页面搬到其他目录时的可移植性风险」，`/web/` 入口已验证；无处理计划。
+- **R-12（Tauri WebView CSP）**：低优先级安全加固，继续挂起。
+- **存档导出/导入**：README 自述「暂未实现」，无计划。
+- **PWA**：README 部署方案提及「支持 PWA」，未实现、无计划。
+- **en/de/ru 母语审校**：三语言 Beta，待母语审校（README 已标注，无专门条目）。
